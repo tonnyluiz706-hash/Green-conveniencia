@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Green Conveniência e Tabacaria</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   1. VARIÁVEIS — PRETO + VERDE
+   ============================================================ */
+:root{
+  --bg:         #050505;
+  --surface:    #0d0d0d;
+  --surface-2:  #141414;
+  --line:       rgba(255,255,255,.07);
+  --line-green: rgba(0,177,64,.35);
+
+  --green:      #00B140;
+  --green-dark: #008A32;
+  --green-deep: #006B27;
+  --green-glow: rgba(0,177,64,.50);
+  --green-soft: rgba(0,177,64,.10);
+
+  --txt:        #ffffff;
+  --muted:      #9a9a9a;
+
+  --radius:     14px;
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; }
+html{ scroll-behavior:smooth; }
+
+body{
+  font-family:'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background:var(--bg);
+  color:var(--txt);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+img{ display:block; max-width:100%; }
+button{ font-family:inherit; cursor:pointer; border:none; background:none; color:inherit; }
+input{ font-family:inherit; }
+a{ color:inherit; text-decoration:none; }
+
+/* ============================================================
+   2. TELA INICIAL (SPLASH) — PRETA COM A LOGO
+   ============================================================ */
+#splash{
+  position:fixed; inset:0; z-index:999;
+  background:#000;
+  display:flex; align-items:center; justify-content:center;
+  transition:opacity .6s ease, visibility .6s ease;
+}
+#splash.hide{ opacity:0; visibility:hidden; pointer-events:none; }
+
+.logo-stage{
+  width:min(520px, 84vw);
+  aspect-ratio:1 / 1;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+  position:relative;
+  transition:transform .4s cubic-bezier(.2,.8,.3,1);
+  animation:logoIn 1.1s cubic-bezier(.2,.8,.3,1) both;
+}
+@keyframes logoIn{
+  from{ opacity:0; transform:scale(.86); }
+  to  { opacity:1; transform:scale(1); }
+}
+.logo-stage:hover{ transform:scale(1.03); }
+.logo-stage:active{ transform:scale(.97); }
+
+/* A logo em SVG — ocupa todo o espaço */
+.logo-svg{
+  width:100%; height:100%;
+  filter:drop-shadow(0 0 42px rgba(0,177,64,.35));
+  transition:filter .4s;
+}
+.logo-stage:hover .logo-svg{
+  filter:drop-shadow(0 0 60px rgba(0,177,64,.6));
+}
+
+.tap-hint{
+  position:absolute; bottom:8vh; left:50%; transform:translateX(-50%);
+  font-size:12px; font-weight:600; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--green);
+  display:flex; align-items:center; gap:9px;
+  animation:blink 2.2s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes blink{ 0%,100%{opacity:1} 50%{opacity:.25} }
+.tap-hint::before,
+.tap-hint::after{
+  content:''; width:26px; height:1px; background:var(--green); opacity:.5;
+}
+
+/* ============================================================
+   3. HEADER
+   ============================================================ */
+header{
+  position:sticky; top:0; z-index:60;
+  background:rgba(5,5,5,.82);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--line);
+}
+.nav{
+  max-width:1300px; margin:0 auto;
+  padding:14px 24px;
+  display:flex; align-items:center; gap:26px;
+}
+.logo-mini{
+  display:flex; align-items:center; gap:11px;
+  flex-shrink:0;
+}
+.logo-mini .mark{
+  width:42px; height:42px;
+  flex-shrink:0;
+}
+.logo-mini .mark svg{ width:100%; height:100%; }
+.logo-mini .txt b{
+  display:block; font-size:15px; font-weight:900; line-height:1.1;
+  letter-spacing:-.01em;
+}
+.logo-mini .txt span{
+  display:block; font-size:9px; color:var(--green);
+  letter-spacing:.14em; text-transform:uppercase; font-weight:700;
+}
+
+.nav-links{ display:flex; gap:24px; margin-left:14px; }
+.nav-links a{
+  font-size:13.5px; font-weight:600; color:var(--muted);
+  transition:color .2s;
+}
+.nav-links a:hover{ color:var(--green); }
+
+.cart{
+  margin-left:auto;
+  display:flex; align-items:center; gap:8px;
+  padding:9px 16px 9px 13px;
+  background:var(--surface-2);
+  border:1px solid var(--line);
+  border-radius:99px;
+  font-size:13.5px; font-weight:700;
+  transition:border-color .2s, background .2s, transform .15s;
+}
+.cart:hover{ border-color:var(--line-green); background:#181818; }
+.cart:active{ transform:scale(.96); }
+.cart svg{ width:17px; height:17px; color:var(--green); }
+.cart b{
+  background:var(--green); color:#001a09;
+  font-size:11.5px; font-weight:900;
+  min-width:20px; height:20px; padding:0 5px; border-radius:99px;
+  display:grid; place-items:center;
+  transition:transform .25s cubic-bezier(.34,1.56,.64,1);
+}
+.cart b.pop{ transform:scale(1.45); }
+
+/* ============================================================
+   4. HERO — FRASE ÚNICA
+   ============================================================ */
+.hero{
+  max-width:1300px; margin:0 auto;
+  padding:52px 24px 10px;
+}
+.badge-top{
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--green);
+  background:var(--green-soft);
+  border:1px solid var(--line-green);
+  padding:7px 14px; border-radius:99px; margin-bottom:22px;
+}
+.dot{
+  width:6px; height:6px; border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 0 3px rgba(0,177,64,.2);
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.3} }
+
+.hero-line{
+  font-size:clamp(30px, 5vw, 54px);
+  font-weight:900; letter-spacing:-.04em; line-height:1.05;
+  color:var(--txt);
+}
+.hero-line em{
+  font-style:normal;
+  background:linear-gradient(100deg, var(--green), var(--green-dark));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+
+/* Busca */
+.search-wrap{
+  max-width:1300px; margin:26px auto 0; padding:0 24px;
+  position:relative;
+}
+.search-wrap svg{
+  position:absolute; left:42px; top:50%; transform:translateY(-50%);
+  width:18px; height:18px; color:var(--muted); pointer-events:none;
+}
+#search{
+  width:100%; padding:15px 20px 15px 50px;
+  background:var(--surface); border:1px solid var(--line);
+  border-radius:12px; color:var(--txt); font-size:15px; outline:none;
+  transition:border-color .2s, background .2s;
+}
+#search::placeholder{ color:#555; }
+#search:focus{ border-color:var(--green); background:#111; }
+
+/* ============================================================
+   5. CATÁLOGO ESTILO NETFLIX
+   ============================================================ */
+.catalog{ padding:38px 0 60px; }
+
+.row{ margin-bottom:44px; }
+.row-head{
+  max-width:1300px; margin:0 auto;
+  padding:0 24px 16px;
+  display:flex; align-items:baseline; justify-content:space-between; gap:16px;
+}
+.row-head h2{
+  font-size:20px; font-weight:800; letter-spacing:-.02em;
+  display:flex; align-items:center; gap:10px;
+}
+.row-head h2::before{
+  content:''; width:4px; height:20px; border-radius:2px;
+  background:var(--green);
+  box-shadow:0 0 12px var(--green-glow);
+}
+.row-head span{ font-size:12.5px; color:var(--muted); font-weight:600; }
+
+.rail-wrap{ position:relative; }
+.rail{
+  display:flex; gap:14px;
+  padding:14px 24px 26px;
+  overflow-x:auto;
+  scroll-behavior:smooth;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+.rail::-webkit-scrollbar{ display:none; }
+
+.rail-btn{
+  position:absolute; top:0; bottom:14px; z-index:10;
+  width:56px;
+  display:grid; place-items:center;
+  background:linear-gradient(to right, rgba(5,5,5,.96), rgba(5,5,5,0));
+  opacity:0; transition:opacity .25s;
+  color:#fff;
+}
+.rail-btn.right{
+  right:0;
+  background:linear-gradient(to left, rgba(5,5,5,.96), rgba(5,5,5,0));
+}
+.rail-btn.left{ left:0; }
+.rail-wrap:hover .rail-btn{ opacity:1; }
+.rail-btn svg{ width:26px; height:26px; transition:transform .2s; }
+.rail-btn:hover svg{ transform:scale(1.2); color:var(--green); }
+
+/* ============================================================
+   6. CARD DE PRODUTO
+   ============================================================ */
+.card{
+  flex:0 0 auto;
+  width:200px;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  overflow:hidden;
+  position:relative;
+  transition:transform .3s cubic-bezier(.2,.8,.3,1),
+             border-color .3s,
+             box-shadow .3s;
+  cursor:pointer;
+}
+.card:hover{
+  transform:translateY(-8px) scale(1.03);
+  border-color:var(--green);
+  box-shadow:0 22px 46px -18px rgba(0,0,0,.95),
+             0 0 0 1px var(--green-soft),
+             0 0 34px -10px var(--green-glow);
+  z-index:5;
+}
+
+.thumb{
+  position:relative;
+  aspect-ratio:1 / 1;
+  background:
+    radial-gradient(circle at 50% 42%, var(--green-soft), transparent 65%),
+    var(--surface-2);
+  border-bottom:1px solid var(--line);
+  overflow:hidden;
+  display:flex; align-items:center; justify-content:center;
+}
+.thumb img{
+  position:absolute; inset:0;
+  width:100%; height:100%; object-fit:cover;
+  transition:transform .5s cubic-bezier(.2,.8,.3,1);
+}
+.card:hover .thumb img{ transform:scale(1.08); }
+
+.thumb-ph{
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px;
+  color:rgba(0,177,64,.55);
+  font-size:10px; font-weight:800;
+  text-transform:uppercase; letter-spacing:.14em;
+  pointer-events:none;
+  position:absolute; inset:0;
+}
+.thumb-ph svg{ width:34px; height:34px; opacity:.7; }
+
+.tag{
+  position:absolute; top:10px; left:10px; z-index:3;
+  font-size:9.5px; font-weight:900; letter-spacing:.08em; text-transform:uppercase;
+  padding:5px 9px; border-radius:7px;
+  background:var(--green); color:#001a09;
+  box-shadow:0 6px 16px -6px var(--green-glow);
+}
+
+.card-body{ padding:13px 14px 15px; }
+.cat{
+  font-size:9.5px; font-weight:800; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--green);
+}
+.card-body h3{
+  font-size:14px; font-weight:700; letter-spacing:-.015em; line-height:1.3;
+  margin-top:3px;
+}
+.card-body .vol{
+  font-size:11.5px; color:var(--muted); margin-top:2px; font-weight:500;
+}
+
+.price-row{
+  margin-top:11px;
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+}
+.price{
+  font-size:19px; font-weight:900; letter-spacing:-.03em; line-height:1;
+  color:#fff;
+}
+.price small{
+  font-size:11px; font-weight:700; color:var(--green);
+  margin-right:2px; letter-spacing:0;
+}
+
+.add{
+  width:34px; height:34px; border-radius:10px; flex-shrink:0;
+  display:grid; place-items:center;
+  background:var(--surface-2); border:1px solid var(--line);
+  color:var(--txt);
+  transition:all .2s;
+}
+.add svg{ width:16px; height:16px; }
+.add:hover{ background:var(--green); border-color:var(--green); color:#001a09; }
+.add:active{ transform:scale(.88); }
+
+/* ============================================================
+   7. FAIXA DE INFO
+   ============================================================ */
+.strip{
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  background:rgba(0,177,64,.03);
+}
+.strip-inner{
+  max-width:1300px; margin:0 auto; padding:30px 24px;
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(210px,1fr)); gap:26px;
+}
+.strip-item{ display:flex; gap:13px; align-items:flex-start; }
+.strip-item svg{ width:20px; height:20px; color:var(--green); flex-shrink:0; margin-top:2px; }
+.strip-item b{ display:block; font-size:13.5px; font-weight:700; margin-bottom:3px; }
+.strip-item span{ font-size:12.5px; color:var(--muted); line-height:1.45; }
+
+/* ============================================================
+   8. FOOTER
+   ============================================================ */
+footer{ padding:46px 24px 34px; }
+.foot-inner{
+  max-width:1300px; margin:0 auto;
+  display:flex; flex-wrap:wrap; gap:30px; justify-content:space-between;
+}
+.foot-col h4{
+  font-size:12.5px; font-weight:800; margin-bottom:12px;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--green);
+}
+.foot-col p, .foot-col a{
+  display:block; font-size:13px; color:var(--muted);
+  line-height:1.9; transition:color .2s;
+}
+.foot-col a:hover{ color:var(--green); }
+
+.foot-bottom{
+  max-width:1300px; margin:34px auto 0; padding-top:22px;
+  border-top:1px solid var(--line);
+  font-size:11.5px; color:#5f5f5f; line-height:1.7;
+}
+.foot-bottom strong{ color:var(--green); }
+
+/* ============================================================
+   9. TOAST
+   ============================================================ */
+.toast{
+  position:fixed; left:50%; bottom:26px; z-index:90;
+  transform:translate(-50%, 130%);
+  background:#111; border:1px solid var(--line-green);
+  border-left:3px solid var(--green);
+  padding:13px 20px; border-radius:12px;
+  font-size:13.5px; font-weight:600;
+  box-shadow:0 18px 40px -14px rgba(0,0,0,.95);
+  transition:transform .38s cubic-bezier(.2,.9,.3,1);
+  max-width:calc(100vw - 36px);
+}
+.toast.show{ transform:translate(-50%, 0); }
+
+/* ============================================================
+   10. RESPONSIVO
+   ============================================================ */
+@media (max-width: 900px){
+  .nav-links{ display:none; }
+}
+@media (max-width: 600px){
+  .card{ width:158px; }
+  .card-body h3{ font-size:12.5px; }
+  .price{ font-size:16.5px; }
+  .thumb-ph span{ display:none; }
+  .rail{ padding-left:16px; padding-right:16px; gap:11px; }
+  .row-head, .hero, .search-wrap, .strip-inner{ padding-left:16px; padding-right:16px; }
+  .search-wrap svg{ left:34px; }
+  .rail-btn{ display:none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     TELA INICIAL — PRETA COM A LOGO
+     ============================================================ -->
+<div id="splash">
+  <div class="logo-stage" id="logoStage">
+
+    <!-- LOGO GREEN CONVENIÊNCIA (SVG recriado da sua imagem) -->
+    <svg class="logo-svg" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+      <!-- Círculo verde -->
+      <circle cx="120" cy="120" r="105" fill="none" stroke="#00B140" stroke-width="6"/>
+
+      <!-- GREEN (grande) -->
+      <text x="120" y="122"
+            text-anchor="middle"
+            font-family="Inter, Arial, sans-serif"
+            font-weight="900"
+            font-size="52"
+            fill="#00B140"
+            letter-spacing="1">GREEN</text>
+
+      <!-- CONVENIÊNCIA -->
+      <text x="120" y="152"
+            text-anchor="middle"
+            font-family="Inter, Arial, sans-serif"
+            font-weight="800"
+            font-size="16"
+            fill="#00B140"
+            letter-spacing="0.4">CONVENIÊNCIA</text>
+
+      <!-- E TABACARIA -->
+      <text x="120" y="174"
+            text-anchor="middle"
+            font-family="Inter, Arial, sans-serif"
+            font-weight="800"
+            font-size="16"
+            fill="#00B140"
+            letter-spacing="1">E TABACARIA</text>
+    </svg>
+
+    <!--
+      OPCIONAL: se preferir usar o PNG real da logo, descomente a linha abaixo
+      e apague o <svg> acima. Coloque o arquivo em img/logo.png
+    -->
+    <!-- <img src="img/logo.png" alt="Green Conveniência" class="logo-svg"> -->
+
+  </div>
+  <div class="tap-hint">Toque para entrar</div>
+</div>
+
+
+<!-- ============================================================
+     HEADER
+     ============================================================ -->
+<header>
+  <nav class="nav">
+    <div class="logo-mini">
+      <div class="mark">
+        <!-- Mini versão da logo (SVG) -->
+        <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="120" cy="120" r="105" fill="none" stroke="#00B140" stroke-width="10"/>
+          <text x="120" y="122" text-anchor="middle"
+                font-family="Inter, Arial, sans-serif" font-weight="900"
+                font-size="52" fill="#00B140" letter-spacing="1">GREEN</text>
+          <text x="120" y="152" text-anchor="middle"
+                font-family="Inter, Arial, sans-serif" font-weight="800"
+                font-size="16" fill="#00B140" letter-spacing="0.4">CONVENIÊNCIA</text>
+          <text x="120" y="174" text-anchor="middle"
+                font-family="Inter, Arial, sans-serif" font-weight="800"
+                font-size="16" fill="#00B140" letter-spacing="1">E TABACARIA</text>
+        </svg>
+      </div>
+      <div class="txt">
+        <b>Green</b>
+        <span>Conveniência &amp; Tabacaria</span>
+      </div>
+    </div>
+
+    <div class="nav-links">
+      <a href="#cervejas">Cervejas</a>
+      <a href="#tabacaria">Tabacaria</a>
+      <a href="#info">Entrega</a>
+    </div>
+
+    <button class="cart" id="cartBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
+      </svg>
+      <span>Sacola</span>
+      <b id="cartCount">0</b>
+    </button>
+  </nav>
+</header>
+
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="hero">
+  <div class="badge-top"><span class="dot"></span> Aberto agora · Entrega rápida</div>
+
+  <h1 class="hero-line">
+    Tudo em <em>um só lugar</em>
+  </h1>
+</section>
+
+<!-- Busca -->
+<div class="search-wrap">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+    <circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/>
+  </svg>
+  <input type="text" id="search" placeholder="Buscar produto... ex: Skol, litrinho, Brahma">
+</div>
+
+
+<!-- ============================================================
+     CATÁLOGO ESTILO NETFLIX
+     ============================================================ -->
+<div class="catalog">
+
+  <!-- ============ LINHA 1 — CERVEJAS ============ -->
+  <section class="row" id="cervejas">
+    <div class="row-head">
+      <h2>Cervejas geladas</h2>
+      <span>5 produtos</span>
+    </div>
+
+    <div class="rail-wrap">
+      <button class="rail-btn left" data-dir="-1" aria-label="Anterior">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m15 18-6-6 6-6"/>
+        </svg>
+      </button>
+
+      <div class="rail" data-rail>
+
+        <!-- ---------- CARD 1 — LITRINHO ---------- -->
+        <article class="card" data-name="Litrinho" data-cat="cervejas">
+          <div class="thumb">
+            <img src="" alt="Litrinho" onerror="this.style.display='none'">
+            <div class="thumb-ph">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/>
+              </svg>
+              <span>Imagem</span>
+            </div>
+          </div>
+          <span class="tag">Destaque</span>
+          <div class="card-body">
+            <span class="cat">Cerveja</span>
+            <h3>Litrinho</h3>
+            <p class="vol">Garrafa 300 ml</p>
+            <div class="price-row">
+              <div class="price"><small>R$</small>3,50</div>
+              <button class="add" data-add="Litrinho" aria-label="Adicionar Litrinho">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- ---------- CARD 2 — SKOL 350ML ---------- -->
+        <article class="card" data-name="Skol 350ml" data-cat="cervejas">
+          <div class="thumb">
+            <img src="" alt="Skol Lata 350ml" onerror="this.style.display='none'">
+            <div class="thumb-ph">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/>
+              </svg>
+              <span>Imagem</span>
+            </div>
+          </div>
+          <span class="tag">Top 1</span>
+          <div class="card-body">
+            <span class="cat">Cerveja</span>
+            <h3>Skol</h3>
+            <p class="vol">Lata 350 ml</p>
+            <div class="price-row">
+              <div class="price"><small>R$</small>4,25</div>
+              <button class="add" data-add="Skol 350ml" aria-label="Adicionar Skol 350ml">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- ---------- CARD 3 — ANTÁRTICA 350ML ---------- -->
+        <article class="card" data-name="Antártica 350ml" data-cat="cervejas">
+          <div class="thumb">
+            <img src="" alt="Antártica Lata 350ml" onerror="this.style.display='none'">
+            <div class="thumb-ph">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/>
+              </svg>
+              <span>Imagem</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <span class="cat">Cerveja</span>
+            <h3>Antártica</h3>
+            <p class="vol">Lata 350 ml</p>
+            <div class="price-row">
+              <div class="price"><small>R$</small>4,25</div>
+              <button class="add" data-add="Antártica 350ml" aria-label="Adicionar Antártica 350ml">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- ---------- CARD 4 — BRAHMA 350ML ---------- -->
+        <article class="card" data-name="Brahma 350ml" data-cat="cervejas">
+          <div class="thumb">
+            <img src="" alt="Brahma Lata 350ml" onerror="this.style.display='none'">
+            <div class="thumb-ph">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/>
+              </svg>
+              <span>Imagem</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <span class="cat">Cerveja</span>
+            <h3>Brahma</h3>
+            <p class="vol">Lata 350 ml</p>
+            <div class="price-row">
+              <div class="price"><small>R$</small>4,25</div>
+              <button class="add" data-add="Brahma 350ml" aria-label="Adicionar Brahma 350ml">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- ---------- CARD 5 — BRAHMA ZERO 350ML ---------- -->
+        <article class="card" data-name="Brahma Zero 350ml" data-cat="cervejas">
+          <div class="thumb">
+            <img src="" alt="Brahma Zero Lata 350ml" onerror="this.style.display='none'">
+            <div class="thumb-ph">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/>
+              </svg>
+              <span>Imagem</span>
+            </div>
+          </div>
+          <span class="tag">Zero álcool</span>
+          <div class="card-body">
+            <span class="cat">Cerveja</span>
+            <h3>Brahma Zero</h3>
+            <p class="vol">Lata 350 ml</p>
+            <div class="price-row">
+              <div class="price"><small>R$</small>4,50</div>
+              <button class="add" data-add="Brahma Zero 350ml" aria-label="Adicionar Brahma Zero 350ml">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </article>
+
+      </div>
+
+      <button class="rail-btn right" data-dir="1" aria-label="Próximo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m9 18 6-6-6-6"/>
+        </svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============ LINHA 2 — TABACARIA ============ -->
+  <section class="row" id="tabacaria">
+    <div class="row-head">
+      <h2>Tabacaria</h2>
+      <span>Em breve mais itens</span>
+    </div>
+
+    <div class="rail-wrap">
+      <button class="rail-btn left" data-dir="-1" aria-label="Anterior">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m15 18-6-6 6-6"/>
+        </svg>
+      </button>
+
+      <div class="rail" data-rail>
+        <article class="card" data-name="Seda" data-cat="tabacaria">
+          <div class="thumb">
+            <img src="" alt="Seda" onerror="this.style.display='none'">
+            <div class="thumb-ph">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/>
+              </svg>
+              <span>Imagem</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <span class="cat">Tabacaria</span>
+            <h3>Seda</h3>
+            <p class="vol">Pacote pequeno</p>
+            <div class="price-row">
+              <div class="price"><small>R$</small>5,50</div>
+              <button class="add" data-add="Seda" aria-label="Adicionar Seda">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" data-name="Cigarro" data-cat="tabacaria">
+          <div class="thumb">
+            <img src="" alt="Cigarro" onerror="this.style.display='none'">
+            <div class="thumb-ph">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/>
+              </svg>
+              <span>Imagem</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <span class="cat">Tabacaria</span>
+            <h3>Cigarro</h3>
+            <p class="vol">Maço 20 unidades</p>
+            <div class="price-row">
+              <div class="price"><small>R$</small>12,00</div>
+              <button class="add" data-add="Cigarro" aria-label="Adicionar Cigarro">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <article class="card" data-name="Isqueiro" data-cat="tabacaria">
+          <div class="thumb">
+            <img src="" alt="Isqueiro" onerror="this.style.display='none'">
+            <div class="thumb-ph">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/>
+              </svg>
+              <span>Imagem</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <span class="cat">Tabacaria</span>
+            <h3>Isqueiro</h3>
+            <p class="vol">Unidade</p>
+            <div class="price-row">
+              <div class="price"><small>R$</small>7,00</div>
+              <button class="add" data-add="Isqueiro" aria-label="Adicionar Isqueiro">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+                  <path d="M12 5v14M5 12h14"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <button class="rail-btn right" data-dir="1" aria-label="Próximo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m9 18 6-6-6-6"/>
+        </svg>
+      </button>
+    </div>
+  </section>
+
+</div>
+
+
+<!-- ============================================================
+     FAIXA DE INFO
+     ============================================================ -->
+<section class="strip" id="info">
+  <div class="strip-inner">
+    <div class="strip-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
+      </svg>
+      <div><b>Aberto 24 horas</b><span>Todos os dias, inclusive feriados.</span></div>
+    </div>
+    <div class="strip-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 7h11v8H3z"/><path d="M14 10h4l3 3v2h-7z"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/>
+      </svg>
+      <div><b>Entrega rápida</b><span>Até 30 minutos na região.</span></div>
+    </div>
+    <div class="strip-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/>
+      </svg>
+      <div><b>Pix, cartão e dinheiro</b><span>Pague como preferir na entrega.</span></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer>
+  <div class="foot-inner">
+    <div class="foot-col">
+      <h4>Green Conveniência</h4>
+      <p>Sua conveniência 24h de confiança.</p>
+      <p>Rua Exemplo, 123 — Centro</p>
+      <p>Sua cidade — UF</p>
+    </div>
+    <div class="foot-col">
+      <h4>Contato</h4>
+      <a href="tel:+5500000000000">(00) 00000-0000</a>
+      <a href="#">@greenconveniencia</a>
+      <a href="#">WhatsApp</a>
+    </div>
+    <div class="foot-col">
+      <h4>Horário</h4>
+      <p>Segunda a domingo</p>
+      <p>Aberto 24 horas</p>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <strong>Beba com moderação. Venda proibida para menores de 18 anos.</strong><br>
+    Este produto é destinado exclusivamente a maiores de idade. Se for dirigir, não beba.
+  </div>
+</footer>
+
+<!-- Toast -->
+<div class="toast" id="toast">Produto adicionado!</div>
+
+
+<script>
+/* ============================================================
+   TELA INICIAL
+   ============================================================ */
+(function(){
+  const splash = document.getElementById('splash');
+  const stage  = document.getElementById('logoStage');
+
+  function enterSite(){
+    splash.classList.add('hide');
+    document.body.style.overflow = '';
+    setTimeout(() => splash.remove(), 650);
+  }
+
+  document.body.style.overflow = 'hidden';
+  stage.addEventListener('click', enterSite);
+})();
+
+
+/* ============================================================
+   CARRINHO + TOAST
+   ============================================================ */
+const cartCount = document.getElementById('cartCount');
+const toastEl   = document.getElementById('toast');
+let cart = 0;
+let toastTimer;
+
+function showToast(msg){
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2200);
+}
+
+document.querySelectorAll('[data-add]').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    cart++;
+    cartCount.textContent = cart;
+    cartCount.classList.add('pop');
+    setTimeout(() => cartCount.classList.remove('pop'), 260);
+    showToast(`✓ ${btn.dataset.add} adicionado à sacola`);
+  });
+});
+
+document.getElementById('cartBtn').addEventListener('click', () => {
+  showToast(cart === 0
+    ? 'Sua sacola está vazia 🛒'
+    : `Você tem ${cart} ${cart === 1 ? 'item' : 'itens'} na sacola 🛒`);
+});
+
+
+/* ============================================================
+   SETAS DE NAVEGAÇÃO DAS TRILHAS
+   ============================================================ */
+document.querySelectorAll('.rail-wrap').forEach(wrap => {
+  const rail = wrap.querySelector('[data-rail]');
+  wrap.querySelectorAll('.rail-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const dir = Number(btn.dataset.dir);
+      rail.scrollBy({ left: dir * (rail.clientWidth * 0.8), behavior: 'smooth' });
+    });
+  });
+});
+
+
+/* ============================================================
+   BUSCA
+   ============================================================ */
+const searchInput = document.getElementById('search');
+const allCards    = [...document.querySelectorAll('.card')];
+
+searchInput.addEventListener('input', () => {
+  const term = searchInput.value.trim().toLowerCase();
+
+  allCards.forEach(card => {
+    const match = card.dataset.name.toLowerCase().includes(term);
+    card.style.display = match ? '' : 'none';
+  });
+
+  document.querySelectorAll('.row').forEach(row => {
+    const visiveis = [...row.querySelectorAll('.card')]
+      .filter(c => c.style.display !== 'none').length;
+    row.style.display = visiveis === 0 ? 'none' : '';
+  });
+});
+</script>
+
+</body>
+</html>
