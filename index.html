@@ -342,6 +342,8 @@ header{
 .strip-item svg{ width:20px; height:20px; color:var(--green); flex-shrink:0; margin-top:2px; }
 .strip-item b{ display:block; font-size:13.5px; font-weight:700; margin-bottom:3px; }
 .strip-item span{ font-size:12.5px; color:var(--muted); line-height:1.45; }
+.strip-item a{ color:var(--muted); transition:color .2s; }
+.strip-item a:hover{ color:var(--green); }
 
 /* ============================================================
    8. FOOTER
@@ -736,13 +738,13 @@ footer{ padding:46px 24px 34px; }
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/>
       </svg>
-      <div><b>Cola pra cá</b><span>Rua do M.S.T, 420 — Centro</span></div>
+      <div><b>Cola pra cá</b><span>Rua do M.S.T, 420 — União da Vitória<br>Londrina — PR</span></div>
     </div>
     <div class="strip-item">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2 4.2 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.5 2.1L8 9.5a16 16 0 0 0 6 6l1.1-1.1a2 2 0 0 1 2.1-.5c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.7 2z"/>
       </svg>
-      <div><b>Fale com a gente</b><span>+55(43)984524729</span></div>
+      <div><b>Fale com a gente</b><span><a href="tel:+5543984524729">(43) 98452-4729</a></span></div>
     </div>
   </div>
 </section>
@@ -761,9 +763,9 @@ footer{ padding:46px 24px 34px; }
     </div>
     <div class="foot-col">
       <h4>Contato</h4>
-      <a href="tel:+55(43)984524729">+55(43)984524729</a>
+      <a href="tel:+5543984524729">(43) 98452-4729</a>
       <a href="#">@greenconveniencia</a>
-      <a href="#">WhatsApp</a>
+      <a href="https://wa.me/5543984524729" target="_blank" rel="noopener">WhatsApp</a>
     </div>
     <div class="foot-col">
       <h4>Horário</h4>
