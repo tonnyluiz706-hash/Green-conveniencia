@@ -225,12 +225,17 @@ header{
 .card-body .vol{
   font-size:11.5px; color:var(--muted); margin-top:2px; font-weight:500;
 }
-.price-row{ margin-top:14px; display:flex; align-items:baseline; gap:5px; }
+.price-row{ margin-top:14px; display:flex; align-items:baseline; gap:5px; flex-wrap:wrap; }
 .price{
   font-size:22px; font-weight:900; letter-spacing:-.035em;
   line-height:1; color:var(--green);
 }
 .price small{ font-size:12px; font-weight:800; color:var(--green); margin-right:1px; }
+.price-alt{
+  font-size:11px; color:var(--muted); font-weight:600;
+  width:100%; margin-top:5px;
+}
+.price-alt b{ color:var(--green); font-weight:800; }
 
 /* FAIXA INFO */
 .strip{
@@ -583,7 +588,7 @@ footer{ padding:46px 24px 34px; }
   <section class="row" id="tabacaria">
     <div class="row-head">
       <h2>Tabacaria</h2>
-      <span>12 produtos</span>
+      <span>13 produtos</span>
     </div>
     <div class="rail-wrap">
       <button class="rail-btn left" data-dir="-1" aria-label="Anterior">
@@ -591,7 +596,6 @@ footer{ padding:46px 24px 34px; }
       </button>
       <div class="rail" data-rail>
 
-        <!-- CIGARRO PALERMO -->
         <article class="card" data-name="Cigarro Palermo" data-cat="tabacaria">
           <div class="thumb">
             <img src="Palermo.png" alt="Cigarro Palermo" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
@@ -600,7 +604,6 @@ footer{ padding:46px 24px 34px; }
           <div class="card-body"><span class="cat">Tabacaria</span><h3>Cigarro Palermo</h3><p class="vol">Maço 20 unidades</p><div class="price-row"><div class="price"><small>R$</small>6,00</div></div></div>
         </article>
 
-        <!-- CIGARRO EIGHT -->
         <article class="card" data-name="Cigarro Eight" data-cat="tabacaria">
           <div class="thumb">
             <img src="Eight.png" alt="Cigarro Eight" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
@@ -609,7 +612,6 @@ footer{ padding:46px 24px 34px; }
           <div class="card-body"><span class="cat">Tabacaria</span><h3>Cigarro Eight</h3><p class="vol">Maço 20 unidades</p><div class="price-row"><div class="price"><small>R$</small>6,00</div></div></div>
         </article>
 
-        <!-- SEDA -->
         <article class="card" data-name="Seda" data-cat="tabacaria">
           <div class="thumb">
             <img src="Seda.png" alt="Seda" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
@@ -618,7 +620,6 @@ footer{ padding:46px 24px 34px; }
           <div class="card-body"><span class="cat">Tabacaria</span><h3>Seda</h3><p class="vol">Pacote pequeno</p><div class="price-row"><div class="price"><small>R$</small>5,00</div></div></div>
         </article>
 
-        <!-- ISQUEIRO BIC -->
         <article class="card" data-name="Isqueiro BIC" data-cat="tabacaria">
           <div class="thumb">
             <img src="Bic.png" alt="Isqueiro BIC" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
@@ -627,7 +628,6 @@ footer{ padding:46px 24px 34px; }
           <div class="card-body"><span class="cat">Tabacaria</span><h3>Isqueiro BIC</h3><p class="vol">Unidade</p><div class="price-row"><div class="price"><small>R$</small>6,00</div></div></div>
         </article>
 
-        <!-- ISQUEIRO HIPER -->
         <article class="card" data-name="Isqueiro Hiper" data-cat="tabacaria">
           <div class="thumb">
             <img src="Hiper.png" alt="Isqueiro Hiper" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
@@ -636,7 +636,6 @@ footer{ padding:46px 24px 34px; }
           <div class="card-body"><span class="cat">Tabacaria</span><h3>Isqueiro Hiper</h3><p class="vol">Unidade</p><div class="price-row"><div class="price"><small>R$</small>3,00</div></div></div>
         </article>
 
-        <!-- PITEIRA LONGA -->
         <article class="card" data-name="Piteira Longa" data-cat="tabacaria">
           <div class="thumb">
             <img src="PiteiraLonga.png" alt="Piteira Longa" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
@@ -645,7 +644,6 @@ footer{ padding:46px 24px 34px; }
           <div class="card-body"><span class="cat">Tabacaria</span><h3>Piteira Longa</h3><p class="vol">Unidade</p><div class="price-row"><div class="price"><small>R$</small>7,00</div></div></div>
         </article>
 
-        <!-- ESSÊNCIA ZOMO -->
         <article class="card" data-name="Essência Zomo" data-cat="tabacaria">
           <div class="thumb">
             <img src="Zomo.png" alt="Essência Zomo" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
@@ -654,7 +652,6 @@ footer{ padding:46px 24px 34px; }
           <div class="card-body"><span class="cat">Tabacaria</span><h3>Essência Zomo</h3><p class="vol">Unidade</p><div class="price-row"><div class="price"><small>R$</small>13,00</div></div></div>
         </article>
 
-        <!-- KIT ESSÊNCIA ZOMO -->
         <article class="card" data-name="Kit Essência Zomo" data-cat="tabacaria">
           <div class="thumb">
             <img src="ZomoKit.png" alt="Kit Essência Zomo" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
@@ -664,7 +661,6 @@ footer{ padding:46px 24px 34px; }
           <div class="card-body"><span class="cat">Tabacaria</span><h3>Essência Zomo</h3><p class="vol">Kit: essência + 9 carvão</p><div class="price-row"><div class="price"><small>R$</small>15,00</div></div></div>
         </article>
 
-        <!-- ESSÊNCIA ZGY -->
         <article class="card" data-name="Essência ZGY" data-cat="tabacaria">
           <div class="thumb">
             <img src="ZGY.png" alt="Essência ZGY" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
@@ -673,7 +669,6 @@ footer{ padding:46px 24px 34px; }
           <div class="card-body"><span class="cat">Tabacaria</span><h3>Essência ZGY</h3><p class="vol">Unidade</p><div class="price-row"><div class="price"><small>R$</small>15,00</div></div></div>
         </article>
 
-        <!-- KIT ESSÊNCIA ZGY -->
         <article class="card" data-name="Kit Essência ZGY" data-cat="tabacaria">
           <div class="thumb">
             <img src="ZGYKit.png" alt="Kit Essência ZGY" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
@@ -683,7 +678,6 @@ footer{ padding:46px 24px 34px; }
           <div class="card-body"><span class="cat">Tabacaria</span><h3>Essência ZGY</h3><p class="vol">Kit: essência + 9 carvão</p><div class="price-row"><div class="price"><small>R$</small>17,00</div></div></div>
         </article>
 
-        <!-- FUMO ACREMA BLEND -->
         <article class="card" data-name="Fumo Acrema Blend" data-cat="tabacaria">
           <div class="thumb">
             <img src="FumoAcrema.png" alt="Fumo Acrema Blend" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
@@ -692,13 +686,29 @@ footer{ padding:46px 24px 34px; }
           <div class="card-body"><span class="cat">Tabacaria</span><h3>Fumo Acrema Blend</h3><p class="vol">Pacote</p><div class="price-row"><div class="price"><small>R$</small>17,00</div></div></div>
         </article>
 
-        <!-- FUMO PEÃO -->
         <article class="card" data-name="Fumo Peão" data-cat="tabacaria">
           <div class="thumb">
             <img src="FumoPeao.png" alt="Fumo Peão" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
             <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
           </div>
           <div class="card-body"><span class="cat">Tabacaria</span><h3>Fumo Peão</h3><p class="vol">Pacote</p><div class="price-row"><div class="price"><small>R$</small>6,00</div></div></div>
+        </article>
+
+        <!-- ALUMÍNIO PRA ROSH -->
+        <article class="card" data-name="Alumínio pra Rosh" data-cat="tabacaria">
+          <div class="thumb">
+            <img src="Stan.png" alt="Alumínio pra Rosh" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
+            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
+          </div>
+          <div class="card-body">
+            <span class="cat">Tabacaria</span>
+            <h3>Alumínio pra Rosh</h3>
+            <p class="vol">Unidade</p>
+            <div class="price-row">
+              <div class="price"><small>R$</small>0,75</div>
+              <div class="price-alt">Fechado: <b>R$ 20,00</b></div>
+            </div>
+          </div>
         </article>
 
       </div>
