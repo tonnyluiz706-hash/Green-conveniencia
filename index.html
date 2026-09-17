@@ -14,6 +14,7 @@
   --green:#00B140; --green-dark:#008A32; --green-deep:#006B27;
   --green-glow:rgba(0,177,64,.50); --green-soft:rgba(0,177,64,.10);
   --txt:#ffffff; --muted:#9a9a9a; --radius:14px;
+  --red:#e63946; --red-soft:rgba(230,57,70,.10); --red-line:rgba(230,57,70,.35);
 }
 *{ margin:0; padding:0; box-sizing:border-box; }
 html{ scroll-behavior:smooth; }
@@ -90,18 +91,39 @@ header{
 
 /* HERO */
 .hero{ max-width:1300px; margin:0 auto; padding:56px 24px 10px; }
+
+/* Status badge — alterna entre aberto/fechado */
 .badge-top{
   display:inline-flex; align-items:center; gap:8px;
   font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase;
-  color:var(--green); background:var(--green-soft);
-  border:1px solid var(--line-green); padding:7px 14px; border-radius:99px;
-  margin-bottom:22px;
+  padding:7px 14px; border-radius:99px; margin-bottom:22px;
+  transition:all .3s;
+}
+.badge-top.is-open{
+  color:var(--green);
+  background:var(--green-soft);
+  border:1px solid var(--line-green);
+}
+.badge-top.is-closed{
+  color:var(--red);
+  background:var(--red-soft);
+  border:1px solid var(--red-line);
 }
 .dot{
-  width:6px; height:6px; border-radius:50%; background:var(--green);
-  box-shadow:0 0 0 3px rgba(0,177,64,.2); animation:pulse 2s infinite;
+  width:6px; height:6px; border-radius:50%;
+  animation:pulse 2s infinite;
+}
+.badge-top.is-open .dot{
+  background:var(--green);
+  box-shadow:0 0 0 3px rgba(0,177,64,.2);
+}
+.badge-top.is-closed .dot{
+  background:var(--red);
+  box-shadow:0 0 0 3px rgba(230,57,70,.2);
+  animation:none;
 }
 @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.3} }
+
 .hero-line{
   font-size:clamp(34px,5.4vw,60px); font-weight:900;
   letter-spacing:-.04em; line-height:1.05; color:var(--txt);
@@ -275,6 +297,61 @@ footer{ padding:46px 24px 34px; }
 }
 .foot-bottom strong{ color:var(--green); }
 
+/* ============================================================
+   BOTÃO FLUTUANTE DE WHATSAPP
+   ============================================================ */
+.wa-float{
+  position:fixed;
+  right:22px; bottom:22px;
+  z-index:100;
+  display:flex; align-items:center;
+  height:60px;
+  background:#25D366;
+  color:#fff;
+  border-radius:99px;
+  padding:0 22px 0 16px;
+  box-shadow:0 14px 34px -10px rgba(37,211,102,.85),
+             0 0 0 0 rgba(37,211,102,.55);
+  cursor:pointer;
+  overflow:hidden;
+  max-width:60px;
+  transition:max-width .4s cubic-bezier(.2,.8,.3,1),
+             padding .4s cubic-bezier(.2,.8,.3,1),
+             box-shadow .3s,
+             transform .25s;
+  animation:waPulse 2.6s ease-in-out infinite;
+}
+@keyframes waPulse{
+  0%,100%{ box-shadow:0 14px 34px -10px rgba(37,211,102,.85), 0 0 0 0 rgba(37,211,102,.55); }
+  50%    { box-shadow:0 14px 34px -10px rgba(37,211,102,.85), 0 0 0 14px rgba(37,211,102,0); }
+}
+.wa-float:hover{
+  max-width:260px;
+  padding:0 24px 0 16px;
+  animation:none;
+  box-shadow:0 18px 40px -10px rgba(37,211,102,.95);
+}
+.wa-float:active{ transform:scale(.97); }
+
+.wa-float .wa-icon{
+  width:30px; height:30px; flex-shrink:0;
+  display:grid; place-items:center;
+}
+.wa-float .wa-icon svg{ width:30px; height:30px; }
+
+.wa-float .wa-label{
+  font-size:14.5px; font-weight:800; letter-spacing:-.01em;
+  margin-left:12px;
+  white-space:nowrap;
+  opacity:0;
+  transform:translateX(-6px);
+  transition:opacity .25s .05s, transform .3s .05s;
+}
+.wa-float:hover .wa-label{
+  opacity:1;
+  transform:translateX(0);
+}
+
 /* RESPONSIVO */
 @media (max-width:900px){ .nav-links{ display:none; } }
 @media (max-width:600px){
@@ -286,6 +363,11 @@ footer{ padding:46px 24px 34px; }
   .row-head,.hero,.search-wrap,.strip-inner{ padding-left:16px; padding-right:16px; }
   .search-wrap svg{ left:34px; }
   .rail-btn{ display:none; }
+
+  .wa-float{ right:16px; bottom:16px; height:56px; padding:0 16px; max-width:56px; }
+  .wa-float .wa-icon{ width:28px; height:28px; }
+  .wa-float .wa-icon svg{ width:28px; height:28px; }
+  .wa-float:hover{ max-width:240px; }
 }
 </style>
 </head>
@@ -338,7 +420,10 @@ footer{ padding:46px 24px 34px; }
 
 <!-- HERO -->
 <section class="hero">
-  <div class="badge-top"><span class="dot"></span> Aberto agora</div>
+  <div class="badge-top is-open" id="statusBadge">
+    <span class="dot"></span>
+    <span id="statusText">Aberto agora</span>
+  </div>
   <h1 class="hero-line">Tudo em <em>um só lugar</em></h1>
 </section>
 
@@ -778,7 +863,6 @@ footer{ padding:46px 24px 34px; }
           <div class="card-body"><span class="cat">Refrigerante</span><h3>Guaratuba</h3><p class="vol">Garrafa 2 L</p><div class="price-row"><div class="price"><small>R$</small>5,00</div></div></div>
         </article>
 
-        <!-- GUARANÁ WIN 2L — ARQUIVO WIM.png -->
         <article class="card" data-name="Guaraná Win 2L" data-cat="bebidas">
           <div class="thumb">
             <img src="Wim.png" alt="Guaraná Win 2L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
@@ -834,7 +918,7 @@ footer{ padding:46px 24px 34px; }
   <div class="strip-inner">
     <div class="strip-item">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-      <div><b>Aberto 24 horas</b><span>Todos os dias, inclusive feriados.</span></div>
+      <div><b>Horário de funcionamento</b><span>Todos os dias, das 11:30 às 23:00.</span></div>
     </div>
     <div class="strip-item">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
@@ -864,8 +948,8 @@ footer{ padding:46px 24px 34px; }
     </div>
     <div class="foot-col">
       <h4>Horário</h4>
-      <p>Segunda a domingo</p>
-      <p>Aberto 24 horas</p>
+      <p>Todos os dias</p>
+      <p>11:30 às 23:00</p>
     </div>
   </div>
   <div class="foot-bottom">
@@ -873,6 +957,17 @@ footer{ padding:46px 24px 34px; }
     Este produto é destinado exclusivamente a maiores de idade. Se for dirigir, não beba.
   </div>
 </footer>
+
+<!-- BOTÃO FLUTUANTE DE WHATSAPP -->
+<a class="wa-float" id="waFloat" href="https://wa.me/5543984524729?text=Ol%C3%A1%21%20Vim%20pelo%20site%20da%20Green%20Conveni%C3%AAncia." target="_blank" rel="noopener" aria-label="Fale conosco no WhatsApp">
+  <span class="wa-icon">
+    <svg viewBox="0 0 24 24" fill="currentColor">
+      <path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.1-.7.2-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.5-.6c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.2 5.1 4.4 2.5 1 3 .8 3.6.7.5-.1 1.7-.7 2-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3z"/>
+      <path d="M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.4 1.3 4.9L2 22l5.3-1.4c1.4.8 3 1.2 4.7 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.6 0-3-.4-4.3-1.2l-.3-.2-3.1.8.8-3-.2-.3C4 15 3.6 13.5 3.6 12 3.6 7.4 7.4 3.6 12 3.6S20.4 7.4 20.4 12 16.6 20.2 12 20.2z"/>
+    </svg>
+  </span>
+  <span class="wa-label">Fale conosco</span>
+</a>
 
 <script>
 /* SPLASH */
@@ -886,6 +981,41 @@ footer{ padding:46px 24px 34px; }
   }
   document.body.style.overflow = 'hidden';
   stage.addEventListener('click', enterSite);
+})();
+
+/* ============================================================
+   STATUS ABERTO / FECHADO (11:30 às 23:00)
+   ============================================================ */
+(function(){
+  const badge = document.getElementById('statusBadge');
+  const text  = document.getElementById('statusText');
+  if (!badge || !text) return;
+
+  function checarStatus(){
+    const agora = new Date();
+    const h = agora.getHours();
+    const m = agora.getMinutes();
+    const minutosAgora = h * 60 + m;
+
+    const abre  = 11 * 60 + 30;   // 11:30
+    const fecha = 23 * 60;         // 23:00
+
+    const aberto = minutosAgora >= abre && minutosAgora < fecha;
+
+    if (aberto){
+      badge.classList.add('is-open');
+      badge.classList.remove('is-closed');
+      text.textContent = 'Aberto agora';
+    } else {
+      badge.classList.remove('is-open');
+      badge.classList.add('is-closed');
+      text.textContent = 'Fechado agora';
+    }
+  }
+
+  checarStatus();
+  // Atualiza a cada 60s
+  setInterval(checarStatus, 60000);
 })();
 
 /* Esconde o placeholder de qualquer imagem que já carregou */
