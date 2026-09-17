@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Green Conveniência e Tabacaria</title>
 
-<!-- ⭐ FAVICON — logo na aba do navegador -->
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%23000'/%3E%3Ccircle%20cx='32'%20cy='32'%20r='25'%20fill='none'%20stroke='%2300B140'%20stroke-width='3'/%3E%3Ctext%20x='32'%20y='43'%20text-anchor='middle'%20font-family='Arial,sans-serif'%20font-weight='900'%20font-size='32'%20fill='%2300B140'%3EG%3C/text%3E%3C/svg%3E">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Crect%20width='64'%20height='64'%20rx='14'%20fill='%23000'/%3E%3Ccircle%20cx='32'%20cy='32'%20r='25'%20fill='none'%20stroke='%2300B140'%20stroke-width='3'/%3E%3Ctext%20x='32'%20y='43'%20text-anchor='middle'%20font-family='Arial,sans-serif'%20font-weight='900'%20font-size='32'%20fill='%2300B140'%3EG%3C/text%3E%3C/svg%3E">
+<!-- FAVICON (logo na aba do navegador) -->
+<link rel="icon" type="image/jpeg" href="green%20logo.jpg">
+<link rel="apple-touch-icon" href="green%20logo.jpg">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -984,9 +984,7 @@ footer{ padding:46px 24px 34px; }
   stage.addEventListener('click', enterSite);
 })();
 
-/* ============================================================
-   STATUS ABERTO / FECHADO (11:30 às 23:00)
-   ============================================================ */
+/* STATUS ABERTO / FECHADO (11:30 às 23:00) */
 (function(){
   const badge = document.getElementById('statusBadge');
   const text  = document.getElementById('statusText');
@@ -998,8 +996,8 @@ footer{ padding:46px 24px 34px; }
     const m = agora.getMinutes();
     const minutosAgora = h * 60 + m;
 
-    const abre  = 11 * 60 + 30;   // 11:30
-    const fecha = 23 * 60;         // 23:00
+    const abre  = 11 * 60 + 30;
+    const fecha = 23 * 60;
 
     const aberto = minutosAgora >= abre && minutosAgora < fecha;
 
