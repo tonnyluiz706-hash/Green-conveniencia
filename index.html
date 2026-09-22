@@ -22,9 +22,7 @@
   --red:#e63946; --red-soft:rgba(230,57,70,.10); --red-line:rgba(230,57,70,.35);
 }
 
-/* ============================================================
-   LED VERDE NEON NA BORDA — propriedade animável
-   ============================================================ */
+/* Propriedade animável do ângulo dos LEDs */
 @property --led-angle {
   syntax: '<angle>';
   initial-value: 0deg;
@@ -44,7 +42,7 @@ input{ font-family:inherit; }
 a{ color:inherit; text-decoration:none; }
 
 /* ============================================================
-   LED FRAME — moldura com luz verde neon viajando
+   LED FRAME — 5 LEDs verdes neon viajando na borda
    ============================================================ */
 .led-frame{
   position:fixed;
@@ -53,13 +51,13 @@ a{ color:inherit; text-decoration:none; }
   pointer-events:none;
 }
 
-/* Camada 1 — linha base verde suave (sempre visível) */
+/* Linha base verde suave (sempre visível) */
 .led-frame::before{
   content:'';
   position:absolute;
   inset:0;
   padding:2px;
-  background:rgba(0,177,64,.40);
+  background:rgba(0,177,64,.35);
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
     linear-gradient(#000 0 0);
@@ -70,21 +68,19 @@ a{ color:inherit; text-decoration:none; }
           mask-composite:exclude;
 }
 
-/* Camada 2 — luz neon viajando pela moldura */
-.led-frame::after{
-  content:'';
+/* Cada LED — luz neon viajando */
+.led{
   position:absolute;
   inset:0;
   padding:2px;
   background:conic-gradient(
     from var(--led-angle),
     transparent 0deg,
-    transparent 250deg,
-    rgba(0,177,64,.45) 300deg,
-    #00B140 330deg,
-    #8fffcf 348deg,
-    #00B140 358deg,
-    transparent 360deg
+    transparent 335deg,
+    rgba(0,177,64,.55) 347deg,
+    #00B140 353deg,
+    #bfffdb 357deg,
+    #00B140 360deg
   );
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
@@ -94,24 +90,37 @@ a{ color:inherit; text-decoration:none; }
     linear-gradient(#000 0 0);
   -webkit-mask-composite:xor;
           mask-composite:exclude;
-  filter:drop-shadow(0 0 8px rgba(0,177,64,.95));
+  filter:
+    drop-shadow(0 0 5px rgba(0,177,64,.95))
+    drop-shadow(0 0 12px rgba(0,177,64,.55));
   animation:ledChase 3.2s linear infinite;
 }
+
+/* 5 LEDs distribuídos uniformemente (72° cada) */
+.led-1{ animation-delay:-0s;     }
+.led-2{ animation-delay:-0.64s;  }
+.led-3{ animation-delay:-1.28s;  }
+.led-4{ animation-delay:-1.92s;  }
+.led-5{ animation-delay:-2.56s;  }
 
 @keyframes ledChase{
   to{ --led-angle:360deg; }
 }
 
-/* Fallback para navegadores sem @property (aplica só o brilho) */
+/* Fallback para navegadores sem @property */
 @supports not (background: conic-gradient(from var(--led-angle), red, blue)){
-  .led-frame::after{
+  .led{
     background:linear-gradient(90deg,
       transparent 0%,
-      rgba(0,177,64,.6) 50%,
+      rgba(0,177,64,.7) 50%,
       transparent 100%);
     background-size:200% 100%;
     animation:ledFallback 3s linear infinite;
   }
+  .led-2{ animation-delay:-0.6s; }
+  .led-3{ animation-delay:-1.2s; }
+  .led-4{ animation-delay:-1.8s; }
+  .led-5{ animation-delay:-2.4s; }
   @keyframes ledFallback{
     0%  { background-position:200% 0; }
     100%{ background-position:-100% 0; }
@@ -457,14 +466,20 @@ footer{ padding:46px 24px 34px; }
   .wa-float:hover{ max-width:240px; }
 
   .led-frame::before,
-  .led-frame::after{ padding:1.5px; }
+  .led{ padding:1.5px; }
 }
 </style>
 </head>
 <body>
 
-<!-- LED VERDE NEON NA BORDA -->
-<div class="led-frame" aria-hidden="true"></div>
+<!-- LED VERDE NEON NA BORDA — 5 LEDs -->
+<div class="led-frame" aria-hidden="true">
+  <span class="led led-1"></span>
+  <span class="led led-2"></span>
+  <span class="led led-3"></span>
+  <span class="led led-4"></span>
+  <span class="led led-5"></span>
+</div>
 
 <!-- SPLASH -->
 <div id="splash">
