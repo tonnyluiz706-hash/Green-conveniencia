@@ -22,7 +22,6 @@
   --red:#e63946; --red-soft:rgba(230,57,70,.10); --red-line:rgba(230,57,70,.35);
 }
 
-/* Propriedade animável do ângulo dos LEDs */
 @property --led-angle {
   syntax: '<angle>';
   initial-value: 0deg;
@@ -41,90 +40,40 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; color
 input{ font-family:inherit; }
 a{ color:inherit; text-decoration:none; }
 
-/* ============================================================
-   LED FRAME — 5 LEDs verdes neon viajando na borda
-   ============================================================ */
-.led-frame{
-  position:fixed;
-  inset:0;
-  z-index:9998;
-  pointer-events:none;
-}
-
-/* Linha base verde suave (sempre visível) */
+/* LED FRAME */
+.led-frame{ position:fixed; inset:0; z-index:9998; pointer-events:none; }
 .led-frame::before{
-  content:'';
-  position:absolute;
-  inset:0;
-  padding:2px;
+  content:''; position:absolute; inset:0; padding:2px;
   background:rgba(0,177,64,.35);
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-          mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor;
-          mask-composite:exclude;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude;
 }
-
-/* Cada LED — luz neon viajando */
 .led{
-  position:absolute;
-  inset:0;
-  padding:2px;
-  background:conic-gradient(
-    from var(--led-angle),
-    transparent 0deg,
-    transparent 335deg,
-    rgba(0,177,64,.55) 347deg,
-    #00B140 353deg,
-    #bfffdb 357deg,
-    #00B140 360deg
-  );
-  -webkit-mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-          mask:
-    linear-gradient(#000 0 0) content-box,
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor;
-          mask-composite:exclude;
-  filter:
-    drop-shadow(0 0 5px rgba(0,177,64,.95))
-    drop-shadow(0 0 12px rgba(0,177,64,.55));
+  position:absolute; inset:0; padding:2px;
+  background:conic-gradient(from var(--led-angle),
+    transparent 0deg, transparent 335deg,
+    rgba(0,177,64,.55) 347deg, #00B140 353deg,
+    #bfffdb 357deg, #00B140 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude;
+  filter:drop-shadow(0 0 5px rgba(0,177,64,.95)) drop-shadow(0 0 12px rgba(0,177,64,.55));
   animation:ledChase 3.2s linear infinite;
 }
+.led-1{ animation-delay:-0s; }
+.led-2{ animation-delay:-0.64s; }
+.led-3{ animation-delay:-1.28s; }
+.led-4{ animation-delay:-1.92s; }
+.led-5{ animation-delay:-2.56s; }
+@keyframes ledChase{ to{ --led-angle:360deg; } }
 
-/* 5 LEDs distribuídos uniformemente (72° cada) */
-.led-1{ animation-delay:-0s;     }
-.led-2{ animation-delay:-0.64s;  }
-.led-3{ animation-delay:-1.28s;  }
-.led-4{ animation-delay:-1.92s;  }
-.led-5{ animation-delay:-2.56s;  }
-
-@keyframes ledChase{
-  to{ --led-angle:360deg; }
-}
-
-/* Fallback para navegadores sem @property */
 @supports not (background: conic-gradient(from var(--led-angle), red, blue)){
-  .led{
-    background:linear-gradient(90deg,
-      transparent 0%,
-      rgba(0,177,64,.7) 50%,
-      transparent 100%);
-    background-size:200% 100%;
-    animation:ledFallback 3s linear infinite;
-  }
-  .led-2{ animation-delay:-0.6s; }
-  .led-3{ animation-delay:-1.2s; }
-  .led-4{ animation-delay:-1.8s; }
-  .led-5{ animation-delay:-2.4s; }
-  @keyframes ledFallback{
-    0%  { background-position:200% 0; }
-    100%{ background-position:-100% 0; }
-  }
+  .led{ background:linear-gradient(90deg,transparent 0%,rgba(0,177,64,.7) 50%,transparent 100%);
+        background-size:200% 100%; animation:ledFallback 3s linear infinite; }
+  .led-2{ animation-delay:-0.6s; } .led-3{ animation-delay:-1.2s; }
+  .led-4{ animation-delay:-1.8s; } .led-5{ animation-delay:-2.4s; }
+  @keyframes ledFallback{ 0%{background-position:200% 0;} 100%{background-position:-100% 0;} }
 }
 
 /* SPLASH */
@@ -198,27 +147,19 @@ header{
   transition:all .3s;
 }
 .badge-top.is-open{
-  color:var(--green);
-  background:var(--green-soft);
+  color:var(--green); background:var(--green-soft);
   border:1px solid var(--line-green);
 }
 .badge-top.is-closed{
-  color:var(--red);
-  background:var(--red-soft);
+  color:var(--red); background:var(--red-soft);
   border:1px solid var(--red-line);
 }
-.dot{
-  width:6px; height:6px; border-radius:50%;
-  animation:pulse 2s infinite;
-}
+.dot{ width:6px; height:6px; border-radius:50%; animation:pulse 2s infinite; }
 .badge-top.is-open .dot{
-  background:var(--green);
-  box-shadow:0 0 0 3px rgba(0,177,64,.2);
+  background:var(--green); box-shadow:0 0 0 3px rgba(0,177,64,.2);
 }
 .badge-top.is-closed .dot{
-  background:var(--red);
-  box-shadow:0 0 0 3px rgba(230,57,70,.2);
-  animation:none;
+  background:var(--red); box-shadow:0 0 0 3px rgba(230,57,70,.2); animation:none;
 }
 @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.3} }
 
@@ -279,8 +220,7 @@ header{
   opacity:0; transition:opacity .25s; color:#fff;
 }
 .rail-btn.right{
-  right:0;
-  background:linear-gradient(to left,rgba(5,5,5,.96),rgba(5,5,5,0));
+  right:0; background:linear-gradient(to left,rgba(5,5,5,.96),rgba(5,5,5,0));
 }
 .rail-btn.left{ left:0; }
 .rail-wrap:hover .rail-btn{ opacity:1; }
@@ -357,6 +297,22 @@ header{
 }
 .price-alt b{ color:var(--green); font-weight:800; }
 
+/* Sem resultados */
+.no-results{
+  display:none;
+  max-width:1300px; margin:0 auto; padding:60px 24px;
+  text-align:center; color:var(--muted);
+}
+.no-results.show{ display:block; }
+.no-results svg{
+  width:56px; height:56px; margin:0 auto 18px;
+  color:rgba(0,177,64,.4);
+}
+.no-results b{
+  display:block; font-size:16px; color:var(--txt);
+  margin-bottom:6px; font-weight:700;
+}
+
 /* FAIXA INFO */
 .strip{
   border-top:1px solid var(--line); border-bottom:1px solid var(--line);
@@ -395,26 +351,17 @@ footer{ padding:46px 24px 34px; }
 }
 .foot-bottom strong{ color:var(--green); }
 
-/* BOTÃO FLUTUANTE DE WHATSAPP */
+/* WHATSAPP */
 .wa-float{
-  position:fixed;
-  right:22px; bottom:22px;
-  z-index:100;
-  display:flex; align-items:center;
-  height:60px;
-  background:#25D366;
-  color:#fff;
-  border-radius:99px;
+  position:fixed; right:22px; bottom:22px; z-index:100;
+  display:flex; align-items:center; height:60px;
+  background:#25D366; color:#fff; border-radius:99px;
   padding:0 22px 0 16px;
-  box-shadow:0 14px 34px -10px rgba(37,211,102,.85),
-             0 0 0 0 rgba(37,211,102,.55);
-  cursor:pointer;
-  overflow:hidden;
-  max-width:60px;
+  box-shadow:0 14px 34px -10px rgba(37,211,102,.85), 0 0 0 0 rgba(37,211,102,.55);
+  cursor:pointer; overflow:hidden; max-width:60px;
   transition:max-width .4s cubic-bezier(.2,.8,.3,1),
              padding .4s cubic-bezier(.2,.8,.3,1),
-             box-shadow .3s,
-             transform .25s;
+             box-shadow .3s, transform .25s;
   animation:waPulse 2.6s ease-in-out infinite;
 }
 @keyframes waPulse{
@@ -422,31 +369,19 @@ footer{ padding:46px 24px 34px; }
   50%    { box-shadow:0 14px 34px -10px rgba(37,211,102,.85), 0 0 0 14px rgba(37,211,102,0); }
 }
 .wa-float:hover{
-  max-width:260px;
-  padding:0 24px 0 16px;
-  animation:none;
+  max-width:260px; padding:0 24px 0 16px; animation:none;
   box-shadow:0 18px 40px -10px rgba(37,211,102,.95);
 }
 .wa-float:active{ transform:scale(.97); }
-
-.wa-float .wa-icon{
-  width:30px; height:30px; flex-shrink:0;
-  display:grid; place-items:center;
-}
+.wa-float .wa-icon{ width:30px; height:30px; flex-shrink:0; display:grid; place-items:center; }
 .wa-float .wa-icon svg{ width:30px; height:30px; }
-
 .wa-float .wa-label{
   font-size:14.5px; font-weight:800; letter-spacing:-.01em;
-  margin-left:12px;
-  white-space:nowrap;
-  opacity:0;
-  transform:translateX(-6px);
+  margin-left:12px; white-space:nowrap;
+  opacity:0; transform:translateX(-6px);
   transition:opacity .25s .05s, transform .3s .05s;
 }
-.wa-float:hover .wa-label{
-  opacity:1;
-  transform:translateX(0);
-}
+.wa-float:hover .wa-label{ opacity:1; transform:translateX(0); }
 
 /* RESPONSIVO */
 @media (max-width:900px){ .nav-links{ display:none; } }
@@ -459,20 +394,16 @@ footer{ padding:46px 24px 34px; }
   .row-head,.hero,.search-wrap,.strip-inner{ padding-left:16px; padding-right:16px; }
   .search-wrap svg{ left:34px; }
   .rail-btn{ display:none; }
-
   .wa-float{ right:16px; bottom:16px; height:56px; padding:0 16px; max-width:56px; }
   .wa-float .wa-icon{ width:28px; height:28px; }
   .wa-float .wa-icon svg{ width:28px; height:28px; }
   .wa-float:hover{ max-width:240px; }
-
-  .led-frame::before,
-  .led{ padding:1.5px; }
+  .led-frame::before, .led{ padding:1.5px; }
 }
 </style>
 </head>
 <body>
 
-<!-- LED VERDE NEON NA BORDA — 5 LEDs -->
 <div class="led-frame" aria-hidden="true">
   <span class="led led-1"></span>
   <span class="led led-2"></span>
@@ -481,26 +412,18 @@ footer{ padding:46px 24px 34px; }
   <span class="led led-5"></span>
 </div>
 
-<!-- SPLASH -->
 <div id="splash">
   <div class="logo-stage" id="logoStage">
     <svg class="logo-svg" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
       <circle cx="120" cy="120" r="105" fill="none" stroke="#00B140" stroke-width="6"/>
-      <text x="120" y="122" text-anchor="middle"
-            font-family="Inter, Arial, sans-serif" font-weight="900"
-            font-size="52" fill="#00B140" letter-spacing="1">GREEN</text>
-      <text x="120" y="152" text-anchor="middle"
-            font-family="Inter, Arial, sans-serif" font-weight="800"
-            font-size="16" fill="#00B140" letter-spacing="0.4">CONVENIÊNCIA</text>
-      <text x="120" y="174" text-anchor="middle"
-            font-family="Inter, Arial, sans-serif" font-weight="800"
-            font-size="16" fill="#00B140" letter-spacing="1">E TABACARIA</text>
+      <text x="120" y="122" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-weight="900" font-size="52" fill="#00B140" letter-spacing="1">GREEN</text>
+      <text x="120" y="152" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-weight="800" font-size="16" fill="#00B140" letter-spacing="0.4">CONVENIÊNCIA</text>
+      <text x="120" y="174" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-weight="800" font-size="16" fill="#00B140" letter-spacing="1">E TABACARIA</text>
     </svg>
   </div>
   <div class="tap-hint">Toque para entrar</div>
 </div>
 
-<!-- HEADER -->
 <header>
   <nav class="nav">
     <div class="logo-mini">
@@ -526,7 +449,6 @@ footer{ padding:46px 24px 34px; }
   </nav>
 </header>
 
-<!-- HERO -->
 <section class="hero">
   <div class="badge-top is-open" id="statusBadge">
     <span class="dot"></span>
@@ -535,15 +457,13 @@ footer{ padding:46px 24px 34px; }
   <h1 class="hero-line">Tudo em <em>um só lugar</em></h1>
 </section>
 
-<!-- BUSCA -->
 <div class="search-wrap">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
     <circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/>
   </svg>
-  <input type="text" id="search" placeholder="Buscar produto... ex: Skol, Palermo, Coca">
+  <input type="text" id="search" placeholder="Buscar por produto ou categoria... ex: Skol, suco, refri, energetico, cigarro">
 </div>
 
-<!-- CATÁLOGO -->
 <div class="catalog">
 
   <!-- LINHA 1 — CERVEJAS -->
@@ -923,7 +843,7 @@ footer{ padding:46px 24px 34px; }
   <section class="row" id="bebidas">
     <div class="row-head">
       <h2>Bebidas</h2>
-      <span>19 produtos</span>
+      <span>27 produtos</span>
     </div>
     <div class="rail-wrap">
       <button class="rail-btn left" data-dir="-1" aria-label="Anterior">
@@ -1059,6 +979,72 @@ footer{ padding:46px 24px 34px; }
           <div class="card-body"><span class="cat">Refrigerante</span><h3>Fanta</h3><p class="vol">Lata 350 ml</p><div class="price-row"><div class="price"><small>R$</small>5,00</div></div></div>
         </article>
 
+        <article class="card" data-name="Coquinha 250ml" data-cat="bebidas">
+          <div class="thumb">
+            <img src="Coquinha.png" alt="Coquinha 250ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
+            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
+          </div>
+          <div class="card-body"><span class="cat">Refrigerante</span><h3>Coquinha</h3><p class="vol">Lata 250 ml</p><div class="price-row"><div class="price"><small>R$</small>3,00</div></div></div>
+        </article>
+
+        <article class="card" data-name="Refriquinho 250ml" data-cat="bebidas">
+          <div class="thumb">
+            <img src="Refriquinho.png" alt="Refriquinho 250ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
+            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
+          </div>
+          <span class="tag">Barato</span>
+          <div class="card-body"><span class="cat">Refrigerante</span><h3>Refriquinho</h3><p class="vol">Lata 250 ml</p><div class="price-row"><div class="price"><small>R$</small>2,00</div></div></div>
+        </article>
+
+        <article class="card" data-name="Furiosinho 250ml" data-cat="bebidas">
+          <div class="thumb">
+            <img src="Furiosinho.png" alt="Furiosinho 250ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
+            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
+          </div>
+          <div class="card-body"><span class="cat">Energético</span><h3>Furiosinho</h3><p class="vol">Lata 250 ml</p><div class="price-row"><div class="price"><small>R$</small>4,00</div></div></div>
+        </article>
+
+        <article class="card" data-name="Furioso 2L" data-cat="bebidas">
+          <div class="thumb">
+            <img src="Furioso2L.png" alt="Furioso 2L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
+            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
+          </div>
+          <div class="card-body"><span class="cat">Energético</span><h3>Furioso</h3><p class="vol">Garrafa 2 L</p><div class="price-row"><div class="price"><small>R$</small>12,00</div></div></div>
+        </article>
+
+        <article class="card" data-name="Furioso 473ml" data-cat="bebidas">
+          <div class="thumb">
+            <img src="Furioso473.png" alt="Furioso Lata 473ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
+            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
+          </div>
+          <div class="card-body"><span class="cat">Energético</span><h3>Furioso</h3><p class="vol">Lata 473 ml</p><div class="price-row"><div class="price"><small>R$</small>7,00</div></div></div>
+        </article>
+
+        <article class="card" data-name="Baly 473ml" data-cat="bebidas">
+          <div class="thumb">
+            <img src="Baly.png" alt="Baly Lata 473ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
+            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
+          </div>
+          <div class="card-body"><span class="cat">Energético</span><h3>Baly</h3><p class="vol">Lata 473 ml</p><div class="price-row"><div class="price"><small>R$</small>8,00</div></div></div>
+        </article>
+
+        <article class="card" data-name="Red Bull 250ml" data-cat="bebidas">
+          <div class="thumb">
+            <img src="RedBull.png" alt="Red Bull Lata 250ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
+            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
+          </div>
+          <span class="tag">Top Energético</span>
+          <div class="card-body"><span class="cat">Energético</span><h3>Red Bull</h3><p class="vol">Lata 250 ml</p><div class="price-row"><div class="price"><small>R$</small>10,00</div></div></div>
+        </article>
+
+        <article class="card" data-name="Monster 473ml" data-cat="bebidas">
+          <div class="thumb">
+            <img src="Monster.png" alt="Monster Lata 473ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
+            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
+          </div>
+          <div class="card-body"><span class="cat">Energético</span><h3>Monster</h3><p class="vol">Lata 473 ml</p><div class="price-row"><div class="price"><small>R$</small>11,00</div></div></div>
+        </article>
+
         <article class="card" data-name="Del Valle 1,5L" data-cat="bebidas">
           <div class="thumb">
             <img src="DelValle.png" alt="Del Valle 1,5L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
@@ -1091,9 +1077,17 @@ footer{ padding:46px 24px 34px; }
     </div>
   </section>
 
+  <!-- Mensagem quando não encontra nada -->
+  <div class="no-results" id="noResults">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/>
+    </svg>
+    <b>Nenhum produto encontrado</b>
+    Tenta buscar por outro nome ou categoria (ex: cerveja, suco, refri)
+  </div>
+
 </div>
 
-<!-- FAIXA DE INFO -->
 <section class="strip" id="info">
   <div class="strip-inner">
     <div class="strip-item">
@@ -1111,7 +1105,6 @@ footer{ padding:46px 24px 34px; }
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
   <div class="foot-inner">
     <div class="foot-col">
@@ -1137,7 +1130,6 @@ footer{ padding:46px 24px 34px; }
   </div>
 </footer>
 
-<!-- BOTÃO FLUTUANTE DE WHATSAPP -->
 <a class="wa-float" id="waFloat" href="https://wa.me/5543984524729?text=Ol%C3%A1%21%20Vim%20pelo%20site%20da%20Green%20Conveni%C3%AAncia." target="_blank" rel="noopener" aria-label="Fale conosco no WhatsApp">
   <span class="wa-icon">
     <svg viewBox="0 0 24 24" fill="currentColor">
@@ -1162,7 +1154,7 @@ footer{ padding:46px 24px 34px; }
   stage.addEventListener('click', enterSite);
 })();
 
-/* STATUS ABERTO / FECHADO (11:30 às 23:00) */
+/* STATUS ABERTO / FECHADO */
 (function(){
   const badge = document.getElementById('statusBadge');
   const text  = document.getElementById('statusText');
@@ -1170,13 +1162,9 @@ footer{ padding:46px 24px 34px; }
 
   function checarStatus(){
     const agora = new Date();
-    const h = agora.getHours();
-    const m = agora.getMinutes();
-    const minutosAgora = h * 60 + m;
-
+    const minutosAgora = agora.getHours() * 60 + agora.getMinutes();
     const abre  = 11 * 60 + 30;
     const fecha = 23 * 60;
-
     const aberto = minutosAgora >= abre && minutosAgora < fecha;
 
     if (aberto){
@@ -1189,12 +1177,11 @@ footer{ padding:46px 24px 34px; }
       text.textContent = 'Fechado agora';
     }
   }
-
   checarStatus();
   setInterval(checarStatus, 60000);
 })();
 
-/* Esconde o placeholder de qualquer imagem que já carregou */
+/* Esconde placeholder das imagens que já carregaram */
 document.querySelectorAll('.thumb img').forEach(img => {
   if (img.complete && img.naturalWidth > 0) {
     const ph = img.parentElement.querySelector('.thumb-ph');
@@ -1213,21 +1200,78 @@ document.querySelectorAll('.rail-wrap').forEach(wrap => {
   });
 });
 
-/* BUSCA */
+/* ============================================================
+   BUSCA COM CATEGORIAS (por digitação)
+   ============================================================ */
 const searchInput = document.getElementById('search');
 const allCards    = [...document.querySelectorAll('.card')];
-searchInput.addEventListener('input', () => {
-  const term = searchInput.value.trim().toLowerCase();
-  allCards.forEach(card => {
-    const match = card.dataset.name.toLowerCase().includes(term);
-    card.style.display = match ? '' : 'none';
-  });
-  document.querySelectorAll('.row').forEach(row => {
-    const visiveis = [...row.querySelectorAll('.card')]
-      .filter(c => c.style.display !== 'none').length;
-    row.style.display = visiveis === 0 ? 'none' : '';
-  });
+const noResults   = document.getElementById('noResults');
+
+// Remove acentos e deixa minúsculo
+function normalizar(str){
+  return String(str)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim();
+}
+
+// Sinônimos por categoria principal
+const aliasesCat = {
+  cervejas:  ['cerveja','cervejas','breja','brejas','gelada','geladas','birita','biritas'],
+  tabacaria: ['tabacaria','tabaco','cigarro','cigarros','fumo','fumos','seda','sedas','isqueiro','isqueiros','piteira','piteiras','carvao','carvoes','essencia','essencias'],
+  bebidas:   ['bebida','bebidas']
+};
+
+// Sinônimos por subcategoria (label)
+const aliasesLabel = {
+  'cerveja':      ['cerveja','cervejas','breja','brejas'],
+  'bebida':       ['bebida','bebidas'],
+  'tabacaria':    ['tabacaria','tabaco'],
+  'refrigerante': ['refri','refris','refrigerante','refrigerantes'],
+  'suco':         ['suco','sucos'],
+  'energetico':   ['energetico','energeticos','energia']
+};
+
+// Adiciona atalhos de busca em cada card
+allCards.forEach(card => {
+  const name     = card.dataset.name || '';
+  const catKey   = card.dataset.cat  || '';
+  const catLabel = card.querySelector('.cat')?.textContent || '';
+  const labelsNorm = normalizar(catLabel);
+
+  const keywords = [
+    name,
+    catKey,
+    catLabel,
+    ...(aliasesCat[catKey] || []),
+    ...(aliasesLabel[labelsNorm] || [])
+  ].join(' ');
+
+  card.dataset.search = normalizar(keywords);
 });
+
+// Filtro
+function filtrarCards(term){
+  const t = normalizar(term);
+  let visiveis = 0;
+
+  allCards.forEach(card => {
+    const match = !t || card.dataset.search.includes(t);
+    card.style.display = match ? '' : 'none';
+    if (match) visiveis++;
+  });
+
+  document.querySelectorAll('.row').forEach(row => {
+    const v = [...row.querySelectorAll('.card')]
+      .filter(c => c.style.display !== 'none').length;
+    row.style.display = v === 0 ? 'none' : '';
+  });
+
+  noResults.classList.toggle('show', visiveis === 0);
+}
+
+searchInput.addEventListener('input', () => filtrarCards(searchInput.value));
 </script>
 
 </body>
