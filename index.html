@@ -379,7 +379,7 @@ footer{ padding:46px 24px 34px; }
 
   <!-- LINHA 2 — DESTILADOS -->
   <section class="row" id="destilados">
-    <div class="row-head"><h2>Destilados</h2><span>3 produtos</span></div>
+    <div class="row-head"><h2>Destilados</h2><span>2 produtos</span></div>
     <div class="rail-wrap">
       <button class="rail-btn left" data-dir="-1" aria-label="Anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
       <div class="rail" data-rail>
@@ -387,11 +387,6 @@ footer{ padding:46px 24px 34px; }
         <article class="card" data-name="Corote 500ml" data-cat="destilados">
           <div class="thumb"><img src="Corote.png" alt="Corote 500ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Destilado</span><h3>Corote</h3><p class="vol">500 ml</p><div class="price-row"><div class="price"><small>R$</small>6,00</div></div></div>
-        </article>
-
-        <article class="card" data-name="Jungle 500ml" data-cat="destilados">
-          <div class="thumb"><img src="Jungle.png" alt="Jungle 500ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
-          <div class="card-body"><span class="cat">Destilado</span><h3>Jungle</h3><p class="vol">500 ml</p><div class="price-row"><div class="price"><small>R$</small>4,00</div></div></div>
         </article>
 
         <article class="card" data-name="Energético Maromba 1L" data-cat="destilados">
@@ -491,7 +486,7 @@ footer{ padding:46px 24px 34px; }
 
   <!-- LINHA 4 — BEBIDAS -->
   <section class="row" id="bebidas">
-    <div class="row-head"><h2>Bebidas</h2><span>34 produtos</span></div>
+    <div class="row-head"><h2>Bebidas</h2><span>35 produtos</span></div>
     <div class="rail-wrap">
       <button class="rail-btn left" data-dir="-1" aria-label="Anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
       <div class="rail" data-rail>
@@ -621,6 +616,11 @@ footer{ padding:46px 24px 34px; }
         <article class="card" data-name="Monster 473ml" data-cat="bebidas">
           <div class="thumb"><img src="Monster.png" alt="Monster Lata 473ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Energético</span><h3>Monster</h3><p class="vol">Lata 473 ml</p><div class="price-row"><div class="price"><small>R$</small>11,00</div></div></div>
+        </article>
+
+        <article class="card" data-name="Jungle 500ml" data-cat="bebidas">
+          <div class="thumb"><img src="Jungle.png" alt="Jungle 500ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
+          <div class="card-body"><span class="cat">Bebida</span><h3>Jungle</h3><p class="vol">500 ml</p><div class="price-row"><div class="price"><small>R$</small>4,00</div></div></div>
         </article>
 
         <article class="card" data-name="Gatorade" data-cat="bebidas">
@@ -756,16 +756,16 @@ function normalizar(str){
 
 const aliasesCat = {
   cervejas:   ['cerveja','cervejas','breja','brejas','gelada','geladas','birita','biritas'],
-  destilados: ['destilado','destilados','vodka','cachaca','corote','jungle','maromba','alcoolico','alcool'],
+  destilados: ['destilado','destilados','vodka','cachaca','corote','maromba','alcoolico'],
   tabacaria:  ['tabacaria','tabaco','cigarro','cigarros','fumo','fumos','seda','sedas','isqueiro','isqueiros','piteira','piteiras','carvao','carvoes','essencia','essencias'],
-  bebidas:    ['bebida','bebidas']
+  bebidas:    ['bebida','bebidas','jungle']
 };
 
 const aliasesLabel = {
   'cerveja':      ['cerveja','cervejas','breja','brejas'],
-  'bebida':       ['bebida','bebidas'],
+  'bebida':       ['bebida','bebidas','jungle'],
   'tabacaria':    ['tabacaria','tabaco'],
-  'destilado':    ['destilado','destilados','vodka','corote','jungle','cachaca'],
+  'destilado':    ['destilado','destilados','vodka','corote','cachaca'],
   'refrigerante': ['refri','refris','refrigerante','refrigerantes'],
   'suco':         ['suco','sucos'],
   'energetico':   ['energetico','energeticos','energia'],
