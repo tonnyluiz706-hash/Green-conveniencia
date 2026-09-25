@@ -4,11 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Green Conveniência e Tabacaria</title>
-
-<!-- FAVICON -->
 <link rel="icon" type="image/jpeg" href="green%20logo.jpg">
 <link rel="apple-touch-icon" href="green%20logo.jpg">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -21,307 +18,109 @@
   --txt:#ffffff; --muted:#9a9a9a; --radius:14px;
   --red:#e63946; --red-soft:rgba(230,57,70,.10); --red-line:rgba(230,57,70,.35);
 }
-
-@property --led-angle {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: false;
-}
-
+@property --led-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
 *{ margin:0; padding:0; box-sizing:border-box; }
 html{ scroll-behavior:smooth; }
-body{
-  font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
-  background:var(--bg); color:var(--txt);
-  -webkit-font-smoothing:antialiased; overflow-x:hidden;
-}
+body{ font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif; background:var(--bg); color:var(--txt); -webkit-font-smoothing:antialiased; overflow-x:hidden; }
 img{ display:block; max-width:100%; }
 button{ font-family:inherit; cursor:pointer; border:none; background:none; color:inherit; }
 input{ font-family:inherit; }
 a{ color:inherit; text-decoration:none; }
 
-/* LED FRAME */
 .led-frame{ position:fixed; inset:0; z-index:9998; pointer-events:none; }
-.led-frame::before{
-  content:''; position:absolute; inset:0; padding:2px;
-  background:rgba(0,177,64,.35);
+.led-frame::before{ content:''; position:absolute; inset:0; padding:2px; background:rgba(0,177,64,.35);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
           mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor; mask-composite:exclude;
-}
-.led{
-  position:absolute; inset:0; padding:2px;
-  background:conic-gradient(from var(--led-angle),
-    transparent 0deg, transparent 335deg,
-    rgba(0,177,64,.55) 347deg, #00B140 353deg,
-    #bfffdb 357deg, #00B140 360deg);
+  -webkit-mask-composite:xor; mask-composite:exclude; }
+.led{ position:absolute; inset:0; padding:2px;
+  background:conic-gradient(from var(--led-angle), transparent 0deg, transparent 335deg, rgba(0,177,64,.55) 347deg, #00B140 353deg, #bfffdb 357deg, #00B140 360deg);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
           mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite:xor; mask-composite:exclude;
   filter:drop-shadow(0 0 5px rgba(0,177,64,.95)) drop-shadow(0 0 12px rgba(0,177,64,.55));
-  animation:ledChase 3.2s linear infinite;
-}
-.led-1{ animation-delay:-0s; }
-.led-2{ animation-delay:-0.64s; }
-.led-3{ animation-delay:-1.28s; }
-.led-4{ animation-delay:-1.92s; }
-.led-5{ animation-delay:-2.56s; }
+  animation:ledChase 3.2s linear infinite; }
+.led-1{ animation-delay:-0s; } .led-2{ animation-delay:-0.64s; } .led-3{ animation-delay:-1.28s; } .led-4{ animation-delay:-1.92s; } .led-5{ animation-delay:-2.56s; }
 @keyframes ledChase{ to{ --led-angle:360deg; } }
 
-@supports not (background: conic-gradient(from var(--led-angle), red, blue)){
-  .led{ background:linear-gradient(90deg,transparent 0%,rgba(0,177,64,.7) 50%,transparent 100%);
-        background-size:200% 100%; animation:ledFallback 3s linear infinite; }
-  .led-2{ animation-delay:-0.6s; } .led-3{ animation-delay:-1.2s; }
-  .led-4{ animation-delay:-1.8s; } .led-5{ animation-delay:-2.4s; }
-  @keyframes ledFallback{ 0%{background-position:200% 0;} 100%{background-position:-100% 0;} }
-}
-
-/* SPLASH */
-#splash{
-  position:fixed; inset:0; z-index:999; background:#000;
-  display:flex; align-items:center; justify-content:center;
-  transition:opacity .6s ease, visibility .6s ease;
-}
+#splash{ position:fixed; inset:0; z-index:999; background:#000; display:flex; align-items:center; justify-content:center; transition:opacity .6s ease, visibility .6s ease; }
 #splash.hide{ opacity:0; visibility:hidden; pointer-events:none; }
-.logo-stage{
-  width:min(520px,84vw); aspect-ratio:1/1;
-  display:flex; align-items:center; justify-content:center;
-  cursor:pointer; position:relative;
-  transition:transform .4s cubic-bezier(.2,.8,.3,1);
-  animation:logoIn 1.1s cubic-bezier(.2,.8,.3,1) both;
-}
+.logo-stage{ width:min(520px,84vw); aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative; transition:transform .4s cubic-bezier(.2,.8,.3,1); animation:logoIn 1.1s cubic-bezier(.2,.8,.3,1) both; }
 @keyframes logoIn{ from{opacity:0;transform:scale(.86)} to{opacity:1;transform:scale(1)} }
-.logo-stage:hover{ transform:scale(1.03); }
-.logo-stage:active{ transform:scale(.97); }
-.logo-svg{
-  width:100%; height:100%;
-  filter:drop-shadow(0 0 42px rgba(0,177,64,.35));
-  transition:filter .4s;
-}
+.logo-stage:hover{ transform:scale(1.03); } .logo-stage:active{ transform:scale(.97); }
+.logo-svg{ width:100%; height:100%; filter:drop-shadow(0 0 42px rgba(0,177,64,.35)); transition:filter .4s; }
 .logo-stage:hover .logo-svg{ filter:drop-shadow(0 0 60px rgba(0,177,64,.6)); }
-.tap-hint{
-  position:absolute; bottom:8vh; left:50%; transform:translateX(-50%);
-  font-size:12px; font-weight:600; letter-spacing:.22em; text-transform:uppercase;
-  color:var(--green); display:flex; align-items:center; gap:9px;
-  animation:blink 2.2s ease-in-out infinite; pointer-events:none;
-}
+.tap-hint{ position:absolute; bottom:8vh; left:50%; transform:translateX(-50%); font-size:12px; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:var(--green); display:flex; align-items:center; gap:9px; animation:blink 2.2s ease-in-out infinite; pointer-events:none; }
 @keyframes blink{ 0%,100%{opacity:1} 50%{opacity:.25} }
-.tap-hint::before,.tap-hint::after{
-  content:''; width:26px; height:1px; background:var(--green); opacity:.5;
-}
+.tap-hint::before,.tap-hint::after{ content:''; width:26px; height:1px; background:var(--green); opacity:.5; }
 
-/* HEADER */
-header{
-  position:sticky; top:0; z-index:60;
-  background:rgba(5,5,5,.82); backdrop-filter:blur(14px);
-  -webkit-backdrop-filter:blur(14px); border-bottom:1px solid var(--line);
-}
-.nav{
-  max-width:1300px; margin:0 auto; padding:14px 24px;
-  display:flex; align-items:center; gap:26px;
-}
+header{ position:sticky; top:0; z-index:60; background:rgba(5,5,5,.82); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border-bottom:1px solid var(--line); }
+.nav{ max-width:1300px; margin:0 auto; padding:14px 24px; display:flex; align-items:center; gap:26px; }
 .logo-mini{ display:flex; align-items:center; gap:11px; flex-shrink:0; }
 .logo-mini .mark{ width:42px; height:42px; flex-shrink:0; }
 .logo-mini .mark svg{ width:100%; height:100%; }
-.logo-mini .txt b{
-  display:block; font-size:15px; font-weight:900; line-height:1.1;
-  letter-spacing:-.01em;
-}
-.logo-mini .txt span{
-  display:block; font-size:9px; color:var(--green);
-  letter-spacing:.14em; text-transform:uppercase; font-weight:700;
-}
-.nav-links{ display:flex; gap:24px; margin-left:auto; }
-.nav-links a{
-  font-size:13.5px; font-weight:600; color:var(--muted); transition:color .2s;
-}
+.logo-mini .txt b{ display:block; font-size:15px; font-weight:900; line-height:1.1; letter-spacing:-.01em; }
+.logo-mini .txt span{ display:block; font-size:9px; color:var(--green); letter-spacing:.14em; text-transform:uppercase; font-weight:700; }
+.nav-links{ display:flex; gap:22px; margin-left:auto; }
+.nav-links a{ font-size:13.5px; font-weight:600; color:var(--muted); transition:color .2s; }
 .nav-links a:hover{ color:var(--green); }
 
-/* HERO */
 .hero{ max-width:1300px; margin:0 auto; padding:56px 24px 10px; }
-
-.badge-top{
-  display:inline-flex; align-items:center; gap:8px;
-  font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase;
-  padding:7px 14px; border-radius:99px; margin-bottom:22px;
-  transition:all .3s;
-}
-.badge-top.is-open{
-  color:var(--green); background:var(--green-soft);
-  border:1px solid var(--line-green);
-}
-.badge-top.is-closed{
-  color:var(--red); background:var(--red-soft);
-  border:1px solid var(--red-line);
-}
+.badge-top{ display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; padding:7px 14px; border-radius:99px; margin-bottom:22px; transition:all .3s; }
+.badge-top.is-open{ color:var(--green); background:var(--green-soft); border:1px solid var(--line-green); }
+.badge-top.is-closed{ color:var(--red); background:var(--red-soft); border:1px solid var(--red-line); }
 .dot{ width:6px; height:6px; border-radius:50%; animation:pulse 2s infinite; }
-.badge-top.is-open .dot{
-  background:var(--green); box-shadow:0 0 0 3px rgba(0,177,64,.2);
-}
-.badge-top.is-closed .dot{
-  background:var(--red); box-shadow:0 0 0 3px rgba(230,57,70,.2); animation:none;
-}
+.badge-top.is-open .dot{ background:var(--green); box-shadow:0 0 0 3px rgba(0,177,64,.2); }
+.badge-top.is-closed .dot{ background:var(--red); box-shadow:0 0 0 3px rgba(230,57,70,.2); animation:none; }
 @keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.3} }
+.hero-line{ font-size:clamp(34px,5.4vw,60px); font-weight:900; letter-spacing:-.04em; line-height:1.05; color:var(--txt); }
+.hero-line em{ font-style:normal; background:linear-gradient(100deg,var(--green),var(--green-dark)); -webkit-background-clip:text; background-clip:text; color:transparent; }
 
-.hero-line{
-  font-size:clamp(34px,5.4vw,60px); font-weight:900;
-  letter-spacing:-.04em; line-height:1.05; color:var(--txt);
-}
-.hero-line em{
-  font-style:normal;
-  background:linear-gradient(100deg,var(--green),var(--green-dark));
-  -webkit-background-clip:text; background-clip:text; color:transparent;
-}
+.search-wrap{ max-width:1300px; margin:26px auto 0; padding:0 24px; position:relative; }
+.search-wrap svg{ position:absolute; left:42px; top:50%; transform:translateY(-50%); width:18px; height:18px; color:var(--muted); pointer-events:none; }
+#search{ width:100%; padding:15px 20px 15px 50px; background:var(--surface); border:1px solid var(--line); border-radius:12px; color:var(--txt); font-size:15px; outline:none; transition:border-color .2s, background .2s; }
+#search::placeholder{ color:#555; } #search:focus{ border-color:var(--green); background:#111; }
 
-/* BUSCA */
-.search-wrap{
-  max-width:1300px; margin:26px auto 0; padding:0 24px; position:relative;
-}
-.search-wrap svg{
-  position:absolute; left:42px; top:50%; transform:translateY(-50%);
-  width:18px; height:18px; color:var(--muted); pointer-events:none;
-}
-#search{
-  width:100%; padding:15px 20px 15px 50px;
-  background:var(--surface); border:1px solid var(--line);
-  border-radius:12px; color:var(--txt); font-size:15px; outline:none;
-  transition:border-color .2s, background .2s;
-}
-#search::placeholder{ color:#555; }
-#search:focus{ border-color:var(--green); background:#111; }
-
-/* CATÁLOGO */
 .catalog{ padding:38px 0 60px; }
 .row{ margin-bottom:44px; }
-.row-head{
-  max-width:1300px; margin:0 auto; padding:0 24px 16px;
-  display:flex; align-items:baseline; justify-content:space-between; gap:16px;
-}
-.row-head h2{
-  font-size:20px; font-weight:800; letter-spacing:-.02em;
-  display:flex; align-items:center; gap:10px;
-}
-.row-head h2::before{
-  content:''; width:4px; height:20px; border-radius:2px;
-  background:var(--green); box-shadow:0 0 12px var(--green-glow);
-}
+.row-head{ max-width:1300px; margin:0 auto; padding:0 24px 16px; display:flex; align-items:baseline; justify-content:space-between; gap:16px; }
+.row-head h2{ font-size:20px; font-weight:800; letter-spacing:-.02em; display:flex; align-items:center; gap:10px; }
+.row-head h2::before{ content:''; width:4px; height:20px; border-radius:2px; background:var(--green); box-shadow:0 0 12px var(--green-glow); }
 .row-head span{ font-size:12.5px; color:var(--muted); font-weight:600; }
 .rail-wrap{ position:relative; }
-.rail{
-  display:flex; gap:14px; padding:14px 24px 26px;
-  overflow-x:auto; scroll-behavior:smooth;
-  scrollbar-width:none; -ms-overflow-style:none;
-}
+.rail{ display:flex; gap:14px; padding:14px 24px 26px; overflow-x:auto; scroll-behavior:smooth; scrollbar-width:none; -ms-overflow-style:none; }
 .rail::-webkit-scrollbar{ display:none; }
-.rail-btn{
-  position:absolute; top:0; bottom:14px; z-index:10; width:56px;
-  display:grid; place-items:center;
-  background:linear-gradient(to right,rgba(5,5,5,.96),rgba(5,5,5,0));
-  opacity:0; transition:opacity .25s; color:#fff;
-}
-.rail-btn.right{
-  right:0; background:linear-gradient(to left,rgba(5,5,5,.96),rgba(5,5,5,0));
-}
+.rail-btn{ position:absolute; top:0; bottom:14px; z-index:10; width:56px; display:grid; place-items:center; background:linear-gradient(to right,rgba(5,5,5,.96),rgba(5,5,5,0)); opacity:0; transition:opacity .25s; color:#fff; }
+.rail-btn.right{ right:0; background:linear-gradient(to left,rgba(5,5,5,.96),rgba(5,5,5,0)); }
 .rail-btn.left{ left:0; }
 .rail-wrap:hover .rail-btn{ opacity:1; }
 .rail-btn svg{ width:26px; height:26px; transition:transform .2s; }
 .rail-btn:hover svg{ transform:scale(1.2); color:var(--green); }
 
-/* CARD */
-.card{
-  flex:0 0 auto; width:200px; background:var(--surface);
-  border:1px solid var(--line); border-radius:var(--radius);
-  overflow:hidden; position:relative;
-  transition:transform .3s cubic-bezier(.2,.8,.3,1),
-             border-color .3s, box-shadow .3s;
-  cursor:default;
-}
-.card:hover{
-  transform:translateY(-8px) scale(1.03);
-  border-color:var(--green);
-  box-shadow:0 22px 46px -18px rgba(0,0,0,.95),
-             0 0 0 1px var(--green-soft),
-             0 0 34px -10px var(--green-glow);
-  z-index:5;
-}
-.thumb{
-  position:relative; aspect-ratio:1/1;
-  background:
-    radial-gradient(circle at 50% 42%,var(--green-soft),transparent 65%),
-    var(--surface-2);
-  border-bottom:1px solid var(--line);
-  overflow:hidden; display:flex; align-items:center; justify-content:center;
-}
-.thumb img{
-  position:absolute; inset:0; width:100%; height:100%;
-  object-fit:cover; transition:transform .5s cubic-bezier(.2,.8,.3,1);
-  z-index:2;
-}
+.card{ flex:0 0 auto; width:200px; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; position:relative; transition:transform .3s cubic-bezier(.2,.8,.3,1), border-color .3s, box-shadow .3s; cursor:default; }
+.card:hover{ transform:translateY(-8px) scale(1.03); border-color:var(--green); box-shadow:0 22px 46px -18px rgba(0,0,0,.95), 0 0 0 1px var(--green-soft), 0 0 34px -10px var(--green-glow); z-index:5; }
+.thumb{ position:relative; aspect-ratio:1/1; background:radial-gradient(circle at 50% 42%,var(--green-soft),transparent 65%),var(--surface-2); border-bottom:1px solid var(--line); overflow:hidden; display:flex; align-items:center; justify-content:center; }
+.thumb img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform .5s cubic-bezier(.2,.8,.3,1); z-index:2; }
 .card:hover .thumb img{ transform:scale(1.08); }
-.thumb-ph{
-  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px;
-  color:rgba(0,177,64,.55); font-size:10px; font-weight:800;
-  text-transform:uppercase; letter-spacing:.14em;
-  pointer-events:none; position:absolute; inset:0; z-index:1;
-}
+.thumb-ph{ display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px; color:rgba(0,177,64,.55); font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.14em; pointer-events:none; position:absolute; inset:0; z-index:1; }
 .thumb-ph svg{ width:34px; height:34px; opacity:.7; }
-.thumb-ph.hide{ display:none; }
-.tag{
-  position:absolute; top:10px; left:10px; z-index:3;
-  font-size:9.5px; font-weight:900; letter-spacing:.08em; text-transform:uppercase;
-  padding:5px 9px; border-radius:7px;
-  background:var(--green); color:#001a09;
-  box-shadow:0 6px 16px -6px var(--green-glow);
-}
+.tag{ position:absolute; top:10px; left:10px; z-index:3; font-size:9.5px; font-weight:900; letter-spacing:.08em; text-transform:uppercase; padding:5px 9px; border-radius:7px; background:var(--green); color:#001a09; box-shadow:0 6px 16px -6px var(--green-glow); }
 .card-body{ padding:13px 14px 16px; }
-.cat{
-  font-size:9.5px; font-weight:800; letter-spacing:.14em;
-  text-transform:uppercase; color:var(--green);
-}
-.card-body h3{
-  font-size:14px; font-weight:700; letter-spacing:-.015em;
-  line-height:1.3; margin-top:3px;
-}
-.card-body .vol{
-  font-size:11.5px; color:var(--muted); margin-top:2px; font-weight:500;
-}
+.cat{ font-size:9.5px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--green); }
+.card-body h3{ font-size:14px; font-weight:700; letter-spacing:-.015em; line-height:1.3; margin-top:3px; }
+.card-body .vol{ font-size:11.5px; color:var(--muted); margin-top:2px; font-weight:500; }
 .price-row{ margin-top:14px; display:flex; align-items:baseline; gap:5px; flex-wrap:wrap; }
-.price{
-  font-size:22px; font-weight:900; letter-spacing:-.035em;
-  line-height:1; color:var(--green);
-}
+.price{ font-size:22px; font-weight:900; letter-spacing:-.035em; line-height:1; color:var(--green); }
 .price small{ font-size:12px; font-weight:800; color:var(--green); margin-right:1px; }
-.price-alt{
-  font-size:11px; color:var(--muted); font-weight:600;
-  width:100%; margin-top:5px;
-}
+.price-alt{ font-size:11px; color:var(--muted); font-weight:600; width:100%; margin-top:5px; }
 .price-alt b{ color:var(--green); font-weight:800; }
 
-/* Sem resultados */
-.no-results{
-  display:none;
-  max-width:1300px; margin:0 auto; padding:60px 24px;
-  text-align:center; color:var(--muted);
-}
+.no-results{ display:none; max-width:1300px; margin:0 auto; padding:60px 24px; text-align:center; color:var(--muted); }
 .no-results.show{ display:block; }
-.no-results svg{
-  width:56px; height:56px; margin:0 auto 18px;
-  color:rgba(0,177,64,.4);
-}
-.no-results b{
-  display:block; font-size:16px; color:var(--txt);
-  margin-bottom:6px; font-weight:700;
-}
+.no-results svg{ width:56px; height:56px; margin:0 auto 18px; color:rgba(0,177,64,.4); }
+.no-results b{ display:block; font-size:16px; color:var(--txt); margin-bottom:6px; font-weight:700; }
 
-/* FAIXA INFO */
-.strip{
-  border-top:1px solid var(--line); border-bottom:1px solid var(--line);
-  background:rgba(0,177,64,.03);
-}
-.strip-inner{
-  max-width:1300px; margin:0 auto; padding:30px 24px;
-  display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:26px;
-}
+.strip{ border-top:1px solid var(--line); border-bottom:1px solid var(--line); background:rgba(0,177,64,.03); }
+.strip-inner{ max-width:1300px; margin:0 auto; padding:30px 24px; display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:26px; }
 .strip-item{ display:flex; gap:13px; align-items:flex-start; }
 .strip-item svg{ width:20px; height:20px; color:var(--green); flex-shrink:0; margin-top:2px; }
 .strip-item b{ display:block; font-size:13.5px; font-weight:700; margin-bottom:3px; }
@@ -329,61 +128,23 @@ header{
 .strip-item a{ color:var(--muted); transition:color .2s; }
 .strip-item a:hover{ color:var(--green); }
 
-/* FOOTER */
 footer{ padding:46px 24px 34px; }
-.foot-inner{
-  max-width:1300px; margin:0 auto;
-  display:flex; flex-wrap:wrap; gap:30px; justify-content:space-between;
-}
-.foot-col h4{
-  font-size:12.5px; font-weight:800; margin-bottom:12px;
-  letter-spacing:.1em; text-transform:uppercase; color:var(--green);
-}
-.foot-col p,.foot-col a{
-  display:block; font-size:13px; color:var(--muted);
-  line-height:1.9; transition:color .2s;
-}
+.foot-inner{ max-width:1300px; margin:0 auto; display:flex; flex-wrap:wrap; gap:30px; justify-content:space-between; }
+.foot-col h4{ font-size:12.5px; font-weight:800; margin-bottom:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--green); }
+.foot-col p,.foot-col a{ display:block; font-size:13px; color:var(--muted); line-height:1.9; transition:color .2s; }
 .foot-col a:hover{ color:var(--green); }
-.foot-bottom{
-  max-width:1300px; margin:34px auto 0; padding-top:22px;
-  border-top:1px solid var(--line);
-  font-size:11.5px; color:#5f5f5f; line-height:1.7;
-}
+.foot-bottom{ max-width:1300px; margin:34px auto 0; padding-top:22px; border-top:1px solid var(--line); font-size:11.5px; color:#5f5f5f; line-height:1.7; }
 .foot-bottom strong{ color:var(--green); }
 
-/* WHATSAPP */
-.wa-float{
-  position:fixed; right:22px; bottom:22px; z-index:100;
-  display:flex; align-items:center; height:60px;
-  background:#25D366; color:#fff; border-radius:99px;
-  padding:0 22px 0 16px;
-  box-shadow:0 14px 34px -10px rgba(37,211,102,.85), 0 0 0 0 rgba(37,211,102,.55);
-  cursor:pointer; overflow:hidden; max-width:60px;
-  transition:max-width .4s cubic-bezier(.2,.8,.3,1),
-             padding .4s cubic-bezier(.2,.8,.3,1),
-             box-shadow .3s, transform .25s;
-  animation:waPulse 2.6s ease-in-out infinite;
-}
-@keyframes waPulse{
-  0%,100%{ box-shadow:0 14px 34px -10px rgba(37,211,102,.85), 0 0 0 0 rgba(37,211,102,.55); }
-  50%    { box-shadow:0 14px 34px -10px rgba(37,211,102,.85), 0 0 0 14px rgba(37,211,102,0); }
-}
-.wa-float:hover{
-  max-width:260px; padding:0 24px 0 16px; animation:none;
-  box-shadow:0 18px 40px -10px rgba(37,211,102,.95);
-}
+.wa-float{ position:fixed; right:22px; bottom:22px; z-index:100; display:flex; align-items:center; height:60px; background:#25D366; color:#fff; border-radius:99px; padding:0 22px 0 16px; box-shadow:0 14px 34px -10px rgba(37,211,102,.85), 0 0 0 0 rgba(37,211,102,.55); cursor:pointer; overflow:hidden; max-width:60px; transition:max-width .4s cubic-bezier(.2,.8,.3,1), padding .4s cubic-bezier(.2,.8,.3,1), box-shadow .3s, transform .25s; animation:waPulse 2.6s ease-in-out infinite; }
+@keyframes waPulse{ 0%,100%{ box-shadow:0 14px 34px -10px rgba(37,211,102,.85), 0 0 0 0 rgba(37,211,102,.55); } 50% { box-shadow:0 14px 34px -10px rgba(37,211,102,.85), 0 0 0 14px rgba(37,211,102,0); } }
+.wa-float:hover{ max-width:260px; padding:0 24px 0 16px; animation:none; box-shadow:0 18px 40px -10px rgba(37,211,102,.95); }
 .wa-float:active{ transform:scale(.97); }
 .wa-float .wa-icon{ width:30px; height:30px; flex-shrink:0; display:grid; place-items:center; }
 .wa-float .wa-icon svg{ width:30px; height:30px; }
-.wa-float .wa-label{
-  font-size:14.5px; font-weight:800; letter-spacing:-.01em;
-  margin-left:12px; white-space:nowrap;
-  opacity:0; transform:translateX(-6px);
-  transition:opacity .25s .05s, transform .3s .05s;
-}
+.wa-float .wa-label{ font-size:14.5px; font-weight:800; letter-spacing:-.01em; margin-left:12px; white-space:nowrap; opacity:0; transform:translateX(-6px); transition:opacity .25s .05s, transform .3s .05s; }
 .wa-float:hover .wa-label{ opacity:1; transform:translateX(0); }
 
-/* RESPONSIVO */
 @media (max-width:900px){ .nav-links{ display:none; } }
 @media (max-width:600px){
   .card{ width:158px; }
@@ -435,13 +196,11 @@ footer{ padding:46px 24px 34px; }
           <text x="120" y="174" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-weight="800" font-size="16" fill="#00B140" letter-spacing="1">E TABACARIA</text>
         </svg>
       </div>
-      <div class="txt">
-        <b>Green</b>
-        <span>Conveniência &amp; Tabacaria</span>
-      </div>
+      <div class="txt"><b>Green</b><span>Conveniência &amp; Tabacaria</span></div>
     </div>
     <div class="nav-links">
       <a href="#cervejas">Cervejas</a>
+      <a href="#destilados">Destilados</a>
       <a href="#tabacaria">Tabacaria</a>
       <a href="#bebidas">Bebidas</a>
       <a href="#info">Informações</a>
@@ -451,8 +210,7 @@ footer{ padding:46px 24px 34px; }
 
 <section class="hero">
   <div class="badge-top is-open" id="statusBadge">
-    <span class="dot"></span>
-    <span id="statusText">Aberto agora</span>
+    <span class="dot"></span><span id="statusText">Aberto agora</span>
   </div>
   <h1 class="hero-line">Tudo em <em>um só lugar</em></h1>
 </section>
@@ -468,661 +226,474 @@ footer{ padding:46px 24px 34px; }
 
   <!-- LINHA 1 — CERVEJAS -->
   <section class="row" id="cervejas">
-    <div class="row-head">
-      <h2>Cervejas geladas</h2>
-      <span>26 produtos</span>
-    </div>
+    <div class="row-head"><h2>Cervejas geladas</h2><span>27 produtos</span></div>
     <div class="rail-wrap">
-      <button class="rail-btn left" data-dir="-1" aria-label="Anterior">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-      </button>
+      <button class="rail-btn left" data-dir="-1" aria-label="Anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
       <div class="rail" data-rail>
 
         <article class="card" data-name="Litrinho" data-cat="cervejas">
-          <div class="thumb">
-            <img src="Litrinho.png" alt="Litrinho" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Litrinho.png" alt="Litrinho" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <span class="tag">Destaque</span>
           <div class="card-body"><span class="cat">Cerveja</span><h3>Litrinho</h3><p class="vol">Garrafa 300 ml</p><div class="price-row"><div class="price"><small>R$</small>3,50</div></div></div>
         </article>
 
         <article class="card" data-name="Skol 350ml" data-cat="cervejas">
-          <div class="thumb">
-            <img src="Skol.png" alt="Skol Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Skol.png" alt="Skol Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <span class="tag">Top 1</span>
           <div class="card-body"><span class="cat">Cerveja</span><h3>Skol</h3><p class="vol">Lata 350 ml</p><div class="price-row"><div class="price"><small>R$</small>4,25</div></div></div>
         </article>
 
         <article class="card" data-name="Antártica 350ml" data-cat="cervejas">
-          <div class="thumb">
-            <img src="Antartica.png" alt="Antártica Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Antartica.png" alt="Antártica Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Cerveja</span><h3>Antártica</h3><p class="vol">Lata 350 ml</p><div class="price-row"><div class="price"><small>R$</small>4,25</div></div></div>
         </article>
 
         <article class="card" data-name="Brahma 350ml" data-cat="cervejas">
-          <div class="thumb">
-            <img src="Brahma.png" alt="Brahma Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Brahma.png" alt="Brahma Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Cerveja</span><h3>Brahma</h3><p class="vol">Lata 350 ml</p><div class="price-row"><div class="price"><small>R$</small>4,25</div></div></div>
         </article>
 
         <article class="card" data-name="Brahma Zero 350ml" data-cat="cervejas">
-          <div class="thumb">
-            <img src="BrahmaZero.png" alt="Brahma Zero Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="BrahmaZero.png" alt="Brahma Zero Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <span class="tag">Zero álcool</span>
           <div class="card-body"><span class="cat">Cerveja</span><h3>Brahma Zero</h3><p class="vol">Lata 350 ml</p><div class="price-row"><div class="price"><small>R$</small>4,50</div></div></div>
         </article>
 
         <article class="card" data-name="Crystal 350ml" data-cat="cervejas">
-          <div class="thumb">
-            <img src="Crystal.png" alt="Crystal Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Crystal.png" alt="Crystal Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Cerveja</span><h3>Crystal</h3><p class="vol">Lata 350 ml</p><div class="price-row"><div class="price"><small>R$</small>3,00</div></div></div>
         </article>
 
         <article class="card" data-name="Lokal 350ml" data-cat="cervejas">
-          <div class="thumb">
-            <img src="Lokal.png" alt="Lokal Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Lokal.png" alt="Lokal Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <span class="tag">Barato</span>
           <div class="card-body"><span class="cat">Cerveja</span><h3>Lokal</h3><p class="vol">Lata 350 ml</p><div class="price-row"><div class="price"><small>R$</small>3,00</div></div></div>
         </article>
 
         <article class="card" data-name="Itaipava 350ml" data-cat="cervejas">
-          <div class="thumb">
-            <img src="Itaipava.png" alt="Itaipava Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Itaipava.png" alt="Itaipava Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Cerveja</span><h3>Itaipava</h3><p class="vol">Lata 350 ml</p><div class="price-row"><div class="price"><small>R$</small>3,50</div></div></div>
         </article>
 
         <article class="card" data-name="Glacial 350ml" data-cat="cervejas">
-          <div class="thumb">
-            <img src="Glacial.png" alt="Glacial Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Glacial.png" alt="Glacial Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Cerveja</span><h3>Glacial</h3><p class="vol">Lata 350 ml</p><div class="price-row"><div class="price"><small>R$</small>3,00</div></div></div>
         </article>
 
         <article class="card" data-name="Moema 350ml" data-cat="cervejas">
-          <div class="thumb">
-            <img src="Moema.png" alt="Moema Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Moema.png" alt="Moema Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Cerveja</span><h3>Moema</h3><p class="vol">Lata 350 ml</p><div class="price-row"><div class="price"><small>R$</small>3,00</div></div></div>
         </article>
 
         <article class="card" data-name="Original 350ml" data-cat="cervejas">
-          <div class="thumb">
-            <img src="Original.png" alt="Original Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Original.png" alt="Original Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Cerveja</span><h3>Original</h3><p class="vol">Lata 350 ml</p><div class="price-row"><div class="price"><small>R$</small>5,00</div></div></div>
         </article>
 
         <article class="card" data-name="Itaipava 473ml" data-cat="cervejas">
-          <div class="thumb">
-            <img src="Itaipava473.png" alt="Itaipava Lata 473ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Itaipava473.png" alt="Itaipava Lata 473ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Cerveja</span><h3>Itaipava</h3><p class="vol">Lata 473 ml</p><div class="price-row"><div class="price"><small>R$</small>4,50</div></div></div>
         </article>
 
         <article class="card" data-name="Caracu 350ml" data-cat="cervejas">
-          <div class="thumb">
-            <img src="Caracu.png" alt="Caracu Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Caracu.png" alt="Caracu Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Cerveja</span><h3>Caracu</h3><p class="vol">Lata 350 ml</p><div class="price-row"><div class="price"><small>R$</small>6,50</div></div></div>
         </article>
 
         <article class="card" data-name="Itaipava Malzbier" data-cat="cervejas">
-          <div class="thumb">
-            <img src="ItaipavaMalzbier.png" alt="Itaipava Malzbier" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="ItaipavaMalzbier.png" alt="Itaipava Malzbier" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Cerveja</span><h3>Itaipava Malzbier</h3><p class="vol">Lata</p><div class="price-row"><div class="price"><small>R$</small>6,00</div></div></div>
         </article>
 
         <article class="card" data-name="Budweiser 350ml" data-cat="cervejas">
-          <div class="thumb">
-            <img src="Budweiser.png" alt="Budweiser Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Budweiser.png" alt="Budweiser Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Cerveja</span><h3>Budweiser</h3><p class="vol">Lata 350 ml</p><div class="price-row"><div class="price"><small>R$</small>5,00</div></div></div>
         </article>
 
         <article class="card" data-name="Stella Artois" data-cat="cervejas">
-          <div class="thumb">
-            <img src="StellaArtois.png" alt="Stella Artois" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="StellaArtois.png" alt="Stella Artois" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Cerveja</span><h3>Stella Artois</h3><p class="vol">Long Neck</p><div class="price-row"><div class="price"><small>R$</small>7,50</div></div></div>
         </article>
 
         <article class="card" data-name="Corona Long Neck" data-cat="cervejas">
-          <div class="thumb">
-            <img src="Corona.png" alt="Corona Long Neck" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Corona.png" alt="Corona Long Neck" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Cerveja</span><h3>Corona</h3><p class="vol">Long Neck</p><div class="price-row"><div class="price"><small>R$</small>8,00</div></div></div>
         </article>
 
         <article class="card" data-name="Sol Zero Long Neck" data-cat="cervejas">
-          <div class="thumb">
-            <img src="SolZero.png" alt="Sol Zero Long Neck" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="SolZero.png" alt="Sol Zero Long Neck" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <span class="tag">Zero álcool</span>
           <div class="card-body"><span class="cat">Cerveja</span><h3>Sol Zero</h3><p class="vol">Long Neck</p><div class="price-row"><div class="price"><small>R$</small>7,00</div></div></div>
         </article>
 
         <article class="card" data-name="Sol Long Neck" data-cat="cervejas">
-          <div class="thumb">
-            <img src="Sol.png" alt="Sol Long Neck" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Sol.png" alt="Sol Long Neck" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Cerveja</span><h3>Sol</h3><p class="vol">Long Neck</p><div class="price-row"><div class="price"><small>R$</small>7,00</div></div></div>
         </article>
 
         <article class="card" data-name="Chop de Vinho Bella Roma" data-cat="cervejas">
-          <div class="thumb">
-            <img src="BellaRoma.png" alt="Chop de Vinho Bella Roma" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="BellaRoma.png" alt="Chop de Vinho Bella Roma" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Bebida</span><h3>Chop de Vinho Bella Roma</h3><p class="vol">Garrafa</p><div class="price-row"><div class="price"><small>R$</small>7,00</div></div></div>
         </article>
 
         <article class="card" data-name="Heineken Long Neck" data-cat="cervejas">
-          <div class="thumb">
-            <img src="HeinekenLongNeck.png" alt="Heineken Long Neck" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="HeinekenLongNeck.png" alt="Heineken Long Neck" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Cerveja</span><h3>Heineken</h3><p class="vol">Long Neck</p><div class="price-row"><div class="price"><small>R$</small>7,50</div></div></div>
         </article>
 
         <article class="card" data-name="Heineken 350ml" data-cat="cervejas">
-          <div class="thumb">
-            <img src="Heineken350.png" alt="Heineken Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Heineken350.png" alt="Heineken Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Cerveja</span><h3>Heineken</h3><p class="vol">Lata 350 ml</p><div class="price-row"><div class="price"><small>R$</small>6,50</div></div></div>
         </article>
 
         <article class="card" data-name="Petra 350ml" data-cat="cervejas">
-          <div class="thumb">
-            <img src="Petra.png" alt="Petra Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Petra.png" alt="Petra Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Cerveja</span><h3>Petra</h3><p class="vol">Lata 350 ml</p><div class="price-row"><div class="price"><small>R$</small>3,75</div></div></div>
         </article>
 
         <article class="card" data-name="Brahma Duplo Malte" data-cat="cervejas">
-          <div class="thumb">
-            <img src="BrahmaDuploMalte.png" alt="Brahma Duplo Malte" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="BrahmaDuploMalte.png" alt="Brahma Duplo Malte" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Cerveja</span><h3>Brahma Duplo Malte</h3><p class="vol">Lata 350 ml</p><div class="price-row"><div class="price"><small>R$</small>4,50</div></div></div>
         </article>
 
         <article class="card" data-name="Amstel 350ml" data-cat="cervejas">
-          <div class="thumb">
-            <img src="Amstel.png" alt="Amstel Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Amstel.png" alt="Amstel Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Cerveja</span><h3>Amstel</h3><p class="vol">Lata 350 ml</p><div class="price-row"><div class="price"><small>R$</small>4,00</div></div></div>
         </article>
 
         <article class="card" data-name="Lokal 473ml" data-cat="cervejas">
-          <div class="thumb">
-            <img src="Lokal473.png" alt="Lokal Lata 473ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Lokal473.png" alt="Lokal Lata 473ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Cerveja</span><h3>Lokal</h3><p class="vol">Lata 473 ml</p><div class="price-row"><div class="price"><small>R$</small>4,00</div></div></div>
         </article>
 
+        <article class="card" data-name="Smirnoff" data-cat="cervejas">
+          <div class="thumb"><img src="Smirnoff.png" alt="Smirnoff" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
+          <span class="tag">Vodka</span>
+          <div class="card-body"><span class="cat">Destilado</span><h3>Smirnoff</h3><p class="vol">Unidade</p><div class="price-row"><div class="price"><small>R$</small>9,75</div></div></div>
+        </article>
+
       </div>
-      <button class="rail-btn right" data-dir="1" aria-label="Próximo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-      </button>
+      <button class="rail-btn right" data-dir="1" aria-label="Próximo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
     </div>
   </section>
 
-  <!-- LINHA 2 — TABACARIA -->
-  <section class="row" id="tabacaria">
-    <div class="row-head">
-      <h2>Tabacaria</h2>
-      <span>14 produtos</span>
-    </div>
+  <!-- LINHA 2 — DESTILADOS -->
+  <section class="row" id="destilados">
+    <div class="row-head"><h2>Destilados</h2><span>3 produtos</span></div>
     <div class="rail-wrap">
-      <button class="rail-btn left" data-dir="-1" aria-label="Anterior">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-      </button>
+      <button class="rail-btn left" data-dir="-1" aria-label="Anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+      <div class="rail" data-rail>
+
+        <article class="card" data-name="Corote 500ml" data-cat="destilados">
+          <div class="thumb"><img src="Corote.png" alt="Corote 500ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
+          <div class="card-body"><span class="cat">Destilado</span><h3>Corote</h3><p class="vol">500 ml</p><div class="price-row"><div class="price"><small>R$</small>6,00</div></div></div>
+        </article>
+
+        <article class="card" data-name="Jungle 500ml" data-cat="destilados">
+          <div class="thumb"><img src="Jungle.png" alt="Jungle 500ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
+          <div class="card-body"><span class="cat">Destilado</span><h3>Jungle</h3><p class="vol">500 ml</p><div class="price-row"><div class="price"><small>R$</small>4,00</div></div></div>
+        </article>
+
+        <article class="card" data-name="Energético Maromba 1L" data-cat="destilados">
+          <div class="thumb"><img src="Maromba.png" alt="Energético Maromba 1L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
+          <span class="tag">Com álcool</span>
+          <div class="card-body"><span class="cat">Energético Alcoólico</span><h3>Maromba</h3><p class="vol">1 L</p><div class="price-row"><div class="price"><small>R$</small>17,00</div></div></div>
+        </article>
+
+      </div>
+      <button class="rail-btn right" data-dir="1" aria-label="Próximo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+    </div>
+  </section>
+
+  <!-- LINHA 3 — TABACARIA -->
+  <section class="row" id="tabacaria">
+    <div class="row-head"><h2>Tabacaria</h2><span>14 produtos</span></div>
+    <div class="rail-wrap">
+      <button class="rail-btn left" data-dir="-1" aria-label="Anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
       <div class="rail" data-rail>
 
         <article class="card" data-name="Cigarro Palermo" data-cat="tabacaria">
-          <div class="thumb">
-            <img src="Palermo.png" alt="Cigarro Palermo" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Palermo.png" alt="Cigarro Palermo" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Tabacaria</span><h3>Cigarro Palermo</h3><p class="vol">Maço 20 unidades</p><div class="price-row"><div class="price"><small>R$</small>6,00</div></div></div>
         </article>
 
         <article class="card" data-name="Cigarro Eight" data-cat="tabacaria">
-          <div class="thumb">
-            <img src="Eight.png" alt="Cigarro Eight" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Eight.png" alt="Cigarro Eight" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Tabacaria</span><h3>Cigarro Eight</h3><p class="vol">Maço 20 unidades</p><div class="price-row"><div class="price"><small>R$</small>6,00</div></div></div>
         </article>
 
         <article class="card" data-name="Seda" data-cat="tabacaria">
-          <div class="thumb">
-            <img src="Seda.png" alt="Seda" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Seda.png" alt="Seda" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Tabacaria</span><h3>Seda</h3><p class="vol">Pacote pequeno</p><div class="price-row"><div class="price"><small>R$</small>5,00</div></div></div>
         </article>
 
         <article class="card" data-name="Isqueiro BIC" data-cat="tabacaria">
-          <div class="thumb">
-            <img src="Bic.png" alt="Isqueiro BIC" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Bic.png" alt="Isqueiro BIC" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Tabacaria</span><h3>Isqueiro BIC</h3><p class="vol">Unidade</p><div class="price-row"><div class="price"><small>R$</small>6,00</div></div></div>
         </article>
 
         <article class="card" data-name="Isqueiro Hiper" data-cat="tabacaria">
-          <div class="thumb">
-            <img src="Hiper.png" alt="Isqueiro Hiper" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Hiper.png" alt="Isqueiro Hiper" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Tabacaria</span><h3>Isqueiro Hiper</h3><p class="vol">Unidade</p><div class="price-row"><div class="price"><small>R$</small>3,00</div></div></div>
         </article>
 
         <article class="card" data-name="Piteira Longa" data-cat="tabacaria">
-          <div class="thumb">
-            <img src="PiteiraLonga.png" alt="Piteira Longa" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="PiteiraLonga.png" alt="Piteira Longa" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Tabacaria</span><h3>Piteira Longa</h3><p class="vol">Unidade</p><div class="price-row"><div class="price"><small>R$</small>7,00</div></div></div>
         </article>
 
         <article class="card" data-name="Essência Zomo" data-cat="tabacaria">
-          <div class="thumb">
-            <img src="Zomo.png" alt="Essência Zomo" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Zomo.png" alt="Essência Zomo" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Tabacaria</span><h3>Essência Zomo</h3><p class="vol">Unidade</p><div class="price-row"><div class="price"><small>R$</small>13,00</div></div></div>
         </article>
 
         <article class="card" data-name="Kit Essência Zomo" data-cat="tabacaria">
-          <div class="thumb">
-            <img src="ZomoKit.png" alt="Kit Essência Zomo" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="ZomoKit.png" alt="Kit Essência Zomo" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <span class="tag">Kit</span>
           <div class="card-body"><span class="cat">Tabacaria</span><h3>Essência Zomo</h3><p class="vol">Kit: essência + 9 carvão</p><div class="price-row"><div class="price"><small>R$</small>15,00</div></div></div>
         </article>
 
         <article class="card" data-name="Essência ZGY" data-cat="tabacaria">
-          <div class="thumb">
-            <img src="ZGY.png" alt="Essência ZGY" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="ZGY.png" alt="Essência ZGY" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Tabacaria</span><h3>Essência ZGY</h3><p class="vol">Unidade</p><div class="price-row"><div class="price"><small>R$</small>15,00</div></div></div>
         </article>
 
         <article class="card" data-name="Kit Essência ZGY" data-cat="tabacaria">
-          <div class="thumb">
-            <img src="ZGYKit.png" alt="Kit Essência ZGY" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="ZGYKit.png" alt="Kit Essência ZGY" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <span class="tag">Kit</span>
           <div class="card-body"><span class="cat">Tabacaria</span><h3>Essência ZGY</h3><p class="vol">Kit: essência + 9 carvão</p><div class="price-row"><div class="price"><small>R$</small>17,00</div></div></div>
         </article>
 
         <article class="card" data-name="Fumo Acrema Blend" data-cat="tabacaria">
-          <div class="thumb">
-            <img src="FumoAcrema.png" alt="Fumo Acrema Blend" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="FumoAcrema.png" alt="Fumo Acrema Blend" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Tabacaria</span><h3>Fumo Acrema Blend</h3><p class="vol">Pacote</p><div class="price-row"><div class="price"><small>R$</small>17,00</div></div></div>
         </article>
 
         <article class="card" data-name="Fumo Peão" data-cat="tabacaria">
-          <div class="thumb">
-            <img src="FumoPeao.png" alt="Fumo Peão" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="FumoPeao.png" alt="Fumo Peão" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Tabacaria</span><h3>Fumo Peão</h3><p class="vol">Pacote</p><div class="price-row"><div class="price"><small>R$</small>6,00</div></div></div>
         </article>
 
         <article class="card" data-name="Alumínio pra Rosh" data-cat="tabacaria">
-          <div class="thumb">
-            <img src="Stan.png" alt="Alumínio pra Rosh" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
-          <div class="card-body">
-            <span class="cat">Tabacaria</span>
-            <h3>Alumínio pra Rosh</h3>
-            <p class="vol">Unidade</p>
-            <div class="price-row">
-              <div class="price"><small>R$</small>0,75</div>
-              <div class="price-alt">Fechado: <b>R$ 20,00</b></div>
-            </div>
-          </div>
+          <div class="thumb"><img src="Stan.png" alt="Alumínio pra Rosh" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
+          <div class="card-body"><span class="cat">Tabacaria</span><h3>Alumínio pra Rosh</h3><p class="vol">Unidade</p><div class="price-row"><div class="price"><small>R$</small>0,75</div><div class="price-alt">Fechado: <b>R$ 20,00</b></div></div></div>
         </article>
 
         <article class="card" data-name="Carvão Arco Fire" data-cat="tabacaria">
-          <div class="thumb">
-            <img src="Arco.png" alt="Carvão Arco Fire" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Arco.png" alt="Carvão Arco Fire" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Tabacaria</span><h3>Carvão Arco Fire</h3><p class="vol">Pacote</p><div class="price-row"><div class="price"><small>R$</small>30,00</div></div></div>
         </article>
 
       </div>
-      <button class="rail-btn right" data-dir="1" aria-label="Próximo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-      </button>
+      <button class="rail-btn right" data-dir="1" aria-label="Próximo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
     </div>
   </section>
 
-  <!-- LINHA 3 — BEBIDAS -->
+  <!-- LINHA 4 — BEBIDAS -->
   <section class="row" id="bebidas">
-    <div class="row-head">
-      <h2>Bebidas</h2>
-      <span>27 produtos</span>
-    </div>
+    <div class="row-head"><h2>Bebidas</h2><span>34 produtos</span></div>
     <div class="rail-wrap">
-      <button class="rail-btn left" data-dir="-1" aria-label="Anterior">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-      </button>
+      <button class="rail-btn left" data-dir="-1" aria-label="Anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
       <div class="rail" data-rail>
 
         <article class="card" data-name="Guaraná Antarctica 2L" data-cat="bebidas">
-          <div class="thumb">
-            <img src="Antartica2L.png" alt="Guaraná Antarctica 2L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Antartica2L.png" alt="Guaraná Antarctica 2L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Refrigerante</span><h3>Guaraná Antarctica</h3><p class="vol">Garrafa 2 L</p><div class="price-row"><div class="price"><small>R$</small>10,00</div></div></div>
         </article>
 
         <article class="card" data-name="Sprite 2L" data-cat="bebidas">
-          <div class="thumb">
-            <img src="Sprite.png" alt="Sprite 2L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Sprite.png" alt="Sprite 2L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Refrigerante</span><h3>Sprite</h3><p class="vol">Garrafa 2 L</p><div class="price-row"><div class="price"><small>R$</small>10,00</div></div></div>
         </article>
 
         <article class="card" data-name="Sukita 2L" data-cat="bebidas">
-          <div class="thumb">
-            <img src="Sukita.png" alt="Sukita 2L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Sukita.png" alt="Sukita 2L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Refrigerante</span><h3>Sukita</h3><p class="vol">Garrafa 2 L</p><div class="price-row"><div class="price"><small>R$</small>7,00</div></div></div>
         </article>
 
         <article class="card" data-name="Pepsi 2L" data-cat="bebidas">
-          <div class="thumb">
-            <img src="Pepsi.png" alt="Pepsi 2L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Pepsi.png" alt="Pepsi 2L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Refrigerante</span><h3>Pepsi</h3><p class="vol">Garrafa 2 L</p><div class="price-row"><div class="price"><small>R$</small>9,00</div></div></div>
         </article>
 
         <article class="card" data-name="Guaratuba 2L" data-cat="bebidas">
-          <div class="thumb">
-            <img src="Guaratuba.png" alt="Guaratuba 2L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Guaratuba.png" alt="Guaratuba 2L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Refrigerante</span><h3>Guaratuba</h3><p class="vol">Garrafa 2 L</p><div class="price-row"><div class="price"><small>R$</small>5,00</div></div></div>
         </article>
 
         <article class="card" data-name="Guaraná Win 2L" data-cat="bebidas">
-          <div class="thumb">
-            <img src="Wim.png" alt="Guaraná Win 2L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Wim.png" alt="Guaraná Win 2L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Refrigerante</span><h3>Guaraná Win</h3><p class="vol">Garrafa 2 L</p><div class="price-row"><div class="price"><small>R$</small>5,00</div></div></div>
         </article>
 
         <article class="card" data-name="Refriko 2L" data-cat="bebidas">
-          <div class="thumb">
-            <img src="Refriko.png" alt="Refriko 2L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Refriko.png" alt="Refriko 2L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Refrigerante</span><h3>Refriko</h3><p class="vol">Garrafa 2 L</p><div class="price-row"><div class="price"><small>R$</small>5,00</div></div></div>
         </article>
 
         <article class="card" data-name="Coca-Cola 2L" data-cat="bebidas">
-          <div class="thumb">
-            <img src="Coca2L.png" alt="Coca-Cola 2L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Coca2L.png" alt="Coca-Cola 2L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Refrigerante</span><h3>Coca-Cola</h3><p class="vol">Garrafa 2 L</p><div class="price-row"><div class="price"><small>R$</small>13,00</div></div></div>
         </article>
 
         <article class="card" data-name="Coca-Cola Zero 2L" data-cat="bebidas">
-          <div class="thumb">
-            <img src="CocaZero2L.png" alt="Coca-Cola Zero 2L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="CocaZero2L.png" alt="Coca-Cola Zero 2L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Refrigerante</span><h3>Coca-Cola Zero</h3><p class="vol">Garrafa 2 L</p><div class="price-row"><div class="price"><small>R$</small>13,00</div></div></div>
         </article>
 
         <article class="card" data-name="Coca-Cola Retornável 2L" data-cat="bebidas">
-          <div class="thumb">
-            <img src="Retornavel.png" alt="Coca-Cola Retornável 2L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Retornavel.png" alt="Coca-Cola Retornável 2L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Refrigerante</span><h3>Coca-Cola Retornável</h3><p class="vol">Garrafa 2 L</p><div class="price-row"><div class="price"><small>R$</small>9,00</div></div></div>
         </article>
 
         <article class="card" data-name="Coca-Cola Retornável Zero 2L" data-cat="bebidas">
-          <div class="thumb">
-            <img src="RetornavelZero.png" alt="Coca-Cola Retornável Zero 2L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="RetornavelZero.png" alt="Coca-Cola Retornável Zero 2L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Refrigerante</span><h3>Coca-Cola Retornável Zero</h3><p class="vol">Garrafa 2 L</p><div class="price-row"><div class="price"><small>R$</small>9,00</div></div></div>
         </article>
 
+        <article class="card" data-name="Coca-Cola 2,5L" data-cat="bebidas">
+          <div class="thumb"><img src="Coca25L.png" alt="Coca-Cola 2,5L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
+          <div class="card-body"><span class="cat">Refrigerante</span><h3>Coca-Cola</h3><p class="vol">Garrafa 2,5 L</p><div class="price-row"><div class="price"><small>R$</small>15,00</div></div></div>
+        </article>
+
         <article class="card" data-name="Coca-Cola 350ml" data-cat="bebidas">
-          <div class="thumb">
-            <img src="Coca350.png" alt="Coca-Cola Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Coca350.png" alt="Coca-Cola Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Refrigerante</span><h3>Coca-Cola</h3><p class="vol">Lata 350 ml</p><div class="price-row"><div class="price"><small>R$</small>5,00</div></div></div>
         </article>
 
         <article class="card" data-name="Coca-Cola Zero 350ml" data-cat="bebidas">
-          <div class="thumb">
-            <img src="CocaZero350.png" alt="Coca-Cola Zero Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="CocaZero350.png" alt="Coca-Cola Zero Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Refrigerante</span><h3>Coca-Cola Zero</h3><p class="vol">Lata 350 ml</p><div class="price-row"><div class="price"><small>R$</small>5,00</div></div></div>
         </article>
 
         <article class="card" data-name="Tônica Antarctica 350ml" data-cat="bebidas">
-          <div class="thumb">
-            <img src="Tonica.png" alt="Tônica Antarctica Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Tonica.png" alt="Tônica Antarctica Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Refrigerante</span><h3>Tônica Antarctica</h3><p class="vol">Lata 350 ml</p><div class="price-row"><div class="price"><small>R$</small>5,00</div></div></div>
         </article>
 
         <article class="card" data-name="Sprite 350ml" data-cat="bebidas">
-          <div class="thumb">
-            <img src="Sprite350.png" alt="Sprite Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Sprite350.png" alt="Sprite Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Refrigerante</span><h3>Sprite</h3><p class="vol">Lata 350 ml</p><div class="price-row"><div class="price"><small>R$</small>5,00</div></div></div>
         </article>
 
         <article class="card" data-name="Fanta 350ml" data-cat="bebidas">
-          <div class="thumb">
-            <img src="Fanta350.png" alt="Fanta Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Fanta350.png" alt="Fanta Lata 350ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Refrigerante</span><h3>Fanta</h3><p class="vol">Lata 350 ml</p><div class="price-row"><div class="price"><small>R$</small>5,00</div></div></div>
         </article>
 
         <article class="card" data-name="Coquinha 250ml" data-cat="bebidas">
-          <div class="thumb">
-            <img src="Coquinha.png" alt="Coquinha 250ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Coquinha.png" alt="Coquinha 250ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Refrigerante</span><h3>Coquinha</h3><p class="vol">Lata 250 ml</p><div class="price-row"><div class="price"><small>R$</small>3,00</div></div></div>
         </article>
 
         <article class="card" data-name="Refriquinho 250ml" data-cat="bebidas">
-          <div class="thumb">
-            <img src="Refriquinho.png" alt="Refriquinho 250ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Refriquinho.png" alt="Refriquinho 250ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <span class="tag">Barato</span>
           <div class="card-body"><span class="cat">Refrigerante</span><h3>Refriquinho</h3><p class="vol">Lata 250 ml</p><div class="price-row"><div class="price"><small>R$</small>2,00</div></div></div>
         </article>
 
         <article class="card" data-name="Furiosinho 250ml" data-cat="bebidas">
-          <div class="thumb">
-            <img src="Furiosinho.png" alt="Furiosinho 250ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Furiosinho.png" alt="Furiosinho 250ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Energético</span><h3>Furiosinho</h3><p class="vol">Lata 250 ml</p><div class="price-row"><div class="price"><small>R$</small>4,00</div></div></div>
         </article>
 
         <article class="card" data-name="Furioso 2L" data-cat="bebidas">
-          <div class="thumb">
-            <img src="Furioso2L.png" alt="Furioso 2L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Furioso2L.png" alt="Furioso 2L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Energético</span><h3>Furioso</h3><p class="vol">Garrafa 2 L</p><div class="price-row"><div class="price"><small>R$</small>12,00</div></div></div>
         </article>
 
         <article class="card" data-name="Furioso 473ml" data-cat="bebidas">
-          <div class="thumb">
-            <img src="Furioso473.png" alt="Furioso Lata 473ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Furioso473.png" alt="Furioso Lata 473ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Energético</span><h3>Furioso</h3><p class="vol">Lata 473 ml</p><div class="price-row"><div class="price"><small>R$</small>7,00</div></div></div>
         </article>
 
         <article class="card" data-name="Baly 473ml" data-cat="bebidas">
-          <div class="thumb">
-            <img src="Baly.png" alt="Baly Lata 473ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Baly.png" alt="Baly Lata 473ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Energético</span><h3>Baly</h3><p class="vol">Lata 473 ml</p><div class="price-row"><div class="price"><small>R$</small>8,00</div></div></div>
         </article>
 
         <article class="card" data-name="Red Bull 250ml" data-cat="bebidas">
-          <div class="thumb">
-            <img src="RedBull.png" alt="Red Bull Lata 250ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="RedBull.png" alt="Red Bull Lata 250ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <span class="tag">Top Energético</span>
           <div class="card-body"><span class="cat">Energético</span><h3>Red Bull</h3><p class="vol">Lata 250 ml</p><div class="price-row"><div class="price"><small>R$</small>10,00</div></div></div>
         </article>
 
         <article class="card" data-name="Monster 473ml" data-cat="bebidas">
-          <div class="thumb">
-            <img src="Monster.png" alt="Monster Lata 473ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Monster.png" alt="Monster Lata 473ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Energético</span><h3>Monster</h3><p class="vol">Lata 473 ml</p><div class="price-row"><div class="price"><small>R$</small>11,00</div></div></div>
         </article>
 
+        <article class="card" data-name="Gatorade" data-cat="bebidas">
+          <div class="thumb"><img src="Gatorade.png" alt="Gatorade" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
+          <div class="card-body"><span class="cat">Isotônico</span><h3>Gatorade</h3><p class="vol">Garrafa</p><div class="price-row"><div class="price"><small>R$</small>6,50</div></div></div>
+        </article>
+
+        <article class="card" data-name="Powerade 500ml" data-cat="bebidas">
+          <div class="thumb"><img src="Powerade.png" alt="Powerade 500ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
+          <div class="card-body"><span class="cat">Isotônico</span><h3>Powerade</h3><p class="vol">Garrafa 500 ml</p><div class="price-row"><div class="price"><small>R$</small>5,00</div></div></div>
+        </article>
+
+        <article class="card" data-name="Água sem Gás 500ml" data-cat="bebidas">
+          <div class="thumb"><img src="AguaSemGas.png" alt="Água sem Gás 500ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
+          <div class="card-body"><span class="cat">Água</span><h3>Água sem Gás</h3><p class="vol">Garrafa 500 ml</p><div class="price-row"><div class="price"><small>R$</small>2,00</div></div></div>
+        </article>
+
+        <article class="card" data-name="Água com Gás 500ml" data-cat="bebidas">
+          <div class="thumb"><img src="AguaComGas.png" alt="Água com Gás 500ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
+          <div class="card-body"><span class="cat">Água</span><h3>Água com Gás</h3><p class="vol">Garrafa 500 ml</p><div class="price-row"><div class="price"><small>R$</small>3,00</div></div></div>
+        </article>
+
+        <article class="card" data-name="Cholkinho 200ml" data-cat="bebidas">
+          <div class="thumb"><img src="Cholkinho.png" alt="Cholkinho 200ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
+          <div class="card-body"><span class="cat">Achocolatado</span><h3>Cholkinho</h3><p class="vol">200 ml</p><div class="price-row"><div class="price"><small>R$</small>4,00</div></div></div>
+        </article>
+
+        <article class="card" data-name="Achocolatado Líder 1L" data-cat="bebidas">
+          <div class="thumb"><img src="Lider.png" alt="Achocolatado Líder 1L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
+          <div class="card-body"><span class="cat">Achocolatado</span><h3>Achocolatado Líder</h3><p class="vol">1 L</p><div class="price-row"><div class="price"><small>R$</small>7,00</div></div></div>
+        </article>
+
         <article class="card" data-name="Del Valle 1,5L" data-cat="bebidas">
-          <div class="thumb">
-            <img src="DelValle.png" alt="Del Valle 1,5L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="DelValle.png" alt="Del Valle 1,5L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Suco</span><h3>Del Valle</h3><p class="vol">Garrafa 1,5 L</p><div class="price-row"><div class="price"><small>R$</small>9,00</div></div></div>
         </article>
 
         <article class="card" data-name="Tampico 450ml" data-cat="bebidas">
-          <div class="thumb">
-            <img src="Tampico.png" alt="Tampico 450ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="Tampico.png" alt="Tampico 450ml" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <div class="card-body"><span class="cat">Suco</span><h3>Tampico</h3><p class="vol">Garrafa 450 ml</p><div class="price-row"><div class="price"><small>R$</small>7,00</div></div></div>
         </article>
 
         <article class="card" data-name="Suco de Uva Hugo Pietro 1,2L" data-cat="bebidas">
-          <div class="thumb">
-            <img src="HugoPietro.png" alt="Suco de Uva Hugo Pietro 1,2L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'">
-            <div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div>
-          </div>
+          <div class="thumb"><img src="HugoPietro.png" alt="Suco de Uva Hugo Pietro 1,2L" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <span class="tag">Suco Natural</span>
           <div class="card-body"><span class="cat">Suco</span><h3>Suco de Uva Hugo Pietro</h3><p class="vol">Garrafa 1,2 L</p><div class="price-row"><div class="price"><small>R$</small>12,00</div></div></div>
         </article>
 
       </div>
-      <button class="rail-btn right" data-dir="1" aria-label="Próximo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-      </button>
+      <button class="rail-btn right" data-dir="1" aria-label="Próximo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
     </div>
   </section>
 
-  <!-- Mensagem quando não encontra nada -->
   <div class="no-results" id="noResults">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/>
-    </svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
     <b>Nenhum produto encontrado</b>
     Tenta buscar por outro nome ou categoria (ex: cerveja, suco, refri)
   </div>
-
 </div>
 
 <section class="strip" id="info">
   <div class="strip-inner">
-    <div class="strip-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-      <div><b>Horário de funcionamento</b><span>Todos os dias, das 11:30 às 23:00.</span></div>
-    </div>
-    <div class="strip-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-      <div><b>Cola pra cá</b><span>Rua do M.S.T, 420 — União da Vitória<br>Londrina — PR</span></div>
-    </div>
-    <div class="strip-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2 4.2 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.5 2.1L8 9.5a16 16 0 0 0 6 6l1.1-1.1a2 2 0 0 1 2.1-.5c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.7 2z"/></svg>
-      <div><b>Fale com a gente</b><span><a href="tel:+5543984524729">(43) 98452-4729</a></span></div>
-    </div>
+    <div class="strip-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><div><b>Horário de funcionamento</b><span>Todos os dias, das 11:30 às 23:00.</span></div></div>
+    <div class="strip-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><div><b>Cola pra cá</b><span>Rua do M.S.T, 420 — União da Vitória<br>Londrina — PR</span></div></div>
+    <div class="strip-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2 4.2 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.5 2.1L8 9.5a16 16 0 0 0 6 6l1.1-1.1a2 2 0 0 1 2.1-.5c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.7 2z"/></svg><div><b>Fale com a gente</b><span><a href="tel:+5543984524729">(43) 98452-4729</a></span></div></div>
   </div>
 </section>
 
 <footer>
   <div class="foot-inner">
-    <div class="foot-col">
-      <h4>Green Conveniência</h4>
-      <p>Rua do M.S.T, 420 — União da Vitória</p>
-      <p>Londrina — PR</p>
-    </div>
-    <div class="foot-col">
-      <h4>Contato</h4>
-      <a href="tel:+5543984524729">(43) 98452-4729</a>
-      <a href="#">@greenconveniencia</a>
-      <a href="https://wa.me/5543984524729" target="_blank" rel="noopener">WhatsApp</a>
-    </div>
-    <div class="foot-col">
-      <h4>Horário</h4>
-      <p>Todos os dias</p>
-      <p>11:30 às 23:00</p>
-    </div>
+    <div class="foot-col"><h4>Green Conveniência</h4><p>Rua do M.S.T, 420 — União da Vitória</p><p>Londrina — PR</p></div>
+    <div class="foot-col"><h4>Contato</h4><a href="tel:+5543984524729">(43) 98452-4729</a><a href="#">@greenconveniencia</a><a href="https://wa.me/5543984524729" target="_blank" rel="noopener">WhatsApp</a></div>
+    <div class="foot-col"><h4>Horário</h4><p>Todos os dias</p><p>11:30 às 23:00</p></div>
   </div>
   <div class="foot-bottom">
     <strong>Beba com moderação. Venda proibida para menores de 18 anos.</strong><br>
@@ -1131,57 +702,33 @@ footer{ padding:46px 24px 34px; }
 </footer>
 
 <a class="wa-float" id="waFloat" href="https://wa.me/5543984524729?text=Ol%C3%A1%21%20Vim%20pelo%20site%20da%20Green%20Conveni%C3%AAncia." target="_blank" rel="noopener" aria-label="Fale conosco no WhatsApp">
-  <span class="wa-icon">
-    <svg viewBox="0 0 24 24" fill="currentColor">
-      <path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.1-.7.2-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.5-.6c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.2 5.1 4.4 2.5 1 3 .8 3.6.7.5-.1 1.7-.7 2-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3z"/>
-      <path d="M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.4 1.3 4.9L2 22l5.3-1.4c1.4.8 3 1.2 4.7 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.6 0-3-.4-4.3-1.2l-.3-.2-3.1.8.8-3-.2-.3C4 15 3.6 13.5 3.6 12 3.6 7.4 7.4 3.6 12 3.6S20.4 7.4 20.4 12 16.6 20.2 12 20.2z"/>
-    </svg>
-  </span>
+  <span class="wa-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.1-.7.2-.2.3-.7 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.2-.5-2.3-1.4-.9-.8-1.4-1.7-1.6-2-.2-.3 0-.5.1-.6l.5-.6c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5 0-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.2.2 2.1 3.2 5.1 4.4 2.5 1 3 .8 3.6.7.5-.1 1.7-.7 2-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 1.8.5 3.4 1.3 4.9L2 22l5.3-1.4c1.4.8 3 1.2 4.7 1.2 5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18.2c-1.6 0-3-.4-4.3-1.2l-.3-.2-3.1.8.8-3-.2-.3C4 15 3.6 13.5 3.6 12 3.6 7.4 7.4 3.6 12 3.6S20.4 7.4 20.4 12 16.6 20.2 12 20.2z"/></svg></span>
   <span class="wa-label">Fale conosco</span>
 </a>
 
 <script>
-/* SPLASH */
 (function(){
   const splash = document.getElementById('splash');
   const stage  = document.getElementById('logoStage');
-  function enterSite(){
-    splash.classList.add('hide');
-    document.body.style.overflow = '';
-    setTimeout(() => splash.remove(), 650);
-  }
+  function enterSite(){ splash.classList.add('hide'); document.body.style.overflow = ''; setTimeout(() => splash.remove(), 650); }
   document.body.style.overflow = 'hidden';
   stage.addEventListener('click', enterSite);
 })();
 
-/* STATUS ABERTO / FECHADO */
 (function(){
   const badge = document.getElementById('statusBadge');
   const text  = document.getElementById('statusText');
   if (!badge || !text) return;
-
   function checarStatus(){
     const agora = new Date();
-    const minutosAgora = agora.getHours() * 60 + agora.getMinutes();
-    const abre  = 11 * 60 + 30;
-    const fecha = 23 * 60;
-    const aberto = minutosAgora >= abre && minutosAgora < fecha;
-
-    if (aberto){
-      badge.classList.add('is-open');
-      badge.classList.remove('is-closed');
-      text.textContent = 'Aberto agora';
-    } else {
-      badge.classList.remove('is-open');
-      badge.classList.add('is-closed');
-      text.textContent = 'Fechado agora';
-    }
+    const m = agora.getHours() * 60 + agora.getMinutes();
+    const aberto = m >= 690 && m < 1380;
+    if (aberto){ badge.classList.add('is-open'); badge.classList.remove('is-closed'); text.textContent = 'Aberto agora'; }
+    else { badge.classList.remove('is-open'); badge.classList.add('is-closed'); text.textContent = 'Fechado agora'; }
   }
-  checarStatus();
-  setInterval(checarStatus, 60000);
+  checarStatus(); setInterval(checarStatus, 60000);
 })();
 
-/* Esconde placeholder das imagens que já carregaram */
 document.querySelectorAll('.thumb img').forEach(img => {
   if (img.complete && img.naturalWidth > 0) {
     const ph = img.parentElement.querySelector('.thumb-ph');
@@ -1189,7 +736,6 @@ document.querySelectorAll('.thumb img').forEach(img => {
   }
 });
 
-/* SETAS DAS TRILHAS */
 document.querySelectorAll('.rail-wrap').forEach(wrap => {
   const rail = wrap.querySelector('[data-rail]');
   wrap.querySelectorAll('.rail-btn').forEach(btn => {
@@ -1200,74 +746,60 @@ document.querySelectorAll('.rail-wrap').forEach(wrap => {
   });
 });
 
-/* ============================================================
-   BUSCA COM CATEGORIAS (por digitação)
-   ============================================================ */
 const searchInput = document.getElementById('search');
 const allCards    = [...document.querySelectorAll('.card')];
 const noResults   = document.getElementById('noResults');
 
-// Remove acentos e deixa minúsculo
 function normalizar(str){
-  return String(str)
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .trim();
+  return String(str).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
 }
 
-// Sinônimos por categoria principal
 const aliasesCat = {
-  cervejas:  ['cerveja','cervejas','breja','brejas','gelada','geladas','birita','biritas'],
-  tabacaria: ['tabacaria','tabaco','cigarro','cigarros','fumo','fumos','seda','sedas','isqueiro','isqueiros','piteira','piteiras','carvao','carvoes','essencia','essencias'],
-  bebidas:   ['bebida','bebidas']
+  cervejas:   ['cerveja','cervejas','breja','brejas','gelada','geladas','birita','biritas'],
+  destilados: ['destilado','destilados','vodka','cachaca','corote','jungle','maromba','alcoolico','alcool'],
+  tabacaria:  ['tabacaria','tabaco','cigarro','cigarros','fumo','fumos','seda','sedas','isqueiro','isqueiros','piteira','piteiras','carvao','carvoes','essencia','essencias'],
+  bebidas:    ['bebida','bebidas']
 };
 
-// Sinônimos por subcategoria (label)
 const aliasesLabel = {
   'cerveja':      ['cerveja','cervejas','breja','brejas'],
   'bebida':       ['bebida','bebidas'],
   'tabacaria':    ['tabacaria','tabaco'],
+  'destilado':    ['destilado','destilados','vodka','corote','jungle','cachaca'],
   'refrigerante': ['refri','refris','refrigerante','refrigerantes'],
   'suco':         ['suco','sucos'],
-  'energetico':   ['energetico','energeticos','energia']
+  'energetico':   ['energetico','energeticos','energia'],
+  'energetico alcoólico': ['energetico alcoolico','energetico alcool','maromba'],
+  'agua':         ['agua','aguas'],
+  'isotônico':    ['isotonico','gatorade','powerade','sport'],
+  'achocolatado': ['achocolatado','achocolatados','chocolate','leite']
 };
 
-// Adiciona atalhos de busca em cada card
 allCards.forEach(card => {
   const name     = card.dataset.name || '';
   const catKey   = card.dataset.cat  || '';
   const catLabel = card.querySelector('.cat')?.textContent || '';
   const labelsNorm = normalizar(catLabel);
-
   const keywords = [
-    name,
-    catKey,
-    catLabel,
+    name, catKey, catLabel,
     ...(aliasesCat[catKey] || []),
     ...(aliasesLabel[labelsNorm] || [])
   ].join(' ');
-
   card.dataset.search = normalizar(keywords);
 });
 
-// Filtro
 function filtrarCards(term){
   const t = normalizar(term);
   let visiveis = 0;
-
   allCards.forEach(card => {
     const match = !t || card.dataset.search.includes(t);
     card.style.display = match ? '' : 'none';
     if (match) visiveis++;
   });
-
   document.querySelectorAll('.row').forEach(row => {
-    const v = [...row.querySelectorAll('.card')]
-      .filter(c => c.style.display !== 'none').length;
+    const v = [...row.querySelectorAll('.card')].filter(c => c.style.display !== 'none').length;
     row.style.display = v === 0 ? 'none' : '';
   });
-
   noResults.classList.toggle('show', visiveis === 0);
 }
 
