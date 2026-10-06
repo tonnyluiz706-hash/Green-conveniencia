@@ -69,8 +69,10 @@ a{ color:inherit; text-decoration:none; }
 .intro-video{
   position:absolute; inset:0;
   width:100%; height:100%;
-  object-fit:cover; display:block;
+  object-fit:contain;
+  display:block;
   background:#000;
+  margin:auto;
 }
 
 /* Etapa 2 — logo */
@@ -1076,12 +1078,14 @@ footer{ padding:46px 24px 34px; }
   const tapHint   = document.getElementById('tapHint');
 
   let entrou = false;
+  let jaPediuToque = false;
 
   const isMobile = window.matchMedia('(max-width: 900px)').matches;
   video.src = isMobile ? 'Mobile.mp4' : 'PC.mp4';
 
   document.body.style.overflow = 'hidden';
 
+  // ----- Etapa 2: mostra a logo -----
   function mostrarLogo(){
     try { video.pause(); } catch(_) {}
     videoWrap.classList.add('hide');
@@ -1090,6 +1094,7 @@ footer{ padding:46px 24px 34px; }
     tapHint.classList.add('show');
   }
 
+  // ----- Etapa 3: entra no site -----
   function enterSite(){
     if (entrou) return;
     entrou = true;
@@ -1099,34 +1104,59 @@ footer{ padding:46px 24px 34px; }
     setTimeout(() => splash.remove(), 650);
   }
 
+  // ----- Se o arquivo do vídeo der erro, pula pra logo -----
+  video.addEventListener('error', mostrarLogo);
   video.addEventListener('ended', mostrarLogo);
 
+  // ----- Mostra "toque para iniciar" quando o autoplay é bloqueado -----
+  function pedirToque(){
+    if (jaPediuToque) return;
+    jaPediuToque = true;
+
+    tapHint.textContent = 'Toque para iniciar';
+    tapHint.classList.add('show');
+    splash.style.cursor = 'pointer';
+
+    splash.addEventListener('click', () => {
+      video.muted  = false;
+      video.volume = 1;
+      const p = video.play();
+      if (p && typeof p.then === 'function'){
+        p.then(() => {
+          tapHint.classList.remove('show');
+          splash.style.cursor = '';
+        }).catch(() => mostrarLogo());
+      } else {
+        tapHint.classList.remove('show');
+        splash.style.cursor = '';
+      }
+    }, { once:true });
+  }
+
+  // ----- Tenta rodar com som -----
   video.volume = 1;
-  video.muted = false;
+  video.muted  = false;
 
   const playPromise = video.play();
 
   if (playPromise && typeof playPromise.then === 'function'){
-    playPromise.catch(() => {
-      tapHint.textContent = 'Toque para iniciar';
-      tapHint.classList.add('show');
-      splash.style.cursor = 'pointer';
-
-      const iniciarVideo = () => {
-        video.muted = false;
-        video.volume = 1;
-        video.play().then(() => {
-          tapHint.classList.remove('show');
-          splash.style.cursor = '';
-        }).catch(() => {
-          mostrarLogo();
-        });
-      };
-
-      splash.addEventListener('click', iniciarVideo, { once:true });
-    });
+    playPromise.then(() => {
+      // Alguns navegadores resolvem a promise mas não tocam nada.
+      // Conferimos 250ms depois se o vídeo realmente saiu do lugar.
+      setTimeout(() => {
+        if (video.paused || video.currentTime === 0){
+          pedirToque();
+        }
+      }, 250);
+    }).catch(pedirToque);
+  } else {
+    // Navegador muito antigo, sem promise
+    setTimeout(() => {
+      if (video.paused) pedirToque();
+    }, 250);
   }
 
+  // ----- Clique na logo → entra no site -----
   logoStage.addEventListener('click', (e) => {
     e.stopPropagation();
     enterSite();
@@ -1135,10 +1165,10 @@ footer{ padding:46px 24px 34px; }
     if (e.key === 'Enter' || e.key === ' ') enterSite();
   });
 
+  // ----- Acessibilidade teclado -----
   document.addEventListener('keydown', (e) => {
     if (entrou) return;
-    const logoVisivel = logoStage.classList.contains('show');
-    if (logoVisivel){
+    if (logoStage.classList.contains('show')){
       if (['Enter',' ','Escape'].includes(e.key)) enterSite();
     }
   });
@@ -1262,4 +1292,4 @@ searchInput.addEventListener('input', () => filtrarCards(searchInput.value));
 </script>
 
 </body>
-</html> 
+</html>
