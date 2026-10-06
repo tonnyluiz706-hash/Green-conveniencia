@@ -1057,7 +1057,7 @@ footer{ padding:46px 24px 34px; }
 <script>
 /* ==========================================================
    FLUXO DE ENTRADA EM 2 ETAPAS
-   Etapa 1: vídeo roda
+   Etapa 1: vídeo roda (PC.mp4, único pra PC e mobile)
    Etapa 2: aparece a logo + "Toque para entrar"
    Depois do clique → site liberado
    ========================================================== */
@@ -1068,9 +1068,8 @@ footer{ padding:46px 24px 34px; }
   const stage       = document.getElementById('logoStage');
   if (!videoSplash || !splash || !video || !stage) return;
 
-  // Escolhe o vídeo pela ORIENTAÇÃO da tela (retrato = mobile, paisagem = PC)
-  const isPortrait = window.innerHeight > window.innerWidth;
-  video.src = isPortrait ? 'Mobile.mp4' : 'PC.mp4';
+  // Vídeo único pros dois (PC e mobile)
+  video.src = 'PC.mp4';
 
   // Trava o scroll durante TUDO (vídeo + logo)
   document.body.style.overflow = 'hidden';
@@ -1122,8 +1121,6 @@ footer{ padding:46px 24px 34px; }
   // Clique na logo (ou em qualquer lugar do splash) entra
   stage.addEventListener('click', enterSite);
   splash.addEventListener('click', (e) => {
-    // se o clique foi na área do stage, o handler acima já cuidou,
-    // mas como o stage cobre boa parte, deixa o splash como fallback
     if (e.target === splash) enterSite();
   });
 
