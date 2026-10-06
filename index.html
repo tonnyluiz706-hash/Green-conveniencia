@@ -49,16 +49,27 @@ a{ color:inherit; text-decoration:none; }
 .led-1{ animation-delay:-0s; } .led-2{ animation-delay:-0.64s; } .led-3{ animation-delay:-1.28s; } .led-4{ animation-delay:-1.92s; } .led-5{ animation-delay:-2.56s; }
 @keyframes ledChase{ to{ --led-angle:360deg; } }
 
-/* Splash */
-#splash{ position:fixed; inset:0; z-index:999; background:#000; display:flex; align-items:center; justify-content:center; transition:opacity .6s ease, visibility .6s ease; }
+/* Splash com vídeo */
+#splash{ position:fixed; inset:0; z-index:999; background:#000; overflow:hidden; transition:opacity .6s ease, visibility .6s ease; }
 #splash.hide{ opacity:0; visibility:hidden; pointer-events:none; }
-.logo-stage{ width:min(520px,84vw); aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; cursor:pointer; position:relative; transition:transform .4s cubic-bezier(.2,.8,.3,1); animation:logoIn 1.1s cubic-bezier(.2,.8,.3,1) both; }
-@keyframes logoIn{ from{opacity:0;transform:scale(.86)} to{opacity:1;transform:scale(1)} }
-.logo-stage:hover{ transform:scale(1.03); } .logo-stage:active{ transform:scale(.97); }
-.logo-svg{ width:100%; height:100%; filter:drop-shadow(0 0 42px rgba(0,177,64,.35)); transition:filter .4s; }
-.logo-stage:hover .logo-svg{ filter:drop-shadow(0 0 60px rgba(0,177,64,.6)); }
-.tap-hint{ position:absolute; bottom:8vh; left:50%; transform:translateX(-50%); font-size:12px; font-weight:600; letter-spacing:.22em; text-transform:uppercase; color:var(--green); display:flex; align-items:center; gap:9px; animation:blink 2.2s ease-in-out infinite; pointer-events:none; }
-@keyframes blink{ 0%,100%{opacity:1} 50%{opacity:.25} }
+
+#splash video{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  object-fit:cover;
+  background:#000;
+  display:block;
+}
+
+.tap-hint{
+  position:absolute; bottom:8vh; left:50%; transform:translateX(-50%);
+  font-size:12px; font-weight:600; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--green); display:flex; align-items:center; gap:9px;
+  animation:blink 2.2s ease-in-out infinite; pointer-events:none;
+  text-shadow:0 0 12px rgba(0,177,64,.6);
+  z-index:2;
+}
+@keyframes blink{ 0%,100%{opacity:1} 50%{opacity:.35} }
 .tap-hint::before,.tap-hint::after{ content:''; width:26px; height:1px; background:var(--green); opacity:.5; }
 
 /* Header */
@@ -214,6 +225,7 @@ footer{ padding:46px 24px 34px; }
     background:transparent;
     box-shadow: inset 0 0 14px rgba(0,177,64,.45), inset 0 0 0 1.5px rgba(0,177,64,.55);
   }
+  .tap-hint{ bottom:6vh; font-size:11px; }
 }
 
 /* Acessibilidade: quem prefere menos movimento não recebe as animações pesadas */
@@ -223,7 +235,6 @@ footer{ padding:46px 24px 34px; }
   .wa-float{ animation:none; }
   .tap-hint{ animation:none; }
   .badge-top .dot{ animation:none; }
-  .logo-stage{ animation:none; }
   .card,.thumb img,.rail{ transition:none; }
 }
 </style>
@@ -239,14 +250,7 @@ footer{ padding:46px 24px 34px; }
 </div>
 
 <div id="splash">
-  <div class="logo-stage" id="logoStage">
-    <svg class="logo-svg" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" aria-label="Green Conveniência e Tabacaria">
-      <circle cx="120" cy="120" r="105" fill="none" stroke="#00B140" stroke-width="6"/>
-      <text x="120" y="122" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-weight="900" font-size="52" fill="#00B140" letter-spacing="1">GREEN</text>
-      <text x="120" y="152" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-weight="800" font-size="16" fill="#00B140" letter-spacing="0.4">CONVENIÊNCIA</text>
-      <text x="120" y="174" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-weight="800" font-size="16" fill="#00B140" letter-spacing="1">E TABACARIA</text>
-    </svg>
-  </div>
+  <video id="splashVideo" muted playsinline webkit-playsinline autoplay preload="auto" aria-hidden="true"></video>
   <div class="tap-hint">Toque para entrar</div>
 </div>
 
@@ -1011,24 +1015,49 @@ footer{ padding:46px 24px 34px; }
 </script>
 
 <script>
-/* ---------- Splash ---------- */
+/* ---------- Splash com vídeo ---------- */
 (function(){
   const splash = document.getElementById('splash');
-  const stage  = document.getElementById('logoStage');
+  const video  = document.getElementById('splashVideo');
+  if (!splash || !video) return;
+
+  // Escolhe o vídeo pela ORIENTAÇÃO da tela (retrato = mobile, paisagem = PC)
+  const isPortrait = window.innerHeight > window.innerWidth;
+  video.src = isPortrait ? 'Mobile.mp4' : 'PC.mp4';
+
   let entrou = false;
   function enterSite(){
     if (entrou) return;
     entrou = true;
     splash.classList.add('hide');
     document.body.style.overflow = '';
-    setTimeout(() => splash.remove(), 650);
+    try { video.pause(); } catch(e){}
+    setTimeout(() => { if (splash.parentNode) splash.remove(); }, 650);
   }
+
+  // Trava o scroll enquanto o vídeo roda
   document.body.style.overflow = 'hidden';
-  stage.addEventListener('click', enterSite);
-  // Acessibilidade: permite Enter/Espaço/Esc pra entrar
+
+  // Quando o vídeo terminar, entra sozinho
+  video.addEventListener('ended', enterSite);
+
+  // Se o vídeo falhar (arquivo faltando, codec, etc.), entra igual
+  video.addEventListener('error', () => setTimeout(enterSite, 800));
+
+  // Tenta dar play (muted + playsinline geralmente basta)
+  const p = video.play();
+  if (p && typeof p.catch === 'function') p.catch(() => { /* autoplay bloqueado — espera clique */ });
+
+  // Clique / toque em qualquer lugar pula
+  splash.addEventListener('click', enterSite);
+
+  // Teclado também (acessibilidade)
   document.addEventListener('keydown', e => {
     if (['Enter',' ','Escape'].includes(e.key)) enterSite();
-  }, { once:false });
+  });
+
+  // Rede de segurança: se em 12s nada aconteceu, entra
+  setTimeout(enterSite, 12000);
 })();
 
 /* ---------- Status aberto/fechado ---------- */
@@ -1095,7 +1124,7 @@ const aliasesCat = {
   doces:       ['doce','doces','bala','balas','chocolate','chocolates','guloseima','guloseimas']
 };
 
-/* Aliases por label visual (chave já normalizada para bater com normalizar(catLabel)) */
+/* Aliases por label visual (chave já normalizada) */
 const aliasesLabel = Object.fromEntries(
   Object.entries({
     'cerveja':              ['cerveja','cervejas','breja','brejas'],
