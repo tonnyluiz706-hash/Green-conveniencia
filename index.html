@@ -15,6 +15,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<!-- Pré-carrega o vídeo certo ANTES de renderizar o body -->
+<link rel="preload" as="video" href="PC.mp4"     media="(min-width: 901px)" type="video/mp4">
+<link rel="preload" as="video" href="Mobile.mp4" media="(max-width: 900px)" type="video/mp4">
+
 <style>
 :root{
   --bg:#050505; --surface:#0d0d0d; --surface-2:#141414;
@@ -281,19 +286,15 @@ footer{ padding:46px 24px 34px; }
 </head>
 <body>
 
-<div class="led-frame" aria-hidden="true">
-  <span class="led led-1"></span>
-  <span class="led led-2"></span>
-  <span class="led led-3"></span>
-  <span class="led led-4"></span>
-  <span class="led led-5"></span>
-</div>
-
+<!-- Splash primeiro: navegador prioriza carregar o vídeo antes de tudo -->
 <div id="splash">
   <div class="intro-video-wrap" id="introVideoWrap">
     <video id="introVideo" class="intro-video"
-           autoplay playsinline preload="auto"
-           aria-hidden="true"></video>
+           autoplay playsinline preload="auto" fetchpriority="high"
+           aria-hidden="true">
+      <source src="PC.mp4"     media="(min-width: 901px)" type="video/mp4">
+      <source src="Mobile.mp4" media="(max-width: 900px)" type="video/mp4">
+    </video>
   </div>
 
   <div class="logo-stage" id="logoStage" role="button" tabindex="0" aria-label="Entrar no site">
@@ -306,6 +307,19 @@ footer{ padding:46px 24px 34px; }
   </div>
 
   <div class="tap-hint" id="tapHint">Toque para entrar</div>
+</div>
+
+<script>
+  // Trava scroll imediatamente, antes do resto carregar
+  document.body.style.overflow = 'hidden';
+</script>
+
+<div class="led-frame" aria-hidden="true">
+  <span class="led led-1"></span>
+  <span class="led led-2"></span>
+  <span class="led led-3"></span>
+  <span class="led led-4"></span>
+  <span class="led led-5"></span>
 </div>
 
 <header>
@@ -1080,21 +1094,15 @@ footer{ padding:46px 24px 34px; }
   let entrou = false;
   let jaPediuToque = false;
 
-  const isMobile = window.matchMedia('(max-width: 900px)').matches;
-  video.src = isMobile ? 'Mobile.mp4' : 'PC.mp4';
-
-  document.body.style.overflow = 'hidden';
-
-  // ----- Etapa 2: mostra a logo -----
   function mostrarLogo(){
     try { video.pause(); } catch(_) {}
     videoWrap.classList.add('hide');
     logoStage.classList.add('show');
     tapHint.textContent = 'Toque para entrar';
     tapHint.classList.add('show');
+    splash.style.cursor = 'pointer';
   }
 
-  // ----- Etapa 3: entra no site -----
   function enterSite(){
     if (entrou) return;
     entrou = true;
@@ -1104,20 +1112,27 @@ footer{ padding:46px 24px 34px; }
     setTimeout(() => splash.remove(), 650);
   }
 
-  // ----- Se o arquivo do vídeo der erro, pula pra logo -----
   video.addEventListener('error', mostrarLogo);
   video.addEventListener('ended', mostrarLogo);
 
-  // ----- Mostra "toque para iniciar" quando o autoplay é bloqueado -----
   function pedirToque(){
     if (jaPediuToque) return;
     jaPediuToque = true;
-
     tapHint.textContent = 'Toque para iniciar';
     tapHint.classList.add('show');
     splash.style.cursor = 'pointer';
+  }
 
-    splash.addEventListener('click', () => {
+  /* Clique em QUALQUER lugar do splash */
+  splash.addEventListener('click', () => {
+    if (entrou) return;
+
+    if (logoStage.classList.contains('show')){
+      enterSite();
+      return;
+    }
+
+    if (video.paused){
       video.muted  = false;
       video.volume = 1;
       const p = video.play();
@@ -1126,50 +1141,51 @@ footer{ padding:46px 24px 34px; }
           tapHint.classList.remove('show');
           splash.style.cursor = '';
         }).catch(() => mostrarLogo());
-      } else {
-        tapHint.classList.remove('show');
-        splash.style.cursor = '';
       }
-    }, { once:true });
-  }
+    }
+  });
 
-  // ----- Tenta rodar com som -----
   video.volume = 1;
   video.muted  = false;
 
-  const playPromise = video.play();
-
-  if (playPromise && typeof playPromise.then === 'function'){
-    playPromise.then(() => {
-      // Alguns navegadores resolvem a promise mas não tocam nada.
-      // Conferimos 250ms depois se o vídeo realmente saiu do lugar.
+  // Tenta rodar assim que o vídeo tiver dados suficientes
+  // Se já estiver pronto, play() dispara imediatamente
+  const tentarPlay = () => {
+    const playPromise = video.play();
+    if (playPromise && typeof playPromise.then === 'function'){
+      playPromise.then(() => {
+        setTimeout(() => {
+          if (video.paused) pedirToque();
+        }, 250);
+      }).catch(pedirToque);
+    } else {
       setTimeout(() => {
-        if (video.paused || video.currentTime === 0){
-          pedirToque();
-        }
+        if (video.paused) pedirToque();
       }, 250);
-    }).catch(pedirToque);
+    }
+  };
+
+  if (video.readyState >= 3){
+    // Já tem dados suficientes (graças ao preload) → roda já
+    tentarPlay();
   } else {
-    // Navegador muito antigo, sem promise
-    setTimeout(() => {
-      if (video.paused) pedirToque();
-    }, 250);
+    // Espera carregar o suficiente e roda o quanto antes
+    video.addEventListener('canplay', tentarPlay, { once:true });
+    // Fallback pra não ficar travado se o canplay não disparar
+    setTimeout(tentarPlay, 800);
   }
 
-  // ----- Clique na logo → entra no site -----
-  logoStage.addEventListener('click', (e) => {
-    e.stopPropagation();
-    enterSite();
-  });
-  logoStage.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') enterSite();
-  });
-
-  // ----- Acessibilidade teclado -----
   document.addEventListener('keydown', (e) => {
     if (entrou) return;
     if (logoStage.classList.contains('show')){
       if (['Enter',' ','Escape'].includes(e.key)) enterSite();
+      return;
+    }
+    if (video.paused && ['Enter',' '].includes(e.key)){
+      video.muted  = false;
+      video.volume = 1;
+      video.play().catch(() => mostrarLogo());
+      tapHint.classList.remove('show');
     }
   });
 })();
