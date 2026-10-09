@@ -35,7 +35,6 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; color
 input{ font-family:inherit; }
 a{ color:inherit; text-decoration:none; }
 
-/* LED frame */
 .led-frame{ position:fixed; inset:0; z-index:9998; pointer-events:none; }
 .led-frame::before{ content:''; position:absolute; inset:0; padding:2px; background:rgba(0,177,64,.35);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
@@ -51,7 +50,6 @@ a{ color:inherit; text-decoration:none; }
 .led-1{ animation-delay:-0s; } .led-2{ animation-delay:-0.64s; } .led-3{ animation-delay:-1.28s; } .led-4{ animation-delay:-1.92s; } .led-5{ animation-delay:-2.56s; }
 @keyframes ledChase{ to{ --led-angle:360deg; } }
 
-/* Splash */
 #splash{ position:fixed; inset:0; z-index:999; background:#000; display:flex; align-items:center; justify-content:center; overflow:hidden; transition:opacity .6s ease, visibility .6s ease; }
 #splash.hide{ opacity:0; visibility:hidden; pointer-events:none; }
 
@@ -73,7 +71,6 @@ a{ color:inherit; text-decoration:none; }
 @keyframes blink{ 0%,100%{opacity:1} 50%{opacity:.25} }
 .tap-hint::before,.tap-hint::after{ content:''; width:26px; height:1px; background:var(--green); opacity:.5; }
 
-/* Header */
 header{ position:sticky; top:0; z-index:60; background:rgba(5,5,5,.82); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border-bottom:1px solid var(--line); }
 .nav{ max-width:1300px; margin:0 auto; padding:14px 24px; display:flex; align-items:center; gap:20px; }
 .logo-mini{ display:flex; align-items:center; gap:11px; flex-shrink:0; }
@@ -280,7 +277,9 @@ footer{ padding:46px 24px 34px; }
       <a href="#tabacaria">Tabacaria</a>
       <a href="#bebidas">Bebidas</a>
       <a href="#salgadinhos">Salgadinhos</a>
+      <a href="#alimentos">Alimentos</a>
       <a href="#doces">Doces</a>
+      <a href="#acessorios">Acessórios</a>
     </div>
   </nav>
   <div class="nav-chips" aria-label="Categorias">
@@ -290,7 +289,9 @@ footer{ padding:46px 24px 34px; }
     <a href="#tabacaria">Tabacaria</a>
     <a href="#bebidas">Bebidas</a>
     <a href="#salgadinhos">Salgadinhos</a>
+    <a href="#alimentos">Alimentos</a>
     <a href="#doces">Doces</a>
+    <a href="#acessorios">Acessórios</a>
   </div>
 </header>
 
@@ -947,7 +948,76 @@ footer{ padding:46px 24px 34px; }
     </div>
   </section>
 
-  <!-- LINHA 7 — DOCES (1 produto) -->
+  <!-- LINHA 7 — ALIMENTOS (11 produtos) -->
+  <section class="row" id="alimentos">
+    <div class="row-head"><h2>Alimentos</h2><span>11 produtos</span></div>
+    <div class="rail-wrap">
+      <button class="rail-btn left" data-dir="-1" aria-label="Anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+      <div class="rail" data-rail>
+
+        <article class="card" data-name="Pão de Alho" data-cat="alimentos">
+          <div class="thumb"><img src="PaoDeAlho.png" alt="Pão de Alho" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
+          <span class="tag">Novidade</span>
+          <div class="card-body"><span class="cat">Pão</span><h3>Pão de Alho</h3><p class="vol">Bandeja</p><div class="price-row"><div class="price"><small>R$</small>15,00</div></div></div>
+        </article>
+
+        <article class="card" data-name="Pão de Mel Divina Mesa 90g" data-cat="alimentos">
+          <div class="thumb"><img src="PaoDeMel.png" alt="Pão de Mel Divina Mesa 90g" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
+          <div class="card-body"><span class="cat">Pão de Mel</span><h3>Pão de Mel Divina Mesa</h3><p class="vol">90 g</p><div class="price-row"><div class="price"><small>R$</small>4,99</div></div></div>
+        </article>
+
+        <article class="card" data-name="Bolacha Recheada Passatempo 130g" data-cat="alimentos">
+          <div class="thumb"><img src="Passatempo.png" alt="Bolacha Recheada Passatempo 130g" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
+          <div class="card-body"><span class="cat">Bolacha</span><h3>Bolacha Recheada Passatempo</h3><p class="vol">130 g</p><div class="price-row"><div class="price"><small>R$</small>3,00</div></div></div>
+        </article>
+
+        <article class="card" data-name="Bolacha Recheada Toddy 100g" data-cat="alimentos">
+          <div class="thumb"><img src="Toddy.png" alt="Bolacha Recheada Toddy 100g" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
+          <div class="card-body"><span class="cat">Bolacha</span><h3>Bolacha Recheada Toddy</h3><p class="vol">100 g</p><div class="price-row"><div class="price"><small>R$</small>3,00</div></div></div>
+        </article>
+
+        <article class="card" data-name="Bolacha Recheada Gulb Mania 80g" data-cat="alimentos">
+          <div class="thumb"><img src="GulbMania.png" alt="Bolacha Recheada Gulb Mania 80g" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
+          <span class="tag">Barato</span>
+          <div class="card-body"><span class="cat">Bolacha</span><h3>Bolacha Recheada Gulb Mania</h3><p class="vol">80 g</p><div class="price-row"><div class="price"><small>R$</small>2,49</div></div></div>
+        </article>
+
+        <article class="card" data-name="Bolacha de Maizena Marilan 300g" data-cat="alimentos">
+          <div class="thumb"><img src="Marilan.png" alt="Bolacha de Maizena Marilan 300g" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
+          <div class="card-body"><span class="cat">Bolacha</span><h3>Bolacha de Maizena Marilan</h3><p class="vol">300 g</p><div class="price-row"><div class="price"><small>R$</small>6,50</div></div></div>
+        </article>
+
+        <article class="card" data-name="Bolacha Cream Cracker Isabela 350g" data-cat="alimentos">
+          <div class="thumb"><img src="Isabela.png" alt="Bolacha Cream Cracker Isabela 350g" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
+          <div class="card-body"><span class="cat">Cream Cracker</span><h3>Bolacha Cream Cracker Isabela</h3><p class="vol">350 g</p><div class="price-row"><div class="price"><small>R$</small>7,99</div></div></div>
+        </article>
+
+        <article class="card" data-name="Bolacha Cream Cracker Sol 360g" data-cat="alimentos">
+          <div class="thumb"><img src="SolBolacha.png" alt="Bolacha Cream Cracker Sol 360g" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
+          <div class="card-body"><span class="cat">Cream Cracker</span><h3>Bolacha Cream Cracker Sol</h3><p class="vol">360 g</p><div class="price-row"><div class="price"><small>R$</small>6,49</div></div></div>
+        </article>
+
+        <article class="card" data-name="Wafer Piraquê 100g" data-cat="alimentos">
+          <div class="thumb"><img src="Piraque.png" alt="Wafer Piraquê 100g" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
+          <div class="card-body"><span class="cat">Wafer</span><h3>Wafer Piraquê</h3><p class="vol">100 g</p><div class="price-row"><div class="price"><small>R$</small>5,00</div></div></div>
+        </article>
+
+        <article class="card" data-name="Wafer My Bit 80g" data-cat="alimentos">
+          <div class="thumb"><img src="MyBit.png" alt="Wafer My Bit 80g" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
+          <div class="card-body"><span class="cat">Wafer</span><h3>Wafer My Bit</h3><p class="vol">80 g</p><div class="price-row"><div class="price"><small>R$</small>2,49</div></div></div>
+        </article>
+
+        <article class="card" data-name="Wafer Girassol 60g" data-cat="alimentos">
+          <div class="thumb"><img src="Girassol.png" alt="Wafer Girassol 60g" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
+          <div class="card-body"><span class="cat">Wafer</span><h3>Wafer Girassol</h3><p class="vol">60 g</p><div class="price-row"><div class="price"><small>R$</small>2,49</div></div></div>
+        </article>
+
+      </div>
+      <button class="rail-btn right" data-dir="1" aria-label="Próximo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+    </div>
+  </section>
+
+  <!-- LINHA 8 — DOCES (1 produto) -->
   <section class="row" id="doces">
     <div class="row-head"><h2>Doces</h2><span>1 produto</span></div>
     <div class="rail-wrap">
@@ -958,6 +1028,24 @@ footer{ padding:46px 24px 34px; }
           <div class="thumb"><img src="Marshmallow.png" alt="Marshmallows Fini 80g" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
           <span class="tag">Destaque</span>
           <div class="card-body"><span class="cat">Doce</span><h3>Marshmallows Fini</h3><p class="vol">Pacote 80 g</p><div class="price-row"><div class="price"><small>R$</small>10,00</div></div></div>
+        </article>
+
+      </div>
+      <button class="rail-btn right" data-dir="1" aria-label="Próximo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></button>
+    </div>
+  </section>
+
+  <!-- LINHA 9 — ACESSÓRIOS (1 produto) -->
+  <section class="row" id="acessorios">
+    <div class="row-head"><h2>Acessórios</h2><span>1 produto</span></div>
+    <div class="rail-wrap">
+      <button class="rail-btn left" data-dir="-1" aria-label="Anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg></button>
+      <div class="rail" data-rail>
+
+        <article class="card" data-name="Copo Stanley" data-cat="acessorios">
+          <div class="thumb"><img src="CopoStanley.png" alt="Copo Stanley" onload="this.parentElement.querySelector('.thumb-ph').style.display='none'" onerror="this.style.display='none'"><div class="thumb-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg><span>Imagem</span></div></div>
+          <span class="tag">Novidade</span>
+          <div class="card-body"><span class="cat">Acessório</span><h3>Copo Stanley</h3><p class="vol">Unidade</p><div class="price-row"><div class="price"><small>R$</small>49,90</div></div></div>
         </article>
 
       </div>
@@ -1178,7 +1266,9 @@ const aliasesCat = {
   tabacaria:   ['tabacaria','tabaco','cigarro','cigarros','fumo','fumos','seda','sedas','isqueiro','isqueiros','piteira','piteiras','carvao','carvoes','essencia','essencias'],
   bebidas:     ['bebida','bebidas','jungle','chopp','chop','vinho'],
   salgadinhos: ['salgadinho','salgadinhos','salgado','salgados','chip','chips','batata','batatas','snack','snacks','petisco','petiscos','amendoim','pururuca','pipoca','biscoito','biscoitos','polvilho','quero s mais'],
-  doces:       ['doce','doces','bala','balas','chocolate','chocolates','guloseima','guloseimas']
+  alimentos:   ['alimento','alimentos','comida','comidas','pao','pao de alho','alho','pao de mel','lanche','lanches','bolacha','bolachas','biscoito','biscoitos','wafer','wafers','cream cracker','cracker','maizena','recheada','recheado','passatempo','toddy','piraque','girassol','my bit','mybit','gulb','mania','marilan','isabela','sol'],
+  doces:       ['doce','doces','bala','balas','chocolate','chocolates','guloseima','guloseimas'],
+  acessorios:  ['acessorio','acessorios','copo','copos','stanley','copo stanley','caneca','canecas','utensilio','utensilios']
 };
 
 const aliasesLabel = Object.fromEntries(
@@ -1199,7 +1289,13 @@ const aliasesLabel = Object.fromEntries(
     'batata chips':         ['batata','batatas','chip','chips','batata chips','divina','mesa'],
     'pipoca':               ['pipoca','pipocas'],
     'amendoim':             ['amendoim','amendoins','pettiz','dori'],
-    'doce':                 ['doce','doces','marshmallow','marshmallows','fini']
+    'pão':                  ['pao','paes','pao de alho','alho','pao de mel','mel'],
+    'pão de mel':           ['pao de mel','pao mel','mel'],
+    'bolacha':              ['bolacha','bolachas','biscoito','biscoitos','recheada','recheado','passatempo','toddy','gulb','mania','maizena','marilan'],
+    'cream cracker':        ['cream cracker','cracker','isabela','sol'],
+    'wafer':                ['wafer','wafers','piraque','my bit','mybit','girassol'],
+    'doce':                 ['doce','doces','marshmallow','marshmallows','fini'],
+    'acessório':            ['acessorio','acessorios','copo','copos','stanley','copo stanley','caneca','canecas']
   }).map(([k, v]) => [normalizar(k), v])
 );
 
