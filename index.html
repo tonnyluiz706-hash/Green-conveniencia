@@ -72,16 +72,50 @@ a{ color:inherit; text-decoration:none; }
 .tap-hint::before,.tap-hint::after{ content:''; width:26px; height:1px; background:var(--green); opacity:.5; }
 
 header{ position:sticky; top:0; z-index:60; background:rgba(5,5,5,.82); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border-bottom:1px solid var(--line); }
-.nav{ max-width:1300px; margin:0 auto; padding:14px 24px; display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
+.nav{ max-width:1300px; margin:0 auto; padding:14px 24px; display:flex; align-items:center; gap:20px; }
 .logo-mini{ display:flex; align-items:center; gap:11px; flex-shrink:0; }
 .logo-mini .mark{ width:42px; height:42px; flex-shrink:0; }
 .logo-mini .mark svg{ width:100%; height:100%; }
 .logo-mini .txt b{ display:block; font-size:15px; font-weight:900; line-height:1.1; letter-spacing:-.01em; }
 .logo-mini .txt span{ display:block; font-size:9px; color:var(--green); letter-spacing:.14em; text-transform:uppercase; font-weight:700; }
 
-/* Categorias — pílulas verdes, letra preta, hover preto com letra branca */
-.nav-links{ display:flex; gap:8px; margin-left:auto; flex-wrap:wrap; }
+/* Categorias — carrossel com setas, mostra 3 por vez */
+.cat-rail-wrap{
+  display:flex; align-items:center; gap:4px;
+  margin-left:auto;
+  flex:1;
+  max-width:520px;
+  min-width:0;
+}
+.cat-rail-btn{
+  flex-shrink:0;
+  width:32px; height:32px;
+  display:grid; place-items:center;
+  background:transparent;
+  color:#777;
+  border-radius:8px;
+  border:none;
+  cursor:pointer;
+  transition:background .2s, color .2s, opacity .25s;
+}
+.cat-rail-btn:hover{ background:var(--green-soft); color:var(--green); }
+.cat-rail-btn:active{ transform:scale(.92); }
+.cat-rail-btn svg{ width:18px; height:18px; }
+.cat-rail-btn.is-hidden{ opacity:0; pointer-events:none; }
+
+.nav-links{
+  display:flex; gap:8px;
+  overflow-x:auto;
+  scroll-behavior:smooth;
+  scrollbar-width:none; -ms-overflow-style:none;
+  padding:4px 2px;
+  flex:1; min-width:0;
+}
+.nav-links::-webkit-scrollbar{ display:none; }
 .nav-links a{
+  flex:0 0 auto;
+  min-width:116px;
+  text-align:center;
   font-size:12px;
   font-weight:800;
   letter-spacing:.02em;
@@ -191,9 +225,9 @@ footer{ padding:46px 24px 34px; }
 .wa-float .wa-label{ font-size:14.5px; font-weight:800; letter-spacing:-.01em; margin-left:12px; white-space:nowrap; opacity:0; transform:translateX(-6px); transition:opacity .25s .05s, transform .3s .05s; }
 .wa-float:hover .wa-label{ opacity:1; transform:translateX(0); }
 
-@media (max-width:1100px){ .nav-links{ gap:6px; } .nav-links a{ font-size:11px; padding:7px 11px; } }
+@media (max-width:1100px){ .nav-links a{ font-size:11px; padding:7px 11px; min-width:104px; } .cat-rail-wrap{ max-width:420px; } }
 @media (max-width:900px){
-  .nav-links{ display:none; }
+  .cat-rail-wrap{ display:none; }
   .nav-chips{
     display:flex; gap:8px; overflow-x:auto; padding:10px 16px;
     scrollbar-width:none; -ms-overflow-style:none;
@@ -249,7 +283,7 @@ footer{ padding:46px 24px 34px; }
   .tap-hint{ animation:none; }
   .badge-top .dot{ animation:none; }
   .logo-stage.show .logo-svg{ animation:none; }
-  .card,.thumb img,.rail{ transition:none; }
+  .card,.thumb img,.rail,.nav-links{ transition:none; }
 }
 </style>
 </head>
@@ -299,16 +333,25 @@ footer{ padding:46px 24px 34px; }
       </div>
       <div class="txt"><b>Green</b><span>Conveniência &amp; Tabacaria</span></div>
     </div>
-    <div class="nav-links">
-      <a href="#cervejas">Cervejas</a>
-      <a href="#destilados">Destilados</a>
-      <a href="#copao">Copão</a>
-      <a href="#tabacaria">Tabacaria</a>
-      <a href="#bebidas">Bebidas</a>
-      <a href="#salgadinhos">Salgadinhos</a>
-      <a href="#alimentos">Alimentos</a>
-      <a href="#doces">Doces</a>
-      <a href="#acessorios">Acessórios</a>
+
+    <div class="cat-rail-wrap">
+      <button class="cat-rail-btn left" data-dir="-1" aria-label="Categorias anteriores">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+      <div class="nav-links" data-cat-rail>
+        <a href="#cervejas">Cervejas</a>
+        <a href="#destilados">Destilados</a>
+        <a href="#copao">Copão</a>
+        <a href="#tabacaria">Tabacaria</a>
+        <a href="#bebidas">Bebidas</a>
+        <a href="#salgadinhos">Salgadinhos</a>
+        <a href="#alimentos">Alimentos</a>
+        <a href="#doces">Doces</a>
+        <a href="#acessorios">Acessórios</a>
+      </div>
+      <button class="cat-rail-btn right" data-dir="1" aria-label="Próximas categorias">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      </button>
     </div>
   </nav>
   <div class="nav-chips" aria-label="Categorias">
@@ -1345,7 +1388,33 @@ document.querySelectorAll('.thumb img').forEach(img => {
   }
 });
 
-/* ---------- Botões de scroll dos rails ---------- */
+/* ---------- Setas de navegação das categorias ---------- */
+document.querySelectorAll('.cat-rail-wrap').forEach(wrap => {
+  const rail = wrap.querySelector('[data-cat-rail]');
+  if (!rail) return;
+  const leftBtn  = wrap.querySelector('.cat-rail-btn.left');
+  const rightBtn = wrap.querySelector('.cat-rail-btn.right');
+
+  const updateArrows = () => {
+    const atStart = rail.scrollLeft <= 4;
+    const atEnd   = rail.scrollLeft + rail.clientWidth >= rail.scrollWidth - 4;
+    if (leftBtn)  leftBtn.classList.toggle('is-hidden', atStart);
+    if (rightBtn) rightBtn.classList.toggle('is-hidden', atEnd);
+  };
+
+  wrap.querySelectorAll('.cat-rail-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const dir = Number(btn.dataset.dir);
+      rail.scrollBy({ left: dir * (rail.clientWidth * 0.85), behavior: 'smooth' });
+    });
+  });
+
+  rail.addEventListener('scroll', updateArrows, { passive:true });
+  window.addEventListener('resize', updateArrows);
+  updateArrows();
+});
+
+/* ---------- Botões de scroll das rails de produto ---------- */
 document.querySelectorAll('.rail-wrap').forEach(wrap => {
   const rail = wrap.querySelector('[data-rail]');
   wrap.querySelectorAll('.rail-btn').forEach(btn => {
