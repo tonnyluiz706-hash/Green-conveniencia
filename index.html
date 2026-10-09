@@ -25,6 +25,9 @@
   --green-glow:rgba(0,177,64,.50); --green-soft:rgba(0,177,64,.10);
   --txt:#ffffff; --muted:#9a9a9a; --radius:14px;
   --red:#e63946; --red-soft:rgba(230,57,70,.10); --red-line:rgba(230,57,70,.35);
+  --cat-pill-w:110px;
+  --cat-pill-gap:8px;
+  --cat-rail-w:calc(var(--cat-pill-w) * 3 + var(--cat-pill-gap) * 2); /* 346px */
 }
 @property --led-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
 *{ margin:0; padding:0; box-sizing:border-box; }
@@ -79,24 +82,22 @@ header{ position:sticky; top:0; z-index:60; background:rgba(5,5,5,.82); backdrop
 .logo-mini .txt b{ display:block; font-size:15px; font-weight:900; line-height:1.1; letter-spacing:-.01em; }
 .logo-mini .txt span{ display:block; font-size:9px; color:var(--green); letter-spacing:.14em; text-transform:uppercase; font-weight:700; }
 
-/* Categorias — carrossel com setas, mostra 3 por vez */
+/* Carrossel de categorias — 3 pílulas visíveis + setas */
 .cat-rail-wrap{
   display:flex; align-items:center; gap:4px;
   margin-left:auto;
-  flex:1;
-  max-width:520px;
-  min-width:0;
+  flex:0 0 auto;
 }
 .cat-rail-btn{
-  flex-shrink:0;
-  width:32px; height:32px;
+  flex:0 0 30px;
+  width:30px; height:30px;
   display:grid; place-items:center;
   background:transparent;
-  color:#777;
+  color:#666;
   border-radius:8px;
   border:none;
   cursor:pointer;
-  transition:background .2s, color .2s, opacity .25s;
+  transition:background .2s, color .2s, opacity .2s;
 }
 .cat-rail-btn:hover{ background:var(--green-soft); color:var(--green); }
 .cat-rail-btn:active{ transform:scale(.92); }
@@ -104,27 +105,33 @@ header{ position:sticky; top:0; z-index:60; background:rgba(5,5,5,.82); backdrop
 .cat-rail-btn.is-hidden{ opacity:0; pointer-events:none; }
 
 .nav-links{
-  display:flex; gap:8px;
+  display:flex;
+  gap:var(--cat-pill-gap);
+  flex:0 0 var(--cat-rail-w);
+  width:var(--cat-rail-w);
   overflow-x:auto;
   scroll-behavior:smooth;
-  scrollbar-width:none; -ms-overflow-style:none;
-  padding:4px 2px;
-  flex:1; min-width:0;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+  padding:2px 0;
 }
 .nav-links::-webkit-scrollbar{ display:none; }
 .nav-links a{
-  flex:0 0 auto;
-  min-width:116px;
+  flex:0 0 var(--cat-pill-w);
+  width:var(--cat-pill-w);
+  box-sizing:border-box;
   text-align:center;
-  font-size:12px;
+  font-size:11.5px;
   font-weight:800;
   letter-spacing:.02em;
   color:#001a09;
   background:var(--green);
-  padding:8px 14px;
+  padding:8px 8px;
   border-radius:99px;
   border:1px solid var(--green);
   white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
   transition:background .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease, transform .15s ease;
   box-shadow:0 4px 14px -6px var(--green-glow);
 }
@@ -225,8 +232,11 @@ footer{ padding:46px 24px 34px; }
 .wa-float .wa-label{ font-size:14.5px; font-weight:800; letter-spacing:-.01em; margin-left:12px; white-space:nowrap; opacity:0; transform:translateX(-6px); transition:opacity .25s .05s, transform .3s .05s; }
 .wa-float:hover .wa-label{ opacity:1; transform:translateX(0); }
 
-@media (max-width:1100px){ .nav-links a{ font-size:11px; padding:7px 11px; min-width:104px; } .cat-rail-wrap{ max-width:420px; } }
-@media (max-width:900px){
+@media (max-width:1100px){
+  :root{ --cat-pill-w:100px; }
+  .logo-mini .txt{ display:none; }
+}
+@media (max-width:780px){
   .cat-rail-wrap{ display:none; }
   .nav-chips{
     display:flex; gap:8px; overflow-x:auto; padding:10px 16px;
@@ -1396,6 +1406,13 @@ document.querySelectorAll('.cat-rail-wrap').forEach(wrap => {
   const rightBtn = wrap.querySelector('.cat-rail-btn.right');
 
   const updateArrows = () => {
+    // Guard: se por algum motivo o rail não tem tamanho, não mexe
+    if (rail.scrollWidth <= rail.clientWidth + 2){
+      // Tudo cabe — esconde as duas
+      if (leftBtn)  leftBtn.classList.add('is-hidden');
+      if (rightBtn) rightBtn.classList.add('is-hidden');
+      return;
+    }
     const atStart = rail.scrollLeft <= 4;
     const atEnd   = rail.scrollLeft + rail.clientWidth >= rail.scrollWidth - 4;
     if (leftBtn)  leftBtn.classList.toggle('is-hidden', atStart);
@@ -1411,7 +1428,10 @@ document.querySelectorAll('.cat-rail-wrap').forEach(wrap => {
 
   rail.addEventListener('scroll', updateArrows, { passive:true });
   window.addEventListener('resize', updateArrows);
-  updateArrows();
+
+  // Espera o layout do browser estabilizar antes de medir
+  requestAnimationFrame(updateArrows);
+  setTimeout(updateArrows, 100);
 });
 
 /* ---------- Botões de scroll das rails de produto ---------- */
