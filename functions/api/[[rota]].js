@@ -2,15 +2,16 @@
  * Green Conveniência — Backend completo (single-file)
  *
  * Rotas:
- *   POST   /api/setup         → cria o primeiro admin (só 1x)
- *   POST   /api/login         → faz login, retorna token
- *   POST   /api/logout        → encerra sessão
- *   GET    /api/me            → retorna usuário logado
- *   GET    /api/produtos      → lista produtos ativos (público)
- *   POST   /api/produtos      → cria produto (auth)
- *   PUT    /api/produto       → edita produto (auth)
- *   DELETE /api/produto?id=X  → deleta produto (auth)
- *   POST   /api/upload        → upload de imagem (auth)
+ *   POST   /api/setup           → cria o primeiro admin (só 1x)
+ *   POST   /api/login           → faz login, retorna token
+ *   POST   /api/logout          → encerra sessão
+ *   GET    /api/me              → retorna usuário logado
+ *   GET    /api/produtos        → lista produtos ativos (público)
+ *   GET    /api/admin/produtos  → lista TODOS os produtos (auth)
+ *   POST   /api/produtos        → cria produto (auth)
+ *   PUT    /api/produto         → edita produto (auth)
+ *   DELETE /api/produto?id=X    → deleta produto (auth)
+ *   POST   /api/upload          → upload de imagem (auth)
  * ============================================================ */
 
 const SESSAO_DURACAO_HORAS = 24 * 7; // 7 dias
@@ -85,15 +86,16 @@ export async function onRequest(context){
   }
 
   try {
-    if (rota === 'setup'    && metodo === 'POST')   return setup(context);
-    if (rota === 'login'    && metodo === 'POST')   return login(context);
-    if (rota === 'logout'   && metodo === 'POST')   return logout(context);
-    if (rota === 'me'       && metodo === 'GET')    return me(context);
-    if (rota === 'produtos' && metodo === 'GET')    return listarProdutos(context);
-    if (rota === 'produtos' && metodo === 'POST')   return criarProduto(context);
-    if (rota === 'produto'  && metodo === 'PUT')    return editarProduto(context);
-    if (rota === 'produto'  && metodo === 'DELETE') return deletarProduto(context);
-    if (rota === 'upload'   && metodo === 'POST')   return uploadImagem(context);
+    if (rota === 'setup'           && metodo === 'POST')   return setup(context);
+    if (rota === 'login'           && metodo === 'POST')   return login(context);
+    if (rota === 'logout'          && metodo === 'POST')   return logout(context);
+    if (rota === 'me'              && metodo === 'GET')    return me(context);
+    if (rota === 'produtos'        && metodo === 'GET')    return listarProdutos(context);
+    if (rota === 'admin/produtos'  && metodo === 'GET')    return listarTodosProdutos(context);
+    if (rota === 'produtos'        && metodo === 'POST')   return criarProduto(context);
+    if (rota === 'produto'         && metodo === 'PUT')    return editarProduto(context);
+    if (rota === 'produto'         && metodo === 'DELETE') return deletarProduto(context);
+    if (rota === 'upload'          && metodo === 'POST')   return uploadImagem(context);
 
     return erro('Rota não encontrada: ' + rota, 404);
   } catch (e){
@@ -171,11 +173,24 @@ async function me({ request, env }){
 }
 
 /* ============================================================
- * LISTAR PRODUTOS (público)
+ * LISTAR PRODUTOS (público) — só ativos
  * ============================================================ */
 async function listarProdutos({ env }){
   const { results } = await env.DB.prepare(
     'SELECT * FROM produtos WHERE ativo = 1 ORDER BY categoria, ordem, nome'
+  ).all();
+  return json({ ok: true, produtos: results });
+}
+
+/* ============================================================
+ * LISTAR TODOS OS PRODUTOS (auth) — inclui inativos
+ * ============================================================ */
+async function listarTodosProdutos({ request, env }){
+  const user = await autenticar(request, env);
+  if (!user) return erro('Não autenticado', 401);
+
+  const { results } = await env.DB.prepare(
+    'SELECT * FROM produtos ORDER BY categoria, ordem, nome'
   ).all();
   return json({ ok: true, produtos: results });
 }
@@ -192,11 +207,12 @@ async function criarProduto({ request, env }){
 
   const result = await env.DB.prepare(
     `INSERT INTO produtos
-       (nome, categoria, subcategoria, volume, preco, tag, imagem_url, ordem)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+       (nome, categoria, subcategoria, volume, preco, tag, imagem_url, ativo, ordem)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).bind(
     p.nome, p.categoria, p.subcategoria || null, p.volume || null,
-    p.preco || null, p.tag || null, p.imagem_url || null, p.ordem || 0
+    p.preco || null, p.tag || null, p.imagem_url || null,
+    p.ativo !== undefined ? p.ativo : 1, p.ordem || 0
   ).run();
 
   return json({ ok: true, id: result.meta.last_row_id });
