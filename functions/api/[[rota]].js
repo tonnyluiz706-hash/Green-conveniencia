@@ -15,9 +15,20 @@
 
 const SESSAO_DURACAO_HORAS = 24 * 7; // 7 dias
 
+/* ---------- CORS ---------- */
+const CORS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  'Access-Control-Max-Age': '86400',
+};
+
 /* ---------- Helpers ---------- */
-const json = (data, status = 200) => Response.json(data, { status });
-const erro = (msg,  status = 400) => Response.json({ erro: msg }, { status });
+const json = (data, status = 200) =>
+  Response.json(data, { status, headers: CORS });
+
+const erro = (msg, status = 400) =>
+  Response.json({ erro: msg }, { status, headers: CORS });
 
 const buf2hex = buf =>
   [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
@@ -67,6 +78,11 @@ export async function onRequest(context){
   const url    = new URL(request.url);
   const rota   = url.pathname.replace('/api/', '').replace(/\/$/, '');
   const metodo = request.method;
+
+  // Responde o preflight do navegador (CORS)
+  if (metodo === 'OPTIONS') {
+    return new Response(null, { status: 204, headers: CORS });
+  }
 
   try {
     if (rota === 'setup'    && metodo === 'POST')   return setup(context);
