@@ -301,7 +301,7 @@ footer{ padding:46px 24px 34px; }
 <div id="splash">
   <div class="intro-video-wrap" id="introVideoWrap">
     <video id="introVideo" class="intro-video"
-           autoplay playsinline webkit-playsinline preload="auto" fetchpriority="high"
+           autoplay playsinline webkit-playsinline muted preload="auto" fetchpriority="high"
            aria-hidden="true">
       <source src="PC.mp4"     media="(min-width: 901px)" type="video/mp4">
       <source src="Mobile.mp4" media="(max-width: 900px)" type="video/mp4">
@@ -1335,6 +1335,16 @@ footer{ padding:46px 24px 34px; }
       return;
     }
 
+    // Vídeo rodando (mudo, autoplay) — só tira o hint e tenta destravar som
+    if (!video.paused && !video.ended){
+      video.muted = false;
+      video.volume = 1;
+      tapHint.classList.remove('show');
+      splash.style.cursor = '';
+      return;
+    }
+
+    // Vídeo pausado — tenta dar play
     if (video.paused){
       video.muted  = false;
       video.volume = 1;
@@ -1358,22 +1368,31 @@ footer{ padding:46px 24px 34px; }
           mostrarLogo();
         });
       }
-    } else {
-      tapHint.classList.remove('show');
     }
   });
 
   video.volume = 1;
-  video.muted  = false;
+  video.muted  = true;   // começa mudo pro autoplay passar
 
   const tentarPlay = () => {
     const playPromise = video.play();
     if (playPromise && typeof playPromise.then === 'function'){
       playPromise.then(() => {
-        setTimeout(() => { if (video.paused) pedirToque(); }, 250);
-      }).catch(pedirToque);
-    } else {
-      setTimeout(() => { if (video.paused) pedirToque(); }, 250);
+        // Autoplay passou! Vídeo tá rodando mudo. Não precisa de tap-hint.
+        // Só garante que se por algum motivo ele pausar, mostra o hint.
+        setTimeout(() => {
+          if (video.paused && !jaMostrouLogo && !entrou){
+            tapHint.textContent = 'Toque para iniciar';
+            tapHint.classList.add('show');
+            splash.style.cursor = 'pointer';
+          }
+        }, 250);
+      }).catch(() => {
+        // Autoplay com muted também falhou (raro) — mostra hint
+        tapHint.textContent = 'Toque para iniciar';
+        tapHint.classList.add('show');
+        splash.style.cursor = 'pointer';
+      });
     }
   };
 
