@@ -56,7 +56,6 @@ a{ color:inherit; text-decoration:none; }
 #splash{ position:fixed; inset:0; z-index:999; background:#000; display:flex; align-items:center; justify-content:center; overflow:hidden; transition:opacity .6s ease, visibility .6s ease; cursor:pointer; }
 #splash.hide{ opacity:0; visibility:hidden; pointer-events:none; }
 
-/* Etapa 1 — logo (aparece primeiro) */
 .logo-stage{
   position:absolute; z-index:2;
   width:min(520px,84vw); aspect-ratio:1/1;
@@ -70,7 +69,6 @@ a{ color:inherit; text-decoration:none; }
 .logo-stage:hover .logo-svg{ filter:drop-shadow(0 0 60px rgba(0,177,64,.6)); }
 @keyframes logoIn{ from{opacity:0;transform:scale(.86)} to{opacity:1;transform:scale(1)} }
 
-/* Etapa 2 — vídeo (escondido até o usuário clicar) */
 .intro-video-wrap{
   position:absolute; inset:0; z-index:1;
   opacity:0; pointer-events:none;
@@ -80,7 +78,6 @@ a{ color:inherit; text-decoration:none; }
 .intro-video-wrap.show{ opacity:1; pointer-events:auto; }
 .intro-video{ position:absolute; inset:0; width:100%; height:100%; object-fit:contain; display:block; background:#000; margin:auto; }
 
-/* Hint animado */
 .tap-hint{
   position:absolute; bottom:8vh; left:50%; transform:translateX(-50%);
   z-index:5;
@@ -104,6 +101,34 @@ header{ position:sticky; top:0; z-index:60; background:rgba(5,5,5,.82); backdrop
 .logo-mini .mark svg{ width:100%; height:100%; }
 .logo-mini .txt b{ display:block; font-size:15px; font-weight:900; line-height:1.1; letter-spacing:-.01em; }
 .logo-mini .txt span{ display:block; font-size:9px; color:var(--green); letter-spacing:.14em; text-transform:uppercase; font-weight:700; }
+
+/* ---------- Ícone de perfil ---------- */
+.perfil-wrap{ position:relative; margin-left:4px; flex-shrink:0; }
+.perfil-btn{ width:44px; height:44px; border-radius:50%; background:var(--surface-2); border:1.5px solid var(--line); display:grid; place-items:center; color:var(--muted); cursor:pointer; transition:border-color .2s, color .2s, background .2s, transform .15s; overflow:hidden; padding:0; }
+.perfil-btn:hover{ border-color:var(--green); color:var(--green); background:var(--green-soft); }
+.perfil-btn:active{ transform:scale(.95); }
+.perfil-btn svg{ width:24px; height:24px; }
+.perfil-btn img{ width:100%; height:100%; object-fit:cover; border-radius:50%; }
+
+.perfil-tip{ position:absolute; top:calc(100% + 10px); left:50%; transform:translateX(-50%) translateY(-4px); background:#000; color:#fff; font-size:11.5px; font-weight:700; padding:7px 11px; border-radius:8px; white-space:nowrap; opacity:0; pointer-events:none; transition:opacity .2s, transform .2s; border:1px solid var(--line-green); box-shadow:0 8px 20px -8px rgba(0,0,0,.8); z-index:10; }
+.perfil-tip::before{ content:''; position:absolute; bottom:100%; left:50%; transform:translateX(-50%); border:5px solid transparent; border-bottom-color:var(--line-green); }
+.perfil-wrap:hover .perfil-tip{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ---------- Modal de login ---------- */
+#authModal{ position:fixed; inset:0; background:rgba(0,0,0,.85); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); z-index:200; display:none; align-items:center; justify-content:center; padding:20px; }
+#authModal.show{ display:flex; }
+.auth-box{ background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:34px 28px 26px; max-width:400px; width:100%; position:relative; box-shadow:0 30px 80px -20px rgba(0,177,64,.35); animation:authIn .25s cubic-bezier(.2,.8,.3,1); }
+@keyframes authIn{ from{opacity:0; transform:scale(.94) translateY(10px);} to{opacity:1; transform:scale(1) translateY(0);} }
+.auth-close{ position:absolute; top:12px; right:12px; width:34px; height:34px; border-radius:9px; display:grid; place-items:center; color:var(--muted); font-size:22px; line-height:1; cursor:pointer; transition:background .2s, color .2s; padding:0; }
+.auth-close:hover{ background:var(--surface-2); color:var(--txt); }
+.auth-box h2{ font-size:21px; font-weight:800; text-align:center; margin-bottom:6px; letter-spacing:-.02em; }
+.auth-box .sub{ font-size:13px; color:var(--muted); text-align:center; margin-bottom:22px; }
+.auth-opt{ width:100%; padding:13px 16px; border:1px solid var(--line); border-radius:11px; background:var(--surface-2); color:var(--txt); font-size:14px; font-weight:700; display:flex; align-items:center; gap:12px; margin-bottom:10px; cursor:pointer; transition:border-color .2s, background .2s, transform .15s; font-family:inherit; text-align:left; }
+.auth-opt:hover{ border-color:var(--green); background:#111; }
+.auth-opt:active{ transform:scale(.98); }
+.auth-opt svg{ width:20px; height:20px; flex-shrink:0; }
+.auth-opt.google svg{ color:#fff; }
+.auth-opt.email svg{ color:var(--green); }
 
 .cat-rail-wrap{
   display:flex; align-items:center; gap:4px;
@@ -260,6 +285,9 @@ footer{ padding:46px 24px 34px; }
 }
 @media (max-width:780px){
   .cat-rail-wrap{ display:none; }
+  .nav{ padding:12px 16px; gap:12px; }
+  .perfil-btn{ width:40px; height:40px; }
+  .perfil-btn svg{ width:22px; height:22px; }
   .nav-chips{
     display:flex; gap:8px; overflow-x:auto; padding:10px 16px;
     scrollbar-width:none; -ms-overflow-style:none;
@@ -322,7 +350,6 @@ footer{ padding:46px 24px 34px; }
 <body>
 
 <div id="splash">
-  <!-- Etapa 1 — Logo (aparece primeiro) -->
   <div class="logo-stage" id="logoStage" role="button" tabindex="0" aria-label="Toque para iniciar">
     <svg class="logo-svg" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
       <circle cx="120" cy="120" r="105" fill="none" stroke="#00B140" stroke-width="6"/>
@@ -332,7 +359,6 @@ footer{ padding:46px 24px 34px; }
     </svg>
   </div>
 
-  <!-- Etapa 2 — Vídeo (escondido até o clique) -->
   <div class="intro-video-wrap" id="introVideoWrap">
     <video id="introVideo" class="intro-video"
            playsinline webkit-playsinline preload="auto" fetchpriority="high"
@@ -342,7 +368,6 @@ footer{ padding:46px 24px 34px; }
     </video>
   </div>
 
-  <!-- Hint -->
   <div class="tap-hint show" id="tapHint">Toque para iniciar</div>
 </div>
 
@@ -368,6 +393,17 @@ footer{ padding:46px 24px 34px; }
         </svg>
       </div>
       <div class="txt"><b>Green</b><span>Conveniência &amp; Tabacaria</span></div>
+    </div>
+
+    <!-- ÍCONE DE PERFIL -->
+    <div class="perfil-wrap">
+      <button class="perfil-btn" id="perfilBtn" aria-label="Entrar ou criar conta">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="8" r="4"/>
+          <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>
+        </svg>
+      </button>
+      <span class="perfil-tip">Entrar/Cadastrar</span>
     </div>
 
     <div class="cat-rail-wrap">
@@ -1274,6 +1310,33 @@ footer{ padding:46px 24px 34px; }
   <span class="wa-label">Fale conosco</span>
 </a>
 
+<!-- ============ MODAL DE LOGIN ============ -->
+<div id="authModal">
+  <div class="auth-box">
+    <button class="auth-close" id="authClose" aria-label="Fechar">×</button>
+    <h2>Entrar ou criar conta</h2>
+    <p class="sub">Escolha como quer continuar</p>
+
+    <button class="auth-opt google" data-tipo="google">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+      </svg>
+      Entrar com Google
+    </button>
+
+    <button class="auth-opt email" data-tipo="email">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="5" width="18" height="14" rx="2"/>
+        <path d="m3 7 9 6 9-6"/>
+      </svg>
+      Entrar com e-mail
+    </button>
+  </div>
+</div>
+
 <script type="application/ld+json">
 {
   "@context":"https://schema.org",
@@ -1306,22 +1369,19 @@ footer{ padding:46px 24px 34px; }
   const video     = document.getElementById('introVideo');
   const tapHint   = document.getElementById('tapHint');
 
-  let estado = 'logo';   // 'logo' | 'video' | 'done'
+  let estado = 'logo';
   let entrou = false;
 
   function tocarVideo(){
     if (estado !== 'logo') return;
     estado = 'video';
 
-    // some a logo + hint
     logoStage.classList.add('hide');
     tapHint.classList.add('hide');
     setTimeout(() => tapHint.classList.remove('show'), 400);
 
-    // aparece o vídeo
     videoWrap.classList.add('show');
 
-    // toca com som (o clique do usuário destravou o áudio)
     video.muted  = false;
     video.volume = 1;
     video.currentTime = 0;
@@ -1346,19 +1406,16 @@ footer{ padding:46px 24px 34px; }
     setTimeout(() => splash.remove(), 650);
   }
 
-  // Quando o vídeo acaba, entra
   video.addEventListener('ended', enterSite);
   video.addEventListener('error', () => {
     console.warn('[Green] erro no vídeo, entrando direto');
     enterSite();
   });
 
-  // Clique no splash
   splash.addEventListener('click', () => {
     if (estado === 'logo') tocarVideo();
   });
 
-  // Teclado
   document.addEventListener('keydown', (e) => {
     if (estado === 'logo' && ['Enter',' ','Escape'].includes(e.key)){
       e.preventDefault();
@@ -1366,7 +1423,6 @@ footer{ padding:46px 24px 34px; }
     }
   });
 
-  // Segurança: se o vídeo por algum motivo não terminar em 30s, entra
   setTimeout(() => {
     if (estado === 'video') enterSite();
   }, 30000);
@@ -1537,6 +1593,33 @@ function filtrarCards(term){
 }
 
 searchInput.addEventListener('input', () => filtrarCards(searchInput.value));
+
+/* ---------- Ícone de perfil + modal de login ---------- */
+(function(){
+  const perfilBtn = document.getElementById('perfilBtn');
+  const modal     = document.getElementById('authModal');
+  const closeBtn  = document.getElementById('authClose');
+  if (!perfilBtn || !modal) return;
+
+  const abrir  = () => modal.classList.add('show');
+  const fechar = () => modal.classList.remove('show');
+
+  perfilBtn.addEventListener('click', abrir);
+  closeBtn.addEventListener('click', fechar);
+  modal.addEventListener('click', e => { if (e.target === modal) fechar(); });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modal.classList.contains('show')) fechar();
+  });
+
+  document.querySelectorAll('.auth-opt').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tipo = btn.dataset.tipo;
+      const nomes = { google: 'Google', email: 'e-mail' };
+      alert(`Login com ${nomes[tipo]} ainda está em construção. Em breve!`);
+      // TODO: ligar cada método quando for implementar
+    });
+  });
+})();
 </script>
 
 </body>
