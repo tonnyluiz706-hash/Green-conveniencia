@@ -115,7 +115,7 @@ header{ position:sticky; top:0; z-index:60; background:rgba(5,5,5,.82); backdrop
 /* ---------- Modal de login ---------- */
 #authModal{ position:fixed; inset:0; background:rgba(0,0,0,.85); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); z-index:200; display:none; align-items:center; justify-content:center; padding:20px; }
 #authModal.show{ display:flex; }
-.auth-box{ background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:34px 28px 26px; max-width:400px; width:100%; position:relative; box-shadow:0 30px 80px -20px rgba(0,177,64,.35); animation:authIn .25s cubic-bezier(.2,.8,.3,1); }
+.auth-box{ background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:34px 28px 26px; max-width:420px; width:100%; position:relative; box-shadow:0 30px 80px -20px rgba(0,177,64,.35); animation:authIn .25s cubic-bezier(.2,.8,.3,1); }
 @keyframes authIn{ from{opacity:0; transform:scale(.94) translateY(10px);} to{opacity:1; transform:scale(1) translateY(0);} }
 .auth-close{ position:absolute; top:12px; right:12px; width:34px; height:34px; border-radius:9px; display:grid; place-items:center; color:var(--muted); font-size:22px; line-height:1; cursor:pointer; transition:background .2s, color .2s; padding:0; }
 .auth-close:hover{ background:var(--surface-2); color:var(--txt); }
@@ -127,6 +127,29 @@ header{ position:sticky; top:0; z-index:60; background:rgba(5,5,5,.82); backdrop
 .auth-opt svg{ width:20px; height:20px; flex-shrink:0; }
 .auth-opt.google svg{ color:#fff; }
 .auth-opt.email svg{ color:var(--green); }
+
+/* ---------- Telas do modal ---------- */
+.auth-screen{ animation:authIn .25s cubic-bezier(.2,.8,.3,1); }
+.auth-back{ position:absolute; top:12px; left:12px; width:34px; height:34px; border-radius:9px; display:grid; place-items:center; color:var(--muted); font-size:18px; cursor:pointer; transition:background .2s, color .2s; padding:0; }
+.auth-back:hover{ background:var(--surface-2); color:var(--txt); }
+.auth-tabs{ display:flex; gap:4px; background:var(--surface-2); border-radius:10px; padding:4px; margin-bottom:20px; }
+.auth-tab{ flex:1; padding:10px; font-size:13px; font-weight:700; color:var(--muted); border-radius:7px; transition:background .2s, color .2s; }
+.auth-tab.active{ background:var(--green); color:#001a09; }
+.auth-form label{ display:block; font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-bottom:5px; margin-top:12px; }
+.auth-form input{ width:100%; padding:12px 14px; background:var(--surface-2); border:1px solid var(--line); border-radius:10px; color:var(--txt); font-size:14.5px; outline:none; transition:border-color .2s, background .2s; font-family:inherit; }
+.auth-form input:focus{ border-color:var(--green); background:#111; }
+.auth-submit{ width:100%; margin-top:20px; padding:13px; background:var(--green); color:#001a09; font-weight:800; font-size:14.5px; border-radius:10px; cursor:pointer; transition:background .2s, transform .15s; }
+.auth-submit:hover{ background:#00c94a; }
+.auth-submit:active{ transform:scale(.98); }
+.auth-submit:disabled{ opacity:.5; cursor:not-allowed; }
+.auth-erro{ margin-top:12px; padding:10px; background:var(--red-soft); border:1px solid rgba(230,57,70,.35); color:#ff8895; font-size:12.5px; border-radius:8px; display:none; }
+.auth-erro.show{ display:block; }
+.auth-user-info{ text-align:center; padding:10px 0 24px; }
+.auth-avatar{ width:72px; height:72px; border-radius:50%; background:var(--green); color:#001a09; display:grid; place-items:center; font-size:28px; font-weight:900; margin:0 auto 14px; }
+.auth-user-info h3{ font-size:19px; font-weight:800; margin-bottom:4px; }
+.auth-user-info p{ font-size:13px; color:var(--muted); }
+.auth-logout{ width:100%; padding:13px; border:1px solid rgba(230,57,70,.35); background:var(--red-soft); color:#ff8895; font-weight:800; font-size:14px; border-radius:10px; cursor:pointer; transition:background .2s, border-color .2s; }
+.auth-logout:hover{ background:rgba(230,57,70,.2); border-color:var(--red); color:#fff; }
 
 .cat-rail-wrap{
   display:flex; align-items:center; gap:4px;
@@ -1308,27 +1331,77 @@ footer{ padding:46px 24px 34px; }
 <!-- ============ MODAL DE LOGIN ============ -->
 <div id="authModal">
   <div class="auth-box">
-    <button class="auth-close" id="authClose" aria-label="Fechar">×</button>
-    <h2>Entrar ou criar conta</h2>
-    <p class="sub">Escolha como quer continuar</p>
 
-    <button class="auth-opt google" data-tipo="google">
-      <svg viewBox="0 0 24 24" fill="currentColor">
-        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-      </svg>
-      Entrar com Google
-    </button>
+    <!-- Tela 1: Escolha -->
+    <div class="auth-screen" id="authScreenChoose">
+      <button class="auth-close" id="authClose" aria-label="Fechar">×</button>
+      <h2>Entrar ou criar conta</h2>
+      <p class="sub">Escolha como quer continuar</p>
 
-    <button class="auth-opt email" data-tipo="email">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="5" width="18" height="14" rx="2"/>
-        <path d="m3 7 9 6 9-6"/>
-      </svg>
-      Entrar com e-mail
-    </button>
+      <button class="auth-opt google" data-tipo="google" type="button">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        Entrar com Google
+      </button>
+
+      <button class="auth-opt email" data-tipo="email" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="5" width="18" height="14" rx="2"/>
+          <path d="m3 7 9 6 9-6"/>
+        </svg>
+        Entrar com e-mail
+      </button>
+    </div>
+
+    <!-- Tela 2: Formulário -->
+    <div class="auth-screen" id="authScreenForm" style="display:none;">
+      <button class="auth-back" id="authBack" aria-label="Voltar" type="button">←</button>
+      <h2 style="margin-top:8px;">Acesse sua conta</h2>
+      <p class="sub">Entre ou crie uma conta nova</p>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login" type="button">Entrar</button>
+        <button class="auth-tab" data-tab="cadastro" type="button">Criar conta</button>
+      </div>
+
+      <!-- Form de LOGIN -->
+      <form class="auth-form" id="formLogin">
+        <label for="loginEmail">Email</label>
+        <input type="email" id="loginEmail" autocomplete="email" required placeholder="seu@email.com">
+        <label for="loginSenha">Senha</label>
+        <input type="password" id="loginSenha" autocomplete="current-password" required placeholder="••••••••">
+        <div class="auth-erro" id="loginErro"></div>
+        <button type="submit" class="auth-submit" id="btnLogin">Entrar</button>
+      </form>
+
+      <!-- Form de CADASTRO -->
+      <form class="auth-form" id="formCadastro" style="display:none;">
+        <label for="cadNome">Nome</label>
+        <input type="text" id="cadNome" autocomplete="name" required placeholder="Seu nome">
+        <label for="cadEmail">Email</label>
+        <input type="email" id="cadEmail" autocomplete="email" required placeholder="seu@email.com">
+        <label for="cadSenha">Senha</label>
+        <input type="password" id="cadSenha" autocomplete="new-password" required minlength="6" placeholder="Mínimo 6 caracteres">
+        <div class="auth-erro" id="cadErro"></div>
+        <button type="submit" class="auth-submit" id="btnCadastro">Criar conta</button>
+      </form>
+    </div>
+
+    <!-- Tela 3: Logado -->
+    <div class="auth-screen" id="authScreenLogged" style="display:none;">
+      <button class="auth-close" id="authCloseLogged" aria-label="Fechar">×</button>
+      <div class="auth-user-info">
+        <div class="auth-avatar" id="authAvatar">G</div>
+        <h3 id="authUserName">—</h3>
+        <p id="authUserEmail">—</p>
+      </div>
+      <button class="auth-logout" id="authLogout" type="button">Sair da conta</button>
+    </div>
+
   </div>
 </div>
 
@@ -1366,10 +1439,6 @@ footer{ padding:46px 24px 34px; }
 
   let estado = 'logo';
   let entrou = false;
-
-  video.addEventListener('loadedmetadata', () => {
-    console.log('[Green] vídeo carregado:', video.currentSrc || video.src, video.videoWidth + 'x' + video.videoHeight);
-  });
 
   function tocarVideo(){
     if (estado !== 'logo') return;
@@ -1426,12 +1495,8 @@ footer{ padding:46px 24px 34px; }
     }
   });
 
-  // Fallback: se o vídeo não terminar em 30s, entra direto
   setTimeout(() => {
-    if (estado === 'video') {
-      console.warn('[Green] vídeo não terminou em 30s, entrando direto');
-      enterSite();
-    }
+    if (estado === 'video') enterSite();
   }, 30000);
 })();
 
@@ -1601,31 +1666,204 @@ function filtrarCards(term){
 
 searchInput.addEventListener('input', () => filtrarCards(searchInput.value));
 
-/* ---------- Ícone de perfil + modal de login ---------- */
+/* ---------- Ícone de perfil + login de cliente ---------- */
 (function(){
-  const perfilBtn = document.getElementById('perfilBtn');
-  const modal     = document.getElementById('authModal');
-  const closeBtn  = document.getElementById('authClose');
+  const perfilBtn  = document.getElementById('perfilBtn');
+  const perfilTip  = document.querySelector('.perfil-tip');
+  const modal      = document.getElementById('authModal');
   if (!perfilBtn || !modal) return;
 
-  const abrir  = () => modal.classList.add('show');
-  const fechar = () => modal.classList.remove('show');
+  const telaChoose = document.getElementById('authScreenChoose');
+  const telaForm   = document.getElementById('authScreenForm');
+  const telaLogged = document.getElementById('authScreenLogged');
 
-  perfilBtn.addEventListener('click', abrir);
-  closeBtn.addEventListener('click', fechar);
-  modal.addEventListener('click', e => { if (e.target === modal) fechar(); });
+  const formLogin    = document.getElementById('formLogin');
+  const formCadastro = document.getElementById('formCadastro');
+  const loginErro    = document.getElementById('loginErro');
+  const cadErro      = document.getElementById('cadErro');
+
+  let clienteLogado = null;
+
+  /* -------- Storage -------- */
+  function getToken(){ return localStorage.getItem('green_cli_token'); }
+  function setSessao(token, cliente){
+    localStorage.setItem('green_cli_token', token);
+    localStorage.setItem('green_cli', JSON.stringify(cliente));
+    clienteLogado = cliente;
+  }
+  function limparSessao(){
+    localStorage.removeItem('green_cli_token');
+    localStorage.removeItem('green_cli');
+    clienteLogado = null;
+  }
+
+  /* -------- API -------- */
+  async function apiCli(path, opts = {}){
+    const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
+    const t = getToken();
+    if (t) headers['Authorization'] = 'Bearer ' + t;
+    const res = await fetch(path, { ...opts, headers });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.erro || `Erro ${res.status}`);
+    return data;
+  }
+
+  /* -------- UI do botão de perfil -------- */
+  function atualizarUI(){
+    if (clienteLogado){
+      const inicial = (clienteLogado.nome || 'U').charAt(0).toUpperCase();
+      perfilBtn.innerHTML = `<span style="font-weight:900;font-size:18px;color:var(--green);">${inicial}</span>`;
+      perfilTip.textContent = (clienteLogado.nome || '').split(' ')[0] || 'Minha conta';
+    } else {
+      perfilBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>`;
+      perfilTip.textContent = 'Entrar/Cadastrar';
+    }
+  }
+
+  /* -------- Trocar telas -------- */
+  function mostrarTela(tela){
+    telaChoose.style.display = tela === 'choose' ? '' : 'none';
+    telaForm.style.display   = tela === 'form'   ? '' : 'none';
+    telaLogged.style.display = tela === 'logged' ? '' : 'none';
+  }
+
+  function abrirModal(){
+    if (clienteLogado){
+      document.getElementById('authAvatar').textContent    = (clienteLogado.nome || 'U').charAt(0).toUpperCase();
+      document.getElementById('authUserName').textContent  = clienteLogado.nome;
+      document.getElementById('authUserEmail').textContent = clienteLogado.email;
+      mostrarTela('logged');
+    } else {
+      mostrarTela('choose');
+    }
+    modal.classList.add('show');
+  }
+  function fecharModal(){ modal.classList.remove('show'); }
+
+  /* -------- Eventos do botão perfil -------- */
+  perfilBtn.addEventListener('click', abrirModal);
+
+  document.getElementById('authClose')?.addEventListener('click', fecharModal);
+  document.getElementById('authCloseLogged')?.addEventListener('click', fecharModal);
+  modal.addEventListener('click', e => { if (e.target === modal) fecharModal(); });
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape' && modal.classList.contains('show')) fechar();
+    if (e.key === 'Escape' && modal.classList.contains('show')) fecharModal();
   });
 
+  /* -------- Escolha inicial -------- */
   document.querySelectorAll('.auth-opt').forEach(btn => {
     btn.addEventListener('click', () => {
       const tipo = btn.dataset.tipo;
-      const nomes = { google: 'Google', email: 'e-mail' };
-      alert(`Login com ${nomes[tipo]} ainda está em construção. Em breve!`);
-      // TODO: ligar cada método quando for implementar
+      if (tipo === 'email'){
+        mostrarTela('form');
+      } else if (tipo === 'google'){
+        alert('Login com Google ainda em construção. Use e-mail por enquanto!');
+      }
     });
   });
+
+  /* -------- Botão voltar -------- */
+  document.getElementById('authBack').addEventListener('click', () => {
+    mostrarTela('choose');
+    loginErro.classList.remove('show');
+    cadErro.classList.remove('show');
+  });
+
+  /* -------- Tabs (Entrar / Criar conta) -------- */
+  document.querySelectorAll('.auth-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const qual = tab.dataset.tab;
+      formLogin.style.display    = qual === 'login'    ? '' : 'none';
+      formCadastro.style.display = qual === 'cadastro' ? '' : 'none';
+      loginErro.classList.remove('show');
+      cadErro.classList.remove('show');
+    });
+  });
+
+  /* -------- Submit: LOGIN -------- */
+  formLogin.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('btnLogin');
+    loginErro.classList.remove('show');
+    btn.disabled = true;
+    btn.textContent = 'Entrando...';
+
+    try {
+      const data = await apiCli('/api/cliente/login', {
+        method: 'POST',
+        body: JSON.stringify({
+          email: document.getElementById('loginEmail').value.trim(),
+          senha: document.getElementById('loginSenha').value
+        })
+      });
+      setSessao(data.token, data.cliente);
+      atualizarUI();
+      fecharModal();
+      setTimeout(abrirModal, 300);
+    } catch (err) {
+      loginErro.textContent = err.message;
+      loginErro.classList.add('show');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Entrar';
+    }
+  });
+
+  /* -------- Submit: CADASTRO -------- */
+  formCadastro.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('btnCadastro');
+    cadErro.classList.remove('show');
+    btn.disabled = true;
+    btn.textContent = 'Criando...';
+
+    try {
+      const data = await apiCli('/api/cliente/cadastro', {
+        method: 'POST',
+        body: JSON.stringify({
+          nome: document.getElementById('cadNome').value.trim(),
+          email: document.getElementById('cadEmail').value.trim(),
+          senha: document.getElementById('cadSenha').value
+        })
+      });
+      setSessao(data.token, data.cliente);
+      atualizarUI();
+      fecharModal();
+      setTimeout(abrirModal, 300);
+    } catch (err) {
+      cadErro.textContent = err.message;
+      cadErro.classList.add('show');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Criar conta';
+    }
+  });
+
+  /* -------- Logout -------- */
+  document.getElementById('authLogout').addEventListener('click', async () => {
+    try {
+      await apiCli('/api/cliente/logout', { method: 'POST' });
+    } catch(_){}
+    limparSessao();
+    atualizarUI();
+    fecharModal();
+  });
+
+  /* -------- Verifica sessão ao carregar a página -------- */
+  (async function verificarSessao(){
+    const token = getToken();
+    if (!token) { atualizarUI(); return; }
+    try {
+      const data = await apiCli('/api/cliente/me');
+      clienteLogado = data.cliente;
+      atualizarUI();
+    } catch(_){
+      limparSessao();
+      atualizarUI();
+    }
+  })();
 })();
 </script>
 
