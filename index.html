@@ -15,8 +15,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="preload" as="video" href="PC.mp4"     media="(min-width: 901px)" type="video/mp4">
-<link rel="preload" as="video" href="Mobile.mp4" media="(max-width: 900px)" type="video/mp4">
 <style>
 :root{
   --bg:#050505; --surface:#0d0d0d; --surface-2:#141414;
@@ -361,11 +359,8 @@ footer{ padding:46px 24px 34px; }
 
   <div class="intro-video-wrap" id="introVideoWrap">
     <video id="introVideo" class="intro-video"
-           playsinline webkit-playsinline preload="auto" fetchpriority="high"
-           aria-hidden="true">
-      <source src="PC.mp4"     media="(min-width: 901px)" type="video/mp4">
-      <source src="Mobile.mp4" media="(max-width: 900px)" type="video/mp4">
-    </video>
+           playsinline webkit-playsinline preload="none" muted
+           aria-hidden="true"></video>
   </div>
 
   <div class="tap-hint show" id="tapHint">Toque para iniciar</div>
@@ -455,7 +450,7 @@ footer{ padding:46px 24px 34px; }
 
 <div class="catalog">
 
-  <!-- LINHA 1 — CERVEJAS (25 produtos) -->
+  <!-- LINHA 1 — CERVEJAS -->
   <section class="row" id="cervejas">
     <div class="row-head"><h2>Cervejas geladas</h2><span>25 produtos</span></div>
     <div class="rail-wrap">
@@ -597,7 +592,7 @@ footer{ padding:46px 24px 34px; }
     </div>
   </section>
 
-  <!-- LINHA 2 — DESTILADOS (3 produtos) -->
+  <!-- LINHA 2 — DESTILADOS -->
   <section class="row" id="destilados">
     <div class="row-head"><h2>Destilados</h2><span>3 produtos</span></div>
     <div class="rail-wrap">
@@ -626,7 +621,7 @@ footer{ padding:46px 24px 34px; }
     </div>
   </section>
 
-  <!-- LINHA 3 — COPÃO 700ML (7 opções) -->
+  <!-- LINHA 3 — COPÃO 700ML -->
   <section class="row" id="copao">
     <div class="row-head"><h2>Copão 700ml</h2><span>7 opções</span></div>
     <div class="rail-wrap">
@@ -743,7 +738,7 @@ footer{ padding:46px 24px 34px; }
     </div>
   </section>
 
-  <!-- LINHA 4 — TABACARIA (14 produtos) -->
+  <!-- LINHA 4 — TABACARIA -->
   <section class="row" id="tabacaria">
     <div class="row-head"><h2>Tabacaria</h2><span>14 produtos</span></div>
     <div class="rail-wrap">
@@ -827,7 +822,7 @@ footer{ padding:46px 24px 34px; }
     </div>
   </section>
 
-  <!-- LINHA 5 — BEBIDAS (36 produtos) -->
+  <!-- LINHA 5 — BEBIDAS -->
   <section class="row" id="bebidas">
     <div class="row-head"><h2>Bebidas</h2><span>36 produtos</span></div>
     <div class="rail-wrap">
@@ -1022,7 +1017,7 @@ footer{ padding:46px 24px 34px; }
     </div>
   </section>
 
-  <!-- LINHA 6 — SALGADINHOS & CHIPS (11 produtos) -->
+  <!-- LINHA 6 — SALGADINHOS & CHIPS -->
   <section class="row" id="salgadinhos">
     <div class="row-head"><h2>Salgadinhos &amp; Chips</h2><span>11 produtos</span></div>
     <div class="rail-wrap">
@@ -1092,7 +1087,7 @@ footer{ padding:46px 24px 34px; }
     </div>
   </section>
 
-  <!-- LINHA 7 — ALIMENTOS (27 produtos) -->
+  <!-- LINHA 7 — ALIMENTOS -->
   <section class="row" id="alimentos">
     <div class="row-head"><h2>Alimentos</h2><span>27 produtos</span></div>
     <div class="rail-wrap">
@@ -1242,7 +1237,7 @@ footer{ padding:46px 24px 34px; }
     </div>
   </section>
 
-  <!-- LINHA 8 — DOCES (1 produto) -->
+  <!-- LINHA 8 — DOCES -->
   <section class="row" id="doces">
     <div class="row-head"><h2>Doces</h2><span>1 produto</span></div>
     <div class="rail-wrap">
@@ -1260,7 +1255,7 @@ footer{ padding:46px 24px 34px; }
     </div>
   </section>
 
-  <!-- LINHA 9 — ACESSÓRIOS (1 produto) -->
+  <!-- LINHA 9 — ACESSÓRIOS -->
   <section class="row" id="acessorios">
     <div class="row-head"><h2>Acessórios</h2><span>1 produto</span></div>
     <div class="rail-wrap">
@@ -1372,6 +1367,10 @@ footer{ padding:46px 24px 34px; }
   let estado = 'logo';
   let entrou = false;
 
+  video.addEventListener('loadedmetadata', () => {
+    console.log('[Green] vídeo carregado:', video.currentSrc || video.src, video.videoWidth + 'x' + video.videoHeight);
+  });
+
   function tocarVideo(){
     if (estado !== 'logo') return;
     estado = 'video';
@@ -1382,9 +1381,13 @@ footer{ padding:46px 24px 34px; }
 
     videoWrap.classList.add('show');
 
+    const ehMobile = window.matchMedia('(max-width: 900px)').matches;
+    const src = ehMobile ? 'Mobile.mp4' : 'PC.mp4';
+    video.src = src;
+    video.load();
+
     video.muted  = false;
     video.volume = 1;
-    video.currentTime = 0;
 
     const p = video.play();
     if (p && typeof p.then === 'function'){
@@ -1423,8 +1426,12 @@ footer{ padding:46px 24px 34px; }
     }
   });
 
+  // Fallback: se o vídeo não terminar em 30s, entra direto
   setTimeout(() => {
-    if (estado === 'video') enterSite();
+    if (estado === 'video') {
+      console.warn('[Green] vídeo não terminou em 30s, entrando direto');
+      enterSite();
+    }
   }, 30000);
 })();
 
