@@ -100,7 +100,6 @@ header{ position:sticky; top:0; z-index:60; background:rgba(5,5,5,.82); backdrop
 .logo-mini .txt b{ display:block; font-size:15px; font-weight:900; line-height:1.1; letter-spacing:-.01em; }
 .logo-mini .txt span{ display:block; font-size:9px; color:var(--green); letter-spacing:.14em; text-transform:uppercase; font-weight:700; }
 
-/* ---------- Ícone de perfil ---------- */
 .perfil-wrap{ position:relative; margin-left:4px; flex-shrink:0; }
 .perfil-btn{ width:44px; height:44px; border-radius:50%; background:var(--surface-2); border:1.5px solid var(--line); display:grid; place-items:center; color:var(--muted); cursor:pointer; transition:border-color .2s, color .2s, background .2s, transform .15s; overflow:hidden; padding:0; }
 .perfil-btn:hover{ border-color:var(--green); color:var(--green); background:var(--green-soft); }
@@ -112,7 +111,6 @@ header{ position:sticky; top:0; z-index:60; background:rgba(5,5,5,.82); backdrop
 .perfil-tip::before{ content:''; position:absolute; bottom:100%; left:50%; transform:translateX(-50%); border:5px solid transparent; border-bottom-color:var(--line-green); }
 .perfil-wrap:hover .perfil-tip{ opacity:1; transform:translateX(-50%) translateY(0); }
 
-/* ---------- Modal de login ---------- */
 #authModal{ position:fixed; inset:0; background:rgba(0,0,0,.85); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); z-index:200; display:none; align-items:center; justify-content:center; padding:20px; }
 #authModal.show{ display:flex; }
 .auth-box{ background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:34px 28px 26px; max-width:420px; width:100%; position:relative; box-shadow:0 30px 80px -20px rgba(0,177,64,.35); animation:authIn .25s cubic-bezier(.2,.8,.3,1); }
@@ -128,7 +126,6 @@ header{ position:sticky; top:0; z-index:60; background:rgba(5,5,5,.82); backdrop
 .auth-opt.google svg{ color:#fff; }
 .auth-opt.email svg{ color:var(--green); }
 
-/* ---------- Telas do modal ---------- */
 .auth-screen{ animation:authIn .25s cubic-bezier(.2,.8,.3,1); }
 .auth-back{ position:absolute; top:12px; left:12px; width:34px; height:34px; border-radius:9px; display:grid; place-items:center; color:var(--muted); font-size:18px; cursor:pointer; transition:background .2s, color .2s; padding:0; }
 .auth-back:hover{ background:var(--surface-2); color:var(--txt); }
@@ -145,70 +142,24 @@ header{ position:sticky; top:0; z-index:60; background:rgba(5,5,5,.82); backdrop
 .auth-erro{ margin-top:12px; padding:10px; background:var(--red-soft); border:1px solid rgba(230,57,70,.35); color:#ff8895; font-size:12.5px; border-radius:8px; display:none; }
 .auth-erro.show{ display:block; }
 .auth-user-info{ text-align:center; padding:10px 0 24px; }
-.auth-avatar{ width:72px; height:72px; border-radius:50%; background:var(--green); color:#001a09; display:grid; place-items:center; font-size:28px; font-weight:900; margin:0 auto 14px; }
+.auth-avatar{ width:72px; height:72px; border-radius:50%; background:var(--green); color:#001a09; display:grid; place-items:center; font-size:28px; font-weight:900; margin:0 auto 14px; overflow:hidden; }
+.auth-avatar img{ width:100%; height:100%; object-fit:cover; border-radius:50%; }
 .auth-user-info h3{ font-size:19px; font-weight:800; margin-bottom:4px; }
 .auth-user-info p{ font-size:13px; color:var(--muted); }
 .auth-logout{ width:100%; padding:13px; border:1px solid rgba(230,57,70,.35); background:var(--red-soft); color:#ff8895; font-weight:800; font-size:14px; border-radius:10px; cursor:pointer; transition:background .2s, border-color .2s; }
 .auth-logout:hover{ background:rgba(230,57,70,.2); border-color:var(--red); color:#fff; }
 
-.cat-rail-wrap{
-  display:flex; align-items:center; gap:4px;
-  margin-left:auto;
-  flex:0 0 auto;
-}
-.cat-rail-btn{
-  flex:0 0 30px;
-  width:30px; height:30px;
-  display:grid; place-items:center;
-  background:transparent;
-  color:#666;
-  border-radius:8px;
-  border:none;
-  cursor:pointer;
-  transition:background .2s, color .2s, opacity .2s;
-}
+.cat-rail-wrap{ display:flex; align-items:center; gap:4px; margin-left:auto; flex:0 0 auto; }
+.cat-rail-btn{ flex:0 0 30px; width:30px; height:30px; display:grid; place-items:center; background:transparent; color:#666; border-radius:8px; border:none; cursor:pointer; transition:background .2s, color .2s, opacity .2s; }
 .cat-rail-btn:hover{ background:var(--green-soft); color:var(--green); }
 .cat-rail-btn:active{ transform:scale(.92); }
 .cat-rail-btn svg{ width:18px; height:18px; }
 .cat-rail-btn.is-hidden{ opacity:0; pointer-events:none; }
 
-.nav-links{
-  display:flex;
-  gap:var(--cat-pill-gap);
-  flex:0 0 var(--cat-rail-w);
-  width:var(--cat-rail-w);
-  overflow-x:auto;
-  scroll-behavior:smooth;
-  scrollbar-width:none;
-  -ms-overflow-style:none;
-  padding:2px 0;
-}
+.nav-links{ display:flex; gap:var(--cat-pill-gap); flex:0 0 var(--cat-rail-w); width:var(--cat-rail-w); overflow-x:auto; scroll-behavior:smooth; scrollbar-width:none; -ms-overflow-style:none; padding:2px 0; }
 .nav-links::-webkit-scrollbar{ display:none; }
-.nav-links a{
-  flex:0 0 var(--cat-pill-w);
-  width:var(--cat-pill-w);
-  box-sizing:border-box;
-  text-align:center;
-  font-size:11.5px;
-  font-weight:800;
-  letter-spacing:.02em;
-  color:#001a09;
-  background:var(--green);
-  padding:8px 8px;
-  border-radius:99px;
-  border:1px solid var(--green);
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  transition:background .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease, transform .15s ease;
-  box-shadow:0 4px 14px -6px var(--green-glow);
-}
-.nav-links a:hover{
-  color:#ffffff;
-  background:#000;
-  border-color:#000;
-  box-shadow:0 4px 14px -6px rgba(0,0,0,.9);
-}
+.nav-links a{ flex:0 0 var(--cat-pill-w); width:var(--cat-pill-w); box-sizing:border-box; text-align:center; font-size:11.5px; font-weight:800; letter-spacing:.02em; color:#001a09; background:var(--green); padding:8px 8px; border-radius:99px; border:1px solid var(--green); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; transition:background .2s ease, color .2s ease, border-color .2s ease, box-shadow .2s ease, transform .15s ease; box-shadow:0 4px 14px -6px var(--green-glow); }
+.nav-links a:hover{ color:#ffffff; background:#000; border-color:#000; box-shadow:0 4px 14px -6px rgba(0,0,0,.9); }
 .nav-links a:active{ transform:scale(.96); }
 
 .nav-chips{ display:none; }
@@ -309,28 +260,10 @@ footer{ padding:46px 24px 34px; }
   .nav{ padding:12px 16px; gap:12px; }
   .perfil-btn{ width:40px; height:40px; }
   .perfil-btn svg{ width:22px; height:22px; }
-  .nav-chips{
-    display:flex; gap:8px; overflow-x:auto; padding:10px 16px;
-    scrollbar-width:none; -ms-overflow-style:none;
-    border-bottom:1px solid var(--line);
-    background:rgba(5,5,5,.82); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
-  }
+  .nav-chips{ display:flex; gap:8px; overflow-x:auto; padding:10px 16px; scrollbar-width:none; -ms-overflow-style:none; border-bottom:1px solid var(--line); background:rgba(5,5,5,.82); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); }
   .nav-chips::-webkit-scrollbar{ display:none; }
-  .nav-chips a{
-    flex:0 0 auto; font-size:12px; font-weight:800;
-    color:#001a09;
-    background:var(--green);
-    padding:7px 14px; border:1px solid var(--green); border-radius:99px;
-    white-space:nowrap;
-    transition:background .2s ease, color .2s ease, border-color .2s ease;
-    box-shadow:0 4px 14px -6px var(--green-glow);
-  }
-  .nav-chips a:hover,
-  .nav-chips a:active{
-    color:#ffffff;
-    background:#000;
-    border-color:#000;
-  }
+  .nav-chips a{ flex:0 0 auto; font-size:12px; font-weight:800; color:#001a09; background:var(--green); padding:7px 14px; border:1px solid var(--green); border-radius:99px; white-space:nowrap; transition:background .2s ease, color .2s ease, border-color .2s ease; box-shadow:0 4px 14px -6px var(--green-glow); }
+  .nav-chips a:hover, .nav-chips a:active{ color:#ffffff; background:#000; border-color:#000; }
   .row{ scroll-margin-top:130px; }
 }
 @media (max-width:600px){
@@ -349,14 +282,9 @@ footer{ padding:46px 24px 34px; }
   .wa-float .wa-icon svg{ width:28px; height:28px; }
   .wa-float:hover{ max-width:240px; }
   .led-frame::before, .led{ padding:1.5px; }
-
   .led{ display:none; }
-  .led-frame::before{
-    background:transparent;
-    box-shadow: inset 0 0 14px rgba(0,177,64,.45), inset 0 0 0 1.5px rgba(0,177,64,.55);
-  }
+  .led-frame::before{ background:transparent; box-shadow: inset 0 0 14px rgba(0,177,64,.45), inset 0 0 0 1.5px rgba(0,177,64,.55); }
 }
-
 @media (prefers-reduced-motion: reduce){
   html{ scroll-behavior:auto; }
   .led{ animation:none; opacity:.35; }
@@ -381,9 +309,7 @@ footer{ padding:46px 24px 34px; }
   </div>
 
   <div class="intro-video-wrap" id="introVideoWrap">
-    <video id="introVideo" class="intro-video"
-           playsinline webkit-playsinline preload="none" muted
-           aria-hidden="true"></video>
+    <video id="introVideo" class="intro-video" playsinline webkit-playsinline preload="none" muted aria-hidden="true"></video>
   </div>
 
   <div class="tap-hint show" id="tapHint">Toque para iniciar</div>
@@ -413,7 +339,6 @@ footer{ padding:46px 24px 34px; }
       <div class="txt"><b>Green</b><span>Conveniência &amp; Tabacaria</span></div>
     </div>
 
-    <!-- ÍCONE DE PERFIL -->
     <div class="perfil-wrap">
       <button class="perfil-btn" id="perfilBtn" aria-label="Entrar ou criar conta">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
@@ -473,7 +398,6 @@ footer{ padding:46px 24px 34px; }
 
 <div class="catalog">
 
-  <!-- LINHA 1 — CERVEJAS -->
   <section class="row" id="cervejas">
     <div class="row-head"><h2>Cervejas geladas</h2><span>25 produtos</span></div>
     <div class="rail-wrap">
@@ -615,7 +539,6 @@ footer{ padding:46px 24px 34px; }
     </div>
   </section>
 
-  <!-- LINHA 2 — DESTILADOS -->
   <section class="row" id="destilados">
     <div class="row-head"><h2>Destilados</h2><span>3 produtos</span></div>
     <div class="rail-wrap">
@@ -644,7 +567,6 @@ footer{ padding:46px 24px 34px; }
     </div>
   </section>
 
-  <!-- LINHA 3 — COPÃO 700ML -->
   <section class="row" id="copao">
     <div class="row-head"><h2>Copão 700ml</h2><span>7 opções</span></div>
     <div class="rail-wrap">
@@ -761,7 +683,6 @@ footer{ padding:46px 24px 34px; }
     </div>
   </section>
 
-  <!-- LINHA 4 — TABACARIA -->
   <section class="row" id="tabacaria">
     <div class="row-head"><h2>Tabacaria</h2><span>14 produtos</span></div>
     <div class="rail-wrap">
@@ -845,7 +766,6 @@ footer{ padding:46px 24px 34px; }
     </div>
   </section>
 
-  <!-- LINHA 5 — BEBIDAS -->
   <section class="row" id="bebidas">
     <div class="row-head"><h2>Bebidas</h2><span>36 produtos</span></div>
     <div class="rail-wrap">
@@ -1040,7 +960,6 @@ footer{ padding:46px 24px 34px; }
     </div>
   </section>
 
-  <!-- LINHA 6 — SALGADINHOS & CHIPS -->
   <section class="row" id="salgadinhos">
     <div class="row-head"><h2>Salgadinhos &amp; Chips</h2><span>11 produtos</span></div>
     <div class="rail-wrap">
@@ -1110,7 +1029,6 @@ footer{ padding:46px 24px 34px; }
     </div>
   </section>
 
-  <!-- LINHA 7 — ALIMENTOS -->
   <section class="row" id="alimentos">
     <div class="row-head"><h2>Alimentos</h2><span>27 produtos</span></div>
     <div class="rail-wrap">
@@ -1260,7 +1178,6 @@ footer{ padding:46px 24px 34px; }
     </div>
   </section>
 
-  <!-- LINHA 8 — DOCES -->
   <section class="row" id="doces">
     <div class="row-head"><h2>Doces</h2><span>1 produto</span></div>
     <div class="rail-wrap">
@@ -1278,7 +1195,6 @@ footer{ padding:46px 24px 34px; }
     </div>
   </section>
 
-  <!-- LINHA 9 — ACESSÓRIOS -->
   <section class="row" id="acessorios">
     <div class="row-head"><h2>Acessórios</h2><span>1 produto</span></div>
     <div class="rail-wrap">
@@ -1328,11 +1244,9 @@ footer{ padding:46px 24px 34px; }
   <span class="wa-label">Fale conosco</span>
 </a>
 
-<!-- ============ MODAL DE LOGIN ============ -->
 <div id="authModal">
   <div class="auth-box">
 
-    <!-- Tela 1: Escolha -->
     <div class="auth-screen" id="authScreenChoose">
       <button class="auth-close" id="authClose" aria-label="Fechar">×</button>
       <h2>Entrar ou criar conta</h2>
@@ -1357,7 +1271,6 @@ footer{ padding:46px 24px 34px; }
       </button>
     </div>
 
-    <!-- Tela 2: Formulário -->
     <div class="auth-screen" id="authScreenForm" style="display:none;">
       <button class="auth-back" id="authBack" aria-label="Voltar" type="button">←</button>
       <h2 style="margin-top:8px;">Acesse sua conta</h2>
@@ -1368,7 +1281,6 @@ footer{ padding:46px 24px 34px; }
         <button class="auth-tab" data-tab="cadastro" type="button">Criar conta</button>
       </div>
 
-      <!-- Form de LOGIN -->
       <form class="auth-form" id="formLogin">
         <label for="loginEmail">Email</label>
         <input type="email" id="loginEmail" autocomplete="email" required placeholder="seu@email.com">
@@ -1378,7 +1290,6 @@ footer{ padding:46px 24px 34px; }
         <button type="submit" class="auth-submit" id="btnLogin">Entrar</button>
       </form>
 
-      <!-- Form de CADASTRO -->
       <form class="auth-form" id="formCadastro" style="display:none;">
         <label for="cadNome">Nome</label>
         <input type="text" id="cadNome" autocomplete="name" required placeholder="Seu nome">
@@ -1391,7 +1302,6 @@ footer{ padding:46px 24px 34px; }
       </form>
     </div>
 
-    <!-- Tela 3: Logado -->
     <div class="auth-screen" id="authScreenLogged" style="display:none;">
       <button class="auth-close" id="authCloseLogged" aria-label="Fechar">×</button>
       <div class="auth-user-info">
@@ -1429,45 +1339,34 @@ footer{ padding:46px 24px 34px; }
 </script>
 
 <script>
-/* ---------- Splash: logo → clique → vídeo com som → site ---------- */
+/* ---------- Splash ---------- */
 (function(){
   const splash    = document.getElementById('splash');
   const logoStage = document.getElementById('logoStage');
   const videoWrap = document.getElementById('introVideoWrap');
   const video     = document.getElementById('introVideo');
   const tapHint   = document.getElementById('tapHint');
-
   let estado = 'logo';
   let entrou = false;
 
   function tocarVideo(){
     if (estado !== 'logo') return;
     estado = 'video';
-
     logoStage.classList.add('hide');
     tapHint.classList.add('hide');
     setTimeout(() => tapHint.classList.remove('show'), 400);
-
     videoWrap.classList.add('show');
-
     const ehMobile = window.matchMedia('(max-width: 900px)').matches;
     const src = ehMobile ? 'Mobile.mp4' : 'PC.mp4';
     video.src = src;
     video.load();
-
     video.muted  = false;
     video.volume = 1;
-
     const p = video.play();
     if (p && typeof p.then === 'function'){
-      p.catch(err => {
-        console.warn('[Green] play com som falhou, tentando mudo:', err);
-        video.muted = true;
-        video.play().catch(() => enterSite());
-      });
+      p.catch(() => { video.muted = true; video.play().catch(() => enterSite()); });
     }
   }
-
   function enterSite(){
     if (entrou) return;
     entrou = true;
@@ -1477,30 +1376,16 @@ footer{ padding:46px 24px 34px; }
     document.body.style.overflow = '';
     setTimeout(() => splash.remove(), 650);
   }
-
   video.addEventListener('ended', enterSite);
-  video.addEventListener('error', () => {
-    console.warn('[Green] erro no vídeo, entrando direto');
-    enterSite();
-  });
-
-  splash.addEventListener('click', () => {
-    if (estado === 'logo') tocarVideo();
-  });
-
+  video.addEventListener('error', () => enterSite());
+  splash.addEventListener('click', () => { if (estado === 'logo') tocarVideo(); });
   document.addEventListener('keydown', (e) => {
-    if (estado === 'logo' && ['Enter',' ','Escape'].includes(e.key)){
-      e.preventDefault();
-      tocarVideo();
-    }
+    if (estado === 'logo' && ['Enter',' ','Escape'].includes(e.key)){ e.preventDefault(); tocarVideo(); }
   });
-
-  setTimeout(() => {
-    if (estado === 'video') enterSite();
-  }, 30000);
+  setTimeout(() => { if (estado === 'video') enterSite(); }, 30000);
 })();
 
-/* ---------- Status aberto/fechado ---------- */
+/* ---------- Status ---------- */
 (function(){
   const badge = document.getElementById('statusBadge');
   const text  = document.getElementById('statusText');
@@ -1509,19 +1394,14 @@ footer{ padding:46px 24px 34px; }
     const agora = new Date();
     const m = agora.getHours() * 60 + agora.getMinutes();
     const aberto = m >= 690 && m < 1380;
-    if (aberto){
-      badge.classList.add('is-open'); badge.classList.remove('is-closed');
-      text.textContent = 'Aberto agora';
-    } else {
-      badge.classList.remove('is-open'); badge.classList.add('is-closed');
-      text.textContent = 'Fechado agora';
-    }
+    if (aberto){ badge.classList.add('is-open'); badge.classList.remove('is-closed'); text.textContent = 'Aberto agora'; }
+    else { badge.classList.remove('is-open'); badge.classList.add('is-closed'); text.textContent = 'Fechado agora'; }
   }
   checarStatus();
   setInterval(checarStatus, 60000);
 })();
 
-/* ---------- Esconde placeholder de imagem já carregada ---------- */
+/* ---------- Placeholder img ---------- */
 document.querySelectorAll('.thumb img').forEach(img => {
   if (img.complete && img.naturalWidth > 0) {
     const ph = img.parentElement.querySelector('.thumb-ph');
@@ -1529,13 +1409,12 @@ document.querySelectorAll('.thumb img').forEach(img => {
   }
 });
 
-/* ---------- Setas de navegação das categorias ---------- */
+/* ---------- Setas categorias ---------- */
 document.querySelectorAll('.cat-rail-wrap').forEach(wrap => {
   const rail = wrap.querySelector('[data-cat-rail]');
   if (!rail) return;
   const leftBtn  = wrap.querySelector('.cat-rail-btn.left');
   const rightBtn = wrap.querySelector('.cat-rail-btn.right');
-
   const updateArrows = () => {
     if (rail.scrollWidth <= rail.clientWidth + 2){
       if (leftBtn)  leftBtn.classList.add('is-hidden');
@@ -1547,21 +1426,19 @@ document.querySelectorAll('.cat-rail-wrap').forEach(wrap => {
     if (leftBtn)  leftBtn.classList.toggle('is-hidden', atStart);
     if (rightBtn) rightBtn.classList.toggle('is-hidden', atEnd);
   };
-
   wrap.querySelectorAll('.cat-rail-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const dir = Number(btn.dataset.dir);
       rail.scrollBy({ left: dir * (rail.clientWidth * 0.85), behavior: 'smooth' });
     });
   });
-
   rail.addEventListener('scroll', updateArrows, { passive:true });
   window.addEventListener('resize', updateArrows);
   requestAnimationFrame(updateArrows);
   setTimeout(updateArrows, 100);
 });
 
-/* ---------- Botões de scroll das rails de produto ---------- */
+/* ---------- Setas rails ---------- */
 document.querySelectorAll('.rail-wrap').forEach(wrap => {
   const rail = wrap.querySelector('[data-rail]');
   wrap.querySelectorAll('.rail-btn').forEach(btn => {
@@ -1578,11 +1455,7 @@ const allCards    = [...document.querySelectorAll('.card')];
 const noResults   = document.getElementById('noResults');
 
 function normalizar(str){
-  return String(str)
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .trim();
+  return String(str).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
 }
 
 const aliasesCat = {
@@ -1684,7 +1557,6 @@ searchInput.addEventListener('input', () => filtrarCards(searchInput.value));
 
   let clienteLogado = null;
 
-  /* -------- Storage -------- */
   function getToken(){ return localStorage.getItem('green_cli_token'); }
   function setSessao(token, cliente){
     localStorage.setItem('green_cli_token', token);
@@ -1697,7 +1569,6 @@ searchInput.addEventListener('input', () => filtrarCards(searchInput.value));
     clienteLogado = null;
   }
 
-  /* -------- API -------- */
   async function apiCli(path, opts = {}){
     const headers = { 'Content-Type': 'application/json', ...(opts.headers || {}) };
     const t = getToken();
@@ -1708,11 +1579,14 @@ searchInput.addEventListener('input', () => filtrarCards(searchInput.value));
     return data;
   }
 
-  /* -------- UI do botão de perfil -------- */
   function atualizarUI(){
     if (clienteLogado){
-      const inicial = (clienteLogado.nome || 'U').charAt(0).toUpperCase();
-      perfilBtn.innerHTML = `<span style="font-weight:900;font-size:18px;color:var(--green);">${inicial}</span>`;
+      if (clienteLogado.foto_url){
+        perfilBtn.innerHTML = `<img src="${clienteLogado.foto_url}" alt="">`;
+      } else {
+        const inicial = (clienteLogado.nome || 'U').charAt(0).toUpperCase();
+        perfilBtn.innerHTML = `<span style="font-weight:900;font-size:18px;color:var(--green);">${inicial}</span>`;
+      }
       perfilTip.textContent = (clienteLogado.nome || '').split(' ')[0] || 'Minha conta';
     } else {
       perfilBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>`;
@@ -1720,7 +1594,6 @@ searchInput.addEventListener('input', () => filtrarCards(searchInput.value));
     }
   }
 
-  /* -------- Trocar telas -------- */
   function mostrarTela(tela){
     telaChoose.style.display = tela === 'choose' ? '' : 'none';
     telaForm.style.display   = tela === 'form'   ? '' : 'none';
@@ -1729,7 +1602,12 @@ searchInput.addEventListener('input', () => filtrarCards(searchInput.value));
 
   function abrirModal(){
     if (clienteLogado){
-      document.getElementById('authAvatar').textContent    = (clienteLogado.nome || 'U').charAt(0).toUpperCase();
+      const av = document.getElementById('authAvatar');
+      if (clienteLogado.foto_url){
+        av.innerHTML = `<img src="${clienteLogado.foto_url}" alt="">`;
+      } else {
+        av.innerHTML = (clienteLogado.nome || 'U').charAt(0).toUpperCase();
+      }
       document.getElementById('authUserName').textContent  = clienteLogado.nome;
       document.getElementById('authUserEmail').textContent = clienteLogado.email;
       mostrarTela('logged');
@@ -1740,7 +1618,6 @@ searchInput.addEventListener('input', () => filtrarCards(searchInput.value));
   }
   function fecharModal(){ modal.classList.remove('show'); }
 
-  /* -------- Eventos do botão perfil -------- */
   perfilBtn.addEventListener('click', abrirModal);
 
   document.getElementById('authClose')?.addEventListener('click', fecharModal);
@@ -1757,19 +1634,40 @@ searchInput.addEventListener('input', () => filtrarCards(searchInput.value));
       if (tipo === 'email'){
         mostrarTela('form');
       } else if (tipo === 'google'){
-        alert('Login com Google ainda em construção. Use e-mail por enquanto!');
+        window.location.href = '/api/cliente/auth-google';
       }
     });
   });
 
-  /* -------- Botão voltar -------- */
+  /* -------- Detecta retorno do Google -------- */
+  (function processarRetornoGoogle(){
+    const params = new URLSearchParams(window.location.search);
+
+    const erroG = params.get('google_erro');
+    if (erroG){
+      alert('Falha no login com Google: ' + erroG);
+      window.history.replaceState({}, '', window.location.pathname);
+      return;
+    }
+
+    const t  = params.get('google_token');
+    const n  = params.get('google_nome');
+    const e  = params.get('google_email');
+    const f  = params.get('google_foto');
+    if (t && n && e){
+      setSessao(t, { nome: n, email: e, foto_url: f || null });
+      atualizarUI();
+      window.history.replaceState({}, '', window.location.pathname);
+      setTimeout(() => alert('Login com Google feito! Bem-vindo, ' + n.split(' ')[0] + '!'), 200);
+    }
+  })();
+
   document.getElementById('authBack').addEventListener('click', () => {
     mostrarTela('choose');
     loginErro.classList.remove('show');
     cadErro.classList.remove('show');
   });
 
-  /* -------- Tabs (Entrar / Criar conta) -------- */
   document.querySelectorAll('.auth-tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
@@ -1782,14 +1680,12 @@ searchInput.addEventListener('input', () => filtrarCards(searchInput.value));
     });
   });
 
-  /* -------- Submit: LOGIN -------- */
   formLogin.addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('btnLogin');
     loginErro.classList.remove('show');
     btn.disabled = true;
     btn.textContent = 'Entrando...';
-
     try {
       const data = await apiCli('/api/cliente/login', {
         method: 'POST',
@@ -1811,14 +1707,12 @@ searchInput.addEventListener('input', () => filtrarCards(searchInput.value));
     }
   });
 
-  /* -------- Submit: CADASTRO -------- */
   formCadastro.addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('btnCadastro');
     cadErro.classList.remove('show');
     btn.disabled = true;
     btn.textContent = 'Criando...';
-
     try {
       const data = await apiCli('/api/cliente/cadastro', {
         method: 'POST',
@@ -1841,17 +1735,13 @@ searchInput.addEventListener('input', () => filtrarCards(searchInput.value));
     }
   });
 
-  /* -------- Logout -------- */
   document.getElementById('authLogout').addEventListener('click', async () => {
-    try {
-      await apiCli('/api/cliente/logout', { method: 'POST' });
-    } catch(_){}
+    try { await apiCli('/api/cliente/logout', { method: 'POST' }); } catch(_){}
     limparSessao();
     atualizarUI();
     fecharModal();
   });
 
-  /* -------- Verifica sessão ao carregar a página -------- */
   (async function verificarSessao(){
     const token = getToken();
     if (!token) { atualizarUI(); return; }
