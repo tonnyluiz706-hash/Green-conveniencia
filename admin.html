@@ -53,7 +53,18 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 .btn-ghost{ padding:9px 16px; border:1px solid var(--line); border-radius:9px; font-size:13px; font-weight:700; color:var(--muted); transition:border-color .2s, color .2s, background .2s; }
 .btn-ghost:hover{ border-color:var(--green); color:var(--green); background:var(--green-soft); }
 
+/* ---------- NAVEGAÇÃO DAS ABAS ---------- */
+.nav-tabs{ display:flex; gap:8px; padding:16px 24px 0; max-width:1300px; margin:0 auto; border-bottom:1px solid var(--line); overflow-x:auto; }
+.nav-tabs button{ padding:12px 20px; font-size:14px; font-weight:700; color:var(--muted); border-bottom:3px solid transparent; transition:color .2s, border-color .2s; white-space:nowrap; }
+.nav-tabs button:hover{ color:var(--txt); }
+.nav-tabs button.active{ color:var(--green); border-bottom-color:var(--green); }
+
 .container{ max-width:1300px; margin:0 auto; padding:28px 24px 60px; }
+.tab-content{ display:none; }
+.tab-content.active{ display:block; animation:fadeIn .3s; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(5px);} to { opacity:1; transform:translateY(0);} }
+
+/* ---------- ABA PRODUTOS ---------- */
 .toolbar{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-bottom:24px; }
 .toolbar h2{ font-size:22px; font-weight:800; letter-spacing:-.02em; flex:1; min-width:200px; }
 .toolbar h2 small{ display:block; font-size:12px; color:var(--muted); font-weight:500; margin-top:2px; }
@@ -84,8 +95,34 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 .card-prod .acoes .btn-del{ background:var(--red-soft); color:#ff8895; }
 .card-prod .acoes .btn-del:hover{ background:var(--red); color:#fff; }
 
-.vazio{ text-align:center; padding:60px 20px; color:var(--muted); grid-column:1/-1; }
-.vazio b{ display:block; font-size:16px; color:var(--txt); margin-bottom:6px; font-weight:700; }
+/* ---------- ABA PEDIDOS ---------- */
+.pedido-card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); margin-bottom:16px; overflow:hidden; }
+.pedido-header{ padding:14px 20px; background:var(--surface-2); border-bottom:1px solid var(--line); display:flex; flex-wrap:wrap; align-items:center; gap:16px; }
+.pedido-header h3{ font-size:15px; font-weight:800; flex:1; }
+.pedido-header .data{ font-size:12px; color:var(--muted); }
+.pedido-body{ padding:20px; display:flex; flex-wrap:wrap; gap:20px; }
+.pedido-info{ flex:1; min-width:250px; }
+.pedido-info p{ font-size:13px; margin-bottom:6px; color:var(--muted); }
+.pedido-info p strong{ color:var(--txt); }
+.pedido-itens{ flex:1; min-width:250px; background:var(--surface-2); padding:12px; border-radius:8px; border:1px solid var(--line); }
+.pedido-itens li{ font-size:13px; margin-bottom:6px; display:flex; justify-content:space-between; list-style:none; border-bottom:1px dashed var(--line); padding-bottom:6px; }
+.pedido-itens li:last-child{ border-bottom:none; margin-bottom:0; padding-bottom:0; }
+.pedido-footer{ padding:14px 20px; border-top:1px solid var(--line); display:flex; align-items:center; gap:16px; justify-content:space-between; }
+.pedido-total{ font-size:16px; font-weight:800; color:var(--green); }
+.status-select{ padding:8px 12px; border-radius:8px; font-weight:700; font-size:12px; border:1px solid var(--line); background:var(--surface); color:var(--txt); cursor:pointer; outline:none; }
+.status-select.pendente{ color:#fca311; border-color:rgba(252,163,17,.3); }
+.status-select.entregue{ color:var(--green); border-color:var(--line-green); }
+.status-select.cancelado{ color:var(--red); border-color:rgba(230,57,70,.3); }
+
+/* ---------- ABA CONFIGURAÇÕES ---------- */
+.config-card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:24px; max-width:500px; }
+.config-card h3{ font-size:18px; font-weight:800; margin-bottom:8px; }
+.config-card p{ font-size:13.5px; color:var(--muted); margin-bottom:24px; }
+.btn-toggle-status{ width:100%; padding:16px; border-radius:12px; font-size:16px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:10px; transition:all .2s; border:2px solid; }
+.btn-toggle-status.aberto{ background:var(--green-soft); color:var(--green); border-color:var(--line-green); }
+.btn-toggle-status.aberto:hover{ background:var(--green); color:#001a09; }
+.btn-toggle-status.fechado{ background:var(--red-soft); color:#ff8895; border-color:rgba(230,57,70,.4); }
+.btn-toggle-status.fechado:hover{ background:var(--red); color:#fff; }
 
 /* ---------- MODAL ---------- */
 #modal{ position:fixed; inset:0; background:rgba(0,0,0,.85); backdrop-filter:blur(6px); z-index:100; display:none; overflow-y:auto; padding:24px; }
@@ -101,7 +138,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 .form-group label{ display:block; font-size:11.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
 .form-group input, .form-group select, .form-group textarea{ width:100%; padding:11px 13px; background:var(--surface-2); border:1px solid var(--line); border-radius:9px; color:var(--txt); font-size:14px; outline:none; transition:border-color .2s, background .2s; }
 .form-group input:focus, .form-group select:focus, .form-group textarea:focus{ border-color:var(--green); background:#111; }
-.form-group textarea{ resize:vertical; min-height:70px; font-family:inherit; }
+.form-group textarea{ resize:vertical; min-height:70px; }
 .form-group .hint{ font-size:11px; color:#666; margin-top:4px; }
 .upload-area{ border:2px dashed var(--line); border-radius:10px; padding:20px; text-align:center; cursor:pointer; transition:border-color .2s, background .2s; }
 .upload-area:hover{ border-color:var(--green); background:var(--green-soft); }
@@ -127,7 +164,10 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
   .form-grid{ grid-template-columns:1fr; }
   header.admin{ padding:12px 16px; }
   header.admin .user{ display:none; }
+  .nav-tabs{ padding:12px 16px 0; }
+  .nav-tabs button{ padding:10px 14px; font-size:13px; }
   .container{ padding:20px 16px 40px; }
+  .pedido-footer{ flex-direction:column; align-items:flex-start; }
 }
 </style>
 </head>
@@ -164,29 +204,60 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
     <button class="btn-ghost" id="btnSair">Sair</button>
   </header>
 
+  <div class="nav-tabs">
+    <button class="active" data-tab="produtos">Produtos</button>
+    <button data-tab="pedidos">Pedidos</button>
+    <button data-tab="config">Configurações</button>
+  </div>
+
   <div class="container">
-    <div class="toolbar">
-      <h2>Produtos <small id="contador">—</small></h2>
-      <input type="search" id="busca" placeholder="Buscar produto...">
-      <select id="filtroCategoria">
-        <option value="">Todas as categorias</option>
-        <option value="cervejas">Cervejas</option>
-        <option value="destilados">Destilados</option>
-        <option value="copao">Copão 700ml</option>
-        <option value="tabacaria">Tabacaria</option>
-        <option value="bebidas">Bebidas</option>
-        <option value="salgadinhos">Salgadinhos & Chips</option>
-        <option value="alimentos">Alimentos</option>
-        <option value="doces">Doces</option>
-        <option value="acessorios">Acessórios</option>
-      </select>
-      <button class="btn-new" id="btnNovo">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-        Novo produto
-      </button>
+    <!-- ABA PRODUTOS -->
+    <div class="tab-content active" id="tab-produtos">
+      <div class="toolbar">
+        <h2>Produtos <small id="contador">—</small></h2>
+        <input type="search" id="busca" placeholder="Buscar produto...">
+        <select id="filtroCategoria">
+          <option value="">Todas as categorias</option>
+          <option value="cervejas">Cervejas</option>
+          <option value="destilados">Destilados</option>
+          <option value="copao">Copão 700ml</option>
+          <option value="tabacaria">Tabacaria</option>
+          <option value="bebidas">Bebidas</option>
+          <option value="salgadinhos">Salgadinhos & Chips</option>
+          <option value="alimentos">Alimentos</option>
+          <option value="doces">Doces</option>
+          <option value="acessorios">Acessórios</option>
+        </select>
+        <button class="btn-new" id="btnNovo">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          Novo produto
+        </button>
+      </div>
+      <div class="grid-produtos" id="gridProdutos"></div>
     </div>
 
-    <div class="grid-produtos" id="gridProdutos"></div>
+    <!-- ABA PEDIDOS -->
+    <div class="tab-content" id="tab-pedidos">
+      <div class="toolbar">
+        <h2>Pedidos Recebidos <small id="contadorPedidos">—</small></h2>
+        <button class="btn-ghost" id="btnAtualizarPedidos">Atualizar</button>
+      </div>
+      <div id="listaPedidos"></div>
+    </div>
+
+    <!-- ABA CONFIGURAÇÕES -->
+    <div class="tab-content" id="tab-config">
+      <div class="toolbar">
+        <h2>Configurações da Loja</h2>
+      </div>
+      <div class="config-card">
+        <h3>Status de Funcionamento</h3>
+        <p>Controle manualmente se o site está aceitando pedidos no momento.</p>
+        <button class="btn-toggle-status aberto" id="btnStatusLoja">
+          <span id="statusTexto">Aberto</span>
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -267,10 +338,8 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 <div id="toast"></div>
 
 <script>
-/* ============================ CONFIG ============================ */
-const API = ''; // mesmo domínio, então não precisa de URL completa
-
-/* ============================ ESTADO ============================ */
+/* ============================ CONFIG / ESTADO ============================ */
+const API = '';
 let token = localStorage.getItem('green_token') || '';
 let emailLogado = localStorage.getItem('green_email') || '';
 let produtos = [];
@@ -295,7 +364,7 @@ async function api(path, opts = {}){
   return data;
 }
 
-/* ============================ LOGIN ============================ */
+/* ============================ LOGIN E NAVEGAÇÃO ============================ */
 $('#loginForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   const btn = $('#btnLogin');
@@ -307,10 +376,7 @@ $('#loginForm').addEventListener('submit', async (e) => {
   try {
     const data = await api('/api/login', {
       method: 'POST',
-      body: JSON.stringify({
-        email: $('#email').value.trim(),
-        senha: $('#senha').value
-      })
+      body: JSON.stringify({ email: $('#email').value.trim(), senha: $('#senha').value })
     });
     token = data.token;
     emailLogado = data.email;
@@ -331,34 +397,42 @@ function abrirDashboard(){
   $('#dashboard').classList.add('show');
   $('#userEmail').textContent = emailLogado;
   carregarProdutos();
+  carregarStatusLoja();
 }
 
-function sair(){
+$('#btnSair').addEventListener('click', () => {
   localStorage.removeItem('green_token');
   localStorage.removeItem('green_email');
-  token = '';
-  emailLogado = '';
+  token = ''; emailLogado = '';
   location.reload();
-}
+});
 
-$('#btnSair').addEventListener('click', sair);
+// Tabs
+document.querySelectorAll('.nav-tabs button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-tabs button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    $(`#tab-${btn.dataset.tab}`).classList.add('active');
 
-/* ============================ LISTAR PRODUTOS ============================ */
+    if (btn.dataset.tab === 'pedidos') carregarPedidos();
+    if (btn.dataset.tab === 'config') carregarStatusLoja();
+  });
+});
+
+/* ============================ ABA PRODUTOS ============================ */
 async function carregarProdutos(){
   try {
     const data = await api('/api/admin/produtos');
     produtos = data.produtos || [];
-    renderizar();
+    renderizarProdutos();
   } catch (err) {
-    if (err.message.includes('Não autenticado')) {
-      sair();
-    } else {
-      toast('Erro ao carregar: ' + err.message, true);
-    }
+    if (err.message.includes('Não autenticado')) $('#btnSair').click();
+    else toast('Erro ao carregar: ' + err.message, true);
   }
 }
 
-function renderizar(){
+function renderizarProdutos(){
   const grid = $('#gridProdutos');
   const busca = $('#busca').value.toLowerCase().trim();
   const cat = $('#filtroCategoria').value;
@@ -375,24 +449,22 @@ function renderizar(){
   $('#contador').textContent = `${filtrados.length} produto${filtrados.length === 1 ? '' : 's'}`;
 
   if (filtrados.length === 0){
-    grid.innerHTML = `<div class="vazio"><b>Nenhum produto encontrado</b>${produtos.length === 0 ? 'Clique em "Novo produto" para começar.' : 'Tenta mudar o filtro ou a busca.'}</div>`;
+    grid.innerHTML = `<div style="text-align:center;padding:40px;color:var(--muted);grid-column:1/-1;"><b>Nenhum produto encontrado.</b></div>`;
     return;
   }
 
   grid.innerHTML = filtrados.map(p => `
     <div class="card-prod">
       <div class="thumb">
-        ${p.imagem_url
-          ? `<img src="${p.imagem_url}" alt="${esc(p.nome)}" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';">`
-          : ''}
+        ${p.imagem_url ? `<img src="${p.imagem_url}" alt="${p.nome}" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';">` : ''}
         <div class="no-img" style="${p.imagem_url ? 'display:none;' : ''}">Sem imagem</div>
         <span class="badge ${p.ativo ? 'ativo' : 'inativo'}">${p.ativo ? 'Ativo' : 'Inativo'}</span>
       </div>
       <div class="info">
-        <div class="cat">${esc(p.categoria || '')}</div>
-        <h3>${esc(p.nome)}</h3>
-        <div class="meta">${esc(p.volume || '—')}</div>
-        <div class="preco">${esc(p.preco || '—')}</div>
+        <div class="cat">${p.categoria}</div>
+        <h3>${p.nome}</h3>
+        <div class="meta">${p.volume || '—'}</div>
+        <div class="preco">${p.preco || '—'}</div>
       </div>
       <div class="acoes">
         <button class="btn-edit" onclick="editarProduto(${p.id})">Editar</button>
@@ -402,16 +474,9 @@ function renderizar(){
   `).join('');
 }
 
-function esc(str){
-  return String(str == null ? '' : str).replace(/[&<>"']/g, c => ({
-    '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;'
-  }[c]));
-}
+$('#busca').addEventListener('input', renderizarProdutos);
+$('#filtroCategoria').addEventListener('change', renderizarProdutos);
 
-$('#busca').addEventListener('input', renderizar);
-$('#filtroCategoria').addEventListener('change', renderizar);
-
-/* ============================ MODAL ============================ */
 function abrirModal(produto = null){
   editandoId = produto ? produto.id : null;
   $('#modalTitulo').textContent = produto ? 'Editar produto' : 'Novo produto';
@@ -430,9 +495,7 @@ function abrirModal(produto = null){
     if (produto.imagem_url){
       $('#previewImg').src = produto.imagem_url;
       $('#previewImg').style.display = 'block';
-    } else {
-      $('#previewImg').style.display = 'none';
-    }
+    } else $('#previewImg').style.display = 'none';
   } else {
     $('#formProduto').reset();
     $('#pOrdem').value = 0;
@@ -440,43 +503,26 @@ function abrirModal(produto = null){
     $('#pImagemUrl').value = '';
     $('#previewImg').style.display = 'none';
   }
-
   $('#modal').classList.add('show');
   document.body.style.overflow = 'hidden';
 }
 
-function fecharModal(){
-  $('#modal').classList.remove('show');
-  document.body.style.overflow = '';
-  editandoId = null;
-}
+function fecharModal(){ $('#modal').classList.remove('show'); document.body.style.overflow = ''; editandoId = null; }
 
 $('#btnNovo').addEventListener('click', () => abrirModal());
 $('#btnFecharModal').addEventListener('click', fecharModal);
 $('#btnCancelar').addEventListener('click', fecharModal);
 $('#modal').addEventListener('click', (e) => { if (e.target.id === 'modal') fecharModal(); });
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && $('#modal').classList.contains('show')) fecharModal(); });
 
-window.editarProduto = (id) => {
-  const p = produtos.find(x => x.id === id);
-  if (p) abrirModal(p);
-};
-
+window.editarProduto = (id) => { const p = produtos.find(x => x.id === id); if (p) abrirModal(p); };
 window.deletarProduto = async (id) => {
   const p = produtos.find(x => x.id === id);
-  if (!confirm(`Excluir "${p.nome}"? Essa ação não pode ser desfeita.`)) return;
-  try {
-    await api('/api/produto?id=' + id, { method: 'DELETE' });
-    toast('Produto excluído');
-    carregarProdutos();
-  } catch (err){
-    toast('Erro: ' + err.message, true);
-  }
+  if (!confirm(`Excluir "${p.nome}"?`)) return;
+  try { await api('/api/produto?id=' + id, { method: 'DELETE' }); toast('Excluído'); carregarProdutos(); }
+  catch (err){ toast('Erro: ' + err.message, true); }
 };
 
-/* ============================ UPLOAD DE IMAGEM ============================ */
 $('#uploadArea').addEventListener('click', () => $('#pFile').click());
-
 $('#pFile').addEventListener('change', async (e) => {
   const file = e.target.files[0];
   if (!file) return;
@@ -484,32 +530,23 @@ $('#pFile').addEventListener('change', async (e) => {
   preview.src = URL.createObjectURL(file);
   preview.style.display = 'block';
 
-  const fd = new FormData();
-  fd.append('file', file);
+  const fd = new FormData(); fd.append('file', file);
   try {
-    const res = await fetch('/api/upload', {
-      method: 'POST',
-      headers: { 'Authorization': 'Bearer ' + token },
-      body: fd
-    });
+    const res = await fetch('/api/upload', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, body: fd });
     const data = await res.json();
     if (!res.ok) throw new Error(data.erro || 'Falha no upload');
     $('#pImagemUrl').value = data.url;
     preview.src = data.url;
     toast('Imagem enviada!');
-  } catch (err){
-    toast('Erro no upload: ' + err.message, true);
-  }
+  } catch (err){ toast('Erro no upload: ' + err.message, true); }
 });
 
-/* ============================ SALVAR PRODUTO ============================ */
 $('#formProduto').addEventListener('submit', async (e) => {
   e.preventDefault();
   const btn = $('#btnSalvar');
   const msg = $('#msgForm');
   msg.classList.remove('show');
-  btn.disabled = true;
-  btn.textContent = 'Salvando...';
+  btn.disabled = true; btn.textContent = 'Salvando...';
 
   const dados = {
     nome: $('#pNome').value.trim(),
@@ -524,27 +561,120 @@ $('#formProduto').addEventListener('submit', async (e) => {
   };
 
   try {
-    if (editandoId){
-      dados.id = editandoId;
-      await api('/api/produto', { method: 'PUT', body: JSON.stringify(dados) });
-      toast('Produto atualizado');
-    } else {
-      await api('/api/produtos', { method: 'POST', body: JSON.stringify(dados) });
-      toast('Produto criado');
+    if (editandoId){ dados.id = editandoId; await api('/api/produto', { method: 'PUT', body: JSON.stringify(dados) }); toast('Atualizado'); }
+    else { await api('/api/produtos', { method: 'POST', body: JSON.stringify(dados) }); toast('Criado'); }
+    fecharModal(); carregarProdutos();
+  } catch (err){ msg.textContent = err.message; msg.className = 'msg-form erro show'; }
+  finally { btn.disabled = false; btn.textContent = 'Salvar'; }
+});
+
+/* ============================ ABA PEDIDOS ============================ */
+async function carregarPedidos(){
+  const lista = $('#listaPedidos');
+  lista.innerHTML = '<div style="color:var(--muted);text-align:center;padding:40px;">Carregando pedidos...</div>';
+  
+  try {
+    const data = await api('/api/admin/pedidos');
+    const pedidos = data.pedidos || [];
+    
+    $('#contadorPedidos').textContent = `${pedidos.length} pedido${pedidos.length === 1 ? '' : 's'}`;
+
+    if (pedidos.length === 0) {
+      lista.innerHTML = '<div style="color:var(--muted);text-align:center;padding:40px;">Nenhum pedido recebido ainda.</div>';
+      return;
     }
-    fecharModal();
-    carregarProdutos();
-  } catch (err){
-    msg.textContent = err.message;
-    msg.className = 'msg-form erro show';
+
+    lista.innerHTML = pedidos.map(p => {
+      const dataFormatada = new Date(p.criado_em).toLocaleString('pt-BR');
+      const itensHtml = p.itens.map(i => `<li><span>${i.quantidade}x ${i.produto_nome}</span> <span>R$ ${(i.quantidade * i.preco_unitario).toFixed(2).replace('.', ',')}</span></li>`).join('');
+      
+      return `
+        <div class="pedido-card">
+          <div class="pedido-header">
+            <h3>Pedido #${p.id} - ${p.cliente_nome}</h3>
+            <span class="data">${dataFormatada}</span>
+          </div>
+          <div class="pedido-body">
+            <div class="pedido-info">
+              <p><strong>Cliente:</strong> ${p.cliente_nome}</p>
+              <p><strong>Endereço:</strong> ${p.endereco}</p>
+              <p><strong>Pagamento:</strong> ${p.metodo_pagamento.toUpperCase()}</p>
+              ${p.observacao ? `<p><strong>Obs:</strong> ${p.observacao}</p>` : ''}
+            </div>
+            <div class="pedido-itens">
+              <ul>${itensHtml}</ul>
+            </div>
+          </div>
+          <div class="pedido-footer">
+            <span class="pedido-total">Total: R$ ${p.total.toFixed(2).replace('.', ',')}</span>
+            <select class="status-select ${p.status}" onchange="mudarStatusPedido(${p.id}, this.value)">
+              <option value="pendente" ${p.status === 'pendente' ? 'selected' : ''}>Pendente</option>
+              <option value="entregue" ${p.status === 'entregue' ? 'selected' : ''}>Entregue</option>
+              <option value="cancelado" ${p.status === 'cancelado' ? 'selected' : ''}>Cancelado</option>
+            </select>
+          </div>
+        </div>
+      `;
+    }).join('');
+  } catch (err) {
+    lista.innerHTML = `<div style="color:var(--red);text-align:center;padding:40px;">Erro: ${err.message}</div>`;
+  }
+}
+
+$('#btnAtualizarPedidos').addEventListener('click', carregarPedidos);
+
+window.mudarStatusPedido = async (id, status) => {
+  try {
+    await api('/api/admin/pedido/status', { method: 'PUT', body: JSON.stringify({ id, status }) });
+    toast('Status atualizado!');
+    const sel = document.querySelector(`select[onchange*="mudarStatusPedido(${id},"]`);
+    if(sel) sel.className = `status-select ${status}`;
+  } catch (err) {
+    toast('Erro: ' + err.message, true);
+  }
+};
+
+/* ============================ ABA CONFIGURAÇÕES ============================ */
+async function carregarStatusLoja(){
+  try {
+    const data = await api('/api/config/status');
+    atualizarBotaoStatus(data.status);
+  } catch (err) {
+    toast('Erro ao buscar status: ' + err.message, true);
+  }
+}
+
+function atualizarBotaoStatus(status) {
+  const btn = $('#btnStatusLoja');
+  const txt = $('#statusTexto');
+  if (status === 'aberto') {
+    btn.className = 'btn-toggle-status aberto';
+    txt.textContent = 'Loja Aberta (Clique para fechar)';
+  } else {
+    btn.className = 'btn-toggle-status fechado';
+    txt.textContent = 'Loja Fechada (Clique para abrir)';
+  }
+}
+
+$('#btnStatusLoja').addEventListener('click', async () => {
+  const btn = $('#btnStatusLoja');
+  const abrindo = btn.classList.contains('fechado');
+  const novoStatus = abrindo ? 'aberto' : 'fechado';
+  
+  btn.disabled = true;
+  try {
+    await api('/api/config/status', { method: 'PUT', body: JSON.stringify({ status: novoStatus }) });
+    atualizarBotaoStatus(novoStatus);
+    toast(abrindo ? 'Loja aberta!' : 'Loja fechada!');
+  } catch (err) {
+    toast('Erro ao mudar status: ' + err.message, true);
   } finally {
     btn.disabled = false;
-    btn.textContent = 'Salvar';
   }
 });
 
 /* ============================ BOOT ============================ */
-if (token){
+if (token) {
   abrirDashboard();
 }
 </script>
