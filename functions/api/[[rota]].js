@@ -54,6 +54,8 @@ export async function onRequest(context){
     if (rota === 'login' && metodo === 'POST') return login(context);
     if (rota === 'logout' && metodo === 'POST') return logout(context);
     if (rota === 'me' && metodo === 'GET') return me(context);
+    
+    // Produtos
     if (rota === 'produtos' && metodo === 'GET') return listarProdutos(context);
     if (rota === 'admin/produtos' && metodo === 'GET') return listarTodosProdutos(context);
     if (rota === 'produtos' && metodo === 'POST') return criarProduto(context);
@@ -61,7 +63,7 @@ export async function onRequest(context){
     if (rota === 'produto' && metodo === 'DELETE') return deletarProduto(context);
     if (rota === 'upload' && metodo === 'POST') return uploadImagem(context);
     
-    // Configurações (Aberto/Fechado)
+    // Configurações
     if (rota === 'config/status' && metodo === 'GET') return getStatusLoja(context);
     if (rota === 'config/status' && metodo === 'PUT') return setStatusLoja(context);
 
@@ -87,7 +89,7 @@ export async function onRequest(context){
 }
 
 /* ============================================================
- * ADMIN — SETUP / LOGIN / LOGOUT
+ * ADMIN — SETUP / LOGIN / LOGOUT / ME
  * ============================================================ */
 async function setup({ request, env }){
   const total = await env.DB.prepare('SELECT COUNT(*) AS n FROM usuarios').first();
@@ -184,20 +186,34 @@ async function uploadImagem({ request, env }){
 }
 
 /* ============================================================
- * ADMIN — CONFIGURAÇÕES (Aberto/Fechado)
+ * CONFIGURAÇÕES DA LOJA
  * ============================================================ */
 async function getStatusLoja({ env }){
-  const row = await env.DB.prepare("SELECT valor FROM configuracoes WHERE chave = 'status_loja'").first();
-  return json({ ok: true, status: row ? row.valor : 'fechado' });
+  try {
+    const row = await env.DB.prepare("SELECT valor FROM configuracoes WHERE chave = 'status_loja'").first();
+    return json({ ok: true, status: row ? row.valor : 'fechado' });
+  } catch (e) {
+    return json({ ok: true, status: 'fechado' });
+  }
 }
 
 async function setStatusLoja({ request, env }){
-  const user = await autenticar(request, env);
-  if (!user) return erro('Não autenticado', 401);
-  const { status } = await request.json();
-  if (!['aberto', 'fechado'].includes(status)) return erro('Status inválido');
-  await env.DB.prepare("UPDATE configuracoes SET valor = ? WHERE chave = 'status_loja'").bind(status).run();
-  return json({ ok: true, status });
+  try {
+    const user = await autenticar(request, env);
+    if (!user) return erro('Não autenticado', 401);
+    
+    const { status } = await request.json();
+    if (!['aberto', 'fechado'].includes(status)) return erro('Status inválido', 400);
+
+    await env.DB.prepare(
+      "INSERT OR REPLACE INTO configuracoes (chave, valor) VALUES ('status_loja', ?)"
+    ).bind(status).run();
+    
+    return json({ ok: true, status });
+  } catch (e) {
+    console.error('Erro ao atualizar status:', e);
+    return erro('Erro interno: ' + e.message, 500);
+  }
 }
 
 /* ============================================================
@@ -217,21 +233,41 @@ async function cadastrarCliente({ request, env }){
   const token = gerarToken();
   const expira_em = new Date(Date.now() + SESSAO_DURACAO_HORAS * 3600 * 1000).toISOString().slice(0, 19).replace('T', ' ');
   await env.DB.prepare('INSERT INTO sessoes_cliente (token, cliente_id, expira_em) VALUES (?, ?, ?)').bind(token, clienteId, expira_em).run();
-  return json({ ok: true, token, cliente: { id: clienteId, nome, email, foto_url: null } });
+  return json({ ok: true, isAdmin: false, token, cliente: { id: clienteId, nome, email, foto_url: null, endereco: null, numero: null } });
 }
 
 async function loginCliente({ request, env }){
   const { email, senha } = await request.json();
   if (!email || !senha) return erro('Email e senha obrigatórios');
+
+  // 1. Tenta achar na tabela de CLIENTES
   const cli = await env.DB.prepare('SELECT * FROM clientes WHERE email = ?').bind(email).first();
-  if (!cli) return erro('Email ou senha inválidos', 401);
-  if (!cli.senha_hash) return erro('Essa conta usa login com Google. Clique em "Entrar com Google".', 401);
-  const tentativa = await hashSenha(senha, cli.salt);
-  if (tentativa !== cli.senha_hash) return erro('Email ou senha inválidos', 401);
-  const token = gerarToken();
-  const expira_em = new Date(Date.now() + SESSAO_DURACAO_HORAS * 3600 * 1000).toISOString().slice(0, 19).replace('T', ' ');
-  await env.DB.prepare('INSERT INTO sessoes_cliente (token, cliente_id, expira_em) VALUES (?, ?, ?)').bind(token, cli.id, expira_em).run();
-  return json({ ok: true, token, cliente: { id: cli.id, nome: cli.nome, email: cli.email, foto_url: cli.foto_url, endereco: cli.endereco, numero: cli.numero } });
+  if (cli) {
+    if (!cli.senha_hash) return erro('Essa conta usa login com Google. Clique em "Entrar com Google".', 401);
+    const tentativa = await hashSenha(senha, cli.salt);
+    if (tentativa !== cli.senha_hash) return erro('Email ou senha inválidos', 401);
+    
+    const token = gerarToken();
+    const expira_em = new Date(Date.now() + SESSAO_DURACAO_HORAS * 3600 * 1000).toISOString().slice(0, 19).replace('T', ' ');
+    await env.DB.prepare('INSERT INTO sessoes_cliente (token, cliente_id, expira_em) VALUES (?, ?, ?)').bind(token, cli.id, expira_em).run();
+    
+    return json({ ok: true, isAdmin: false, token, cliente: { id: cli.id, nome: cli.nome, email: cli.email, foto_url: cli.foto_url, endereco: cli.endereco, numero: cli.numero } });
+  }
+
+  // 2. Se não achou cliente, tenta achar na tabela de ADMIN (usuarios)
+  const admin = await env.DB.prepare('SELECT * FROM usuarios WHERE email = ?').bind(email).first();
+  if (admin) {
+    const tentativa = await hashSenha(senha, admin.salt);
+    if (tentativa !== admin.senha_hash) return erro('Email ou senha inválidos', 401);
+    
+    const token = gerarToken();
+    const expira_em = new Date(Date.now() + SESSAO_DURACAO_HORAS * 3600 * 1000).toISOString().slice(0, 19).replace('T', ' ');
+    await env.DB.prepare('INSERT INTO sessoes (token, usuario_id, expira_em) VALUES (?, ?, ?)').bind(token, admin.id, expira_em).run();
+    
+    return json({ ok: true, isAdmin: true, token, email: admin.email });
+  }
+
+  return erro('Email ou senha inválidos', 401);
 }
 
 async function logoutCliente({ request, env }){
@@ -259,25 +295,42 @@ async function atualizarEnderecoCliente({ request, env }){
  * CLIENTE — PEDIDOS
  * ============================================================ */
 async function criarPedido({ request, env }){
-  const cli = await autenticarCliente(request, env);
-  if (!cli) return erro('Não autenticado. Faça login para pedir.', 401);
-  const { itens, total, pagamento, endereco, numero, observacao } = await request.json();
-  if (!itens || itens.length === 0) return erro('Carrinho vazio');
-  if (!pagamento || !endereco || !numero) return erro('Dados incompletos');
+  try {
+    const cli = await autenticarCliente(request, env);
+    if (!cli) return erro('Não autenticado. Faça login para pedir.', 401);
 
-  const enderecoCompleto = `${endereco}, ${numero}`;
-  const result = await env.DB.prepare(`INSERT INTO pedidos (cliente_id, total, metodo_pagamento, endereco, observacao) VALUES (?, ?, ?, ?, ?)`).bind(cli.id, total, pagamento, enderecoCompleto, observacao || null).run();
-  const pedidoId = result.meta.last_row_id;
+    const { itens, total, pagamento, endereco, numero, observacao } = await request.json();
+    if (!itens || itens.length === 0) return erro('Carrinho vazio');
+    if (!pagamento || !endereco || !numero) return erro('Dados incompletos');
 
-  for (let item of itens) {
-    await env.DB.prepare(`INSERT INTO pedido_itens (pedido_id, produto_id, quantidade, preco_unitario) VALUES (?, ?, ?, ?)`).bind(pedidoId, item.id, item.quantidade, item.preco).run();
+    const enderecoCompleto = `${endereco}, ${numero}`;
+    const result = await env.DB.prepare(
+      `INSERT INTO pedidos (cliente_id, total, metodo_pagamento, endereco, observacao) 
+       VALUES (?, ?, ?, ?, ?)`
+    ).bind(cli.id, total, pagamento, enderecoCompleto, observacao || null).run();
+    
+    const pedidoId = result.meta.last_row_id;
+
+    for (let item of itens) {
+      // A MÁGICA ACONTECE AQUI: Transforma "R$ 4,25" no número 4.25
+      const precoNumerico = parseFloat(item.preco.replace('R$', '').replace(',', '.').trim());
+      
+      await env.DB.prepare(
+        `INSERT INTO pedido_itens (pedido_id, produto_id, quantidade, preco_unitario) 
+         VALUES (?, ?, ?, ?)`
+      ).bind(pedidoId, item.id, item.quantidade, precoNumerico).run();
+    }
+
+    if (!cli.endereco || !cli.numero) {
+      await env.DB.prepare('UPDATE clientes SET endereco = ?, numero = ? WHERE id = ?')
+        .bind(endereco, numero, cli.id).run();
+    }
+
+    return json({ ok: true, pedidoId });
+  } catch (e) {
+    console.error('Erro ao criar pedido:', e);
+    return erro('Erro ao criar pedido: ' + e.message, 500);
   }
-
-  if (!cli.endereco || !cli.numero) {
-    await env.DB.prepare('UPDATE clientes SET endereco = ?, numero = ? WHERE id = ?').bind(endereco, numero, cli.id).run();
-  }
-
-  return json({ ok: true, pedidoId });
 }
 
 async function listarPedidos({ request, env }){
