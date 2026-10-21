@@ -75,14 +75,12 @@ header{ position:sticky; top:0; z-index:60; background:rgba(5,5,5,.82); backdrop
 .logo-mini .txt b{ display:block; font-size:15px; font-weight:900; line-height:1.1; }
 .logo-mini .txt span{ display:block; font-size:9px; color:var(--green); letter-spacing:.14em; text-transform:uppercase; font-weight:700; }
 
-/* Ícones Header */
 .header-actions { display:flex; align-items:center; gap:12px; margin-left:4px; }
 .icon-btn{ position:relative; width:44px; height:44px; border-radius:50%; background:var(--surface-2); border:1.5px solid var(--line); display:grid; place-items:center; color:var(--muted); cursor:pointer; transition:all .2s; }
 .icon-btn:hover{ border-color:var(--green); color:var(--green); background:var(--green-soft); }
 .icon-btn svg{ width:22px; height:22px; }
 .cart-count{ position:absolute; top:-4px; right:-4px; background:var(--green); color:#001a09; font-size:11px; font-weight:900; width:20px; height:20px; border-radius:50%; display:none; align-items:center; justify-content:center; border:2px solid var(--bg); }
 
-/* Perfil Tooltip */
 .perfil-tip{ position:absolute; top:calc(100% + 10px); left:50%; transform:translateX(-50%) translateY(-4px); background:#000; color:#fff; font-size:11.5px; font-weight:700; padding:7px 11px; border-radius:8px; white-space:nowrap; opacity:0; pointer-events:none; transition:all .2s; border:1px solid var(--line-green); z-index:10; }
 .perfil-wrap:hover .perfil-tip{ opacity:1; transform:translateX(-50%) translateY(0); }
 
@@ -171,7 +169,6 @@ footer{ padding:46px 24px 34px; }
 .wa-float .wa-label{ font-size:14.5px; font-weight:800; margin-left:12px; white-space:nowrap; opacity:0; transition:opacity .25s; }
 .wa-float:hover .wa-label{ opacity:1; }
 
-/* ---------- MODAIS ---------- */
 .modal-overlay{ position:fixed; inset:0; background:rgba(0,0,0,.85); backdrop-filter:blur(6px); z-index:200; display:none; align-items:center; justify-content:center; padding:20px; }
 .modal-overlay.show{ display:flex; }
 .modal-box{ background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:34px 28px 26px; max-width:420px; width:100%; position:relative; box-shadow:0 30px 80px -20px rgba(0,177,64,.35); animation:modalIn .25s; max-height:90vh; overflow-y:auto; }
@@ -204,7 +201,6 @@ footer{ padding:46px 24px 34px; }
 .auth-logout{ width:100%; padding:13px; border:1px solid rgba(230,57,70,.35); background:var(--red-soft); color:#ff8895; font-weight:800; font-size:14px; border-radius:10px; }
 .auth-logout:hover{ background:var(--red); color:#fff; }
 
-/* Carrinho */
 .cart-item { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px dashed var(--line); }
 .cart-item img { width:50px; height:50px; border-radius:8px; object-fit:cover; background:var(--surface-2); }
 .cart-item-info { flex:1; }
@@ -219,7 +215,6 @@ footer{ padding:46px 24px 34px; }
 .form-row > div { flex:1; }
 .checkout-form textarea { resize:none; height:60px; }
 
-/* Responsivo */
 @media (max-width:780px){
   .cat-rail-wrap, .logo-mini .txt{ display:none; }
   .nav{ padding:12px 16px; gap:8px; }
@@ -345,7 +340,6 @@ footer{ padding:46px 24px 34px; }
   <span class="wa-label">Fale conosco</span>
 </a>
 
-<!-- ================= MODAL DE LOGIN ================= -->
 <div class="modal-overlay" id="authModal">
   <div class="modal-box">
     <div id="authScreenChoose">
@@ -391,37 +385,24 @@ footer{ padding:46px 24px 34px; }
   </div>
 </div>
 
-<!-- ================= MODAL DO CARRINHO ================= -->
 <div class="modal-overlay" id="cartModal">
   <div class="modal-box">
     <button class="modal-close" id="cartClose">×</button>
     <h2>Seu Carrinho</h2>
-    <div id="cartItemsContainer" style="margin-top:20px;">
-      <!-- Itens injetados via JS -->
-    </div>
-    <div class="cart-total">
-      <p>Total:</p>
-      <span id="cartTotal">R$ 0,00</span>
-    </div>
+    <div id="cartItemsContainer" style="margin-top:20px;"></div>
+    <div class="cart-total"><p>Total:</p><span id="cartTotal">R$ 0,00</span></div>
     <button class="auth-submit" id="btnGoCheckout" style="margin-top:20px;">Finalizar Pedido</button>
   </div>
 </div>
 
-<!-- ================= MODAL DE CHECKOUT ================= -->
 <div class="modal-overlay" id="checkoutModal">
   <div class="modal-box">
     <button class="modal-close" id="checkoutClose">×</button>
     <h2>Finalizar Pedido</h2>
     <form id="formCheckout" class="checkout-form">
       <div class="form-row">
-        <div>
-          <label>Rua / Endereço</label>
-          <input type="text" id="checkRua" required>
-        </div>
-        <div style="flex:0 0 100px;">
-          <label>Número</label>
-          <input type="text" id="checkNumero" required>
-        </div>
+        <div><label>Rua / Endereço</label><input type="text" id="checkRua" required></div>
+        <div style="flex:0 0 100px;"><label>Número</label><input type="text" id="checkNumero" required></div>
       </div>
       <label>Forma de Pagamento</label>
       <select id="checkPagamento" required>
@@ -439,12 +420,10 @@ footer{ padding:46px 24px 34px; }
 </div>
 
 <script>
-/* ============================ ESTADO GLOBAL ============================ */
 let clienteLogado = null;
 let carrinho = JSON.parse(localStorage.getItem('green_cart')) || [];
 let lojaAberta = false;
 
-/* ============================ HELPERS ============================ */
 const $ = sel => document.querySelector(sel);
 const $$ = sel => document.querySelectorAll(sel);
 
@@ -470,11 +449,9 @@ async function apiCli(path, opts = {}){
   return data;
 }
 
-/* ============================ SPLASH ============================ */
 (function(){
   const splash = $('#splash'), logoStage = $('#logoStage'), videoWrap = $('#introVideoWrap'), video = $('#introVideo'), tapHint = $('#tapHint');
   let estado = 'logo', entrou = false;
-
   function tocarVideo(){
     if (estado !== 'logo') return;
     estado = 'video';
@@ -499,29 +476,18 @@ async function apiCli(path, opts = {}){
   setTimeout(() => { if (estado === 'video') enterSite(); }, 30000);
 })();
 
-/* ============================ STATUS DA LOJA ============================ */
 async function checarStatusLoja(){
   try {
     const res = await fetch('/api/config/status');
     const data = await res.json();
     lojaAberta = data.status === 'aberto';
-    
-    const badge = $('#statusBadge');
-    const text = $('#statusText');
-    
-    if (lojaAberta) {
-      badge.className = 'badge-top is-open';
-      text.textContent = 'Aberto agora';
-    } else {
-      badge.className = 'badge-top is-closed';
-      text.textContent = 'Fechado agora';
-    }
+    const badge = $('#statusBadge'); const text = $('#statusText');
+    if (lojaAberta) { badge.className = 'badge-top is-open'; text.textContent = 'Aberto agora'; }
+    else { badge.className = 'badge-top is-closed'; text.textContent = 'Fechado agora'; }
   } catch(e) { console.error('Erro status', e); }
 }
 
-/* ============================ CATÁLOGO DINÂMICO ============================ */
 let todosProdutos = [];
-
 async function carregarProdutos() {
   try {
     const res = await fetch('/api/produtos');
@@ -533,19 +499,7 @@ async function carregarProdutos() {
 
 function renderizarCatalogo(produtos) {
   const container = $('#catalogContainer');
-  const categorias = {
-    'cervejas': 'Cervejas geladas',
-    'destilados': 'Destilados',
-    'copao': 'Copão 700ml',
-    'tabacaria': 'Tabacaria',
-    'bebidas': 'Bebidas',
-    'salgadinhos': 'Salgadinhos & Chips',
-    'alimentos': 'Alimentos',
-    'doces': 'Doces',
-    'acessorios': 'Acessórios'
-  };
-
-  // Limpa o container, mas mantém o noResults
+  const categorias = { 'cervejas': 'Cervejas geladas', 'destilados': 'Destilados', 'copao': 'Copão 700ml', 'tabacaria': 'Tabacaria', 'bebidas': 'Bebidas', 'salgadinhos': 'Salgadinhos & Chips', 'alimentos': 'Alimentos', 'doces': 'Doces', 'acessorios': 'Acessórios' };
   container.innerHTML = '<div id="noResults" class="no-results" style="display:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><b>Nenhum produto encontrado</b></div>';
 
   for (const [catKey, catNome] of Object.entries(categorias)) {
@@ -553,19 +507,14 @@ function renderizarCatalogo(produtos) {
     if (prodsCat.length === 0) continue;
 
     const section = document.createElement('section');
-    section.className = 'row';
-    section.id = catKey;
-    section.style.display = 'block';
-    
+    section.className = 'row'; section.id = catKey; section.style.display = 'block';
     section.innerHTML = `
       <div class="row-head"><h2>${catNome}</h2><span>${prodsCat.length} produto${prodsCat.length > 1 ? 's' : ''}</span></div>
       <div class="rail-wrap">
         <button class="rail-btn left" data-dir="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></button>
         <div class="rail" data-rail></div>
         <button class="rail-btn right" data-dir="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></button>
-      </div>
-    `;
-
+      </div>`;
     const rail = section.querySelector('.rail');
 
     prodsCat.forEach(p => {
@@ -586,43 +535,29 @@ function renderizarCatalogo(produtos) {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
             </button>
           </div>
-        </div>
-      `;
+        </div>`;
       rail.appendChild(card);
     });
-
     container.appendChild(section);
   }
-
   configurarSetas();
 }
 
-// Filtro de Busca
 $('#search').addEventListener('input', (e) => {
   const termo = e.target.value.toLowerCase().trim();
-  const sections = $$('.row');
-  let totalVisivel = 0;
-
+  const sections = $$('.row'); let totalVisivel = 0;
   sections.forEach(sec => {
     let visiveisNaCat = 0;
-    const cards = sec.querySelectorAll('.card');
-    cards.forEach(card => {
-      const txt = card.textContent.toLowerCase();
-      if (txt.includes(termo)) {
-        card.style.display = 'flex';
-        visiveisNaCat++;
-      } else {
-        card.style.display = 'none';
-      }
+    sec.querySelectorAll('.card').forEach(card => {
+      if (card.textContent.toLowerCase().includes(termo)) { card.style.display = 'flex'; visiveisNaCat++; }
+      else card.style.display = 'none';
     });
     sec.style.display = visiveisNaCat > 0 ? 'block' : 'none';
     totalVisivel += visiveisNaCat;
   });
-
   $('#noResults').style.display = totalVisivel === 0 ? 'block' : 'none';
 });
 
-// Setas de rolagem do catálogo
 function configurarSetas() {
   $$('.rail-wrap').forEach(wrap => {
     const rail = wrap.querySelector('[data-rail]');
@@ -635,63 +570,34 @@ function configurarSetas() {
   });
 }
 
-/* ============================ CARRINHO ============================ */
 function atualizarCarrinhoUI() {
-  const count = $('#cartCount');
-  const container = $('#cartItemsContainer');
-  const totalEl = $('#cartTotal');
-  
+  const count = $('#cartCount'); const container = $('#cartItemsContainer'); const totalEl = $('#cartTotal');
   let qtdTotal = carrinho.reduce((acc, item) => acc + item.quantidade, 0);
   let valorTotal = 0;
-
-  if (qtdTotal > 0) {
-    count.textContent = qtdTotal;
-    count.style.display = 'flex';
-  } else {
-    count.style.display = 'none';
-  }
-
+  if (qtdTotal > 0) { count.textContent = qtdTotal; count.style.display = 'flex'; } else count.style.display = 'none';
   container.innerHTML = '';
-  if (carrinho.length === 0) {
-    container.innerHTML = '<p style="text-align:center;color:var(--muted);padding:20px 0;">Seu carrinho está vazio.</p>';
-  } else {
+  if (carrinho.length === 0) container.innerHTML = '<p style="text-align:center;color:var(--muted);padding:20px 0;">Seu carrinho está vazio.</p>';
+  else {
     carrinho.forEach(item => {
       const precoNum = parseFloat(item.preco.replace('R$', '').replace(',', '.').trim());
       valorTotal += precoNum * item.quantidade;
-
-      const div = document.createElement('div');
-      div.className = 'cart-item';
+      const div = document.createElement('div'); div.className = 'cart-item';
       div.innerHTML = `
         <img src="${item.imagem_url || ''}" onerror="this.style.display='none'">
-        <div class="cart-item-info">
-          <h4>${item.nome}</h4>
-          <span>R$ ${item.preco.replace('R$', '').trim()}</span>
-        </div>
-        <div class="cart-item-actions">
-          <button onclick="mudarQtd(${item.id}, -1)">-</button>
-          <span>${item.quantidade}</span>
-          <button onclick="mudarQtd(${item.id}, 1)">+</button>
-        </div>
-      `;
+        <div class="cart-item-info"><h4>${item.nome}</h4><span>R$ ${item.preco.replace('R$', '').trim()}</span></div>
+        <div class="cart-item-actions"><button onclick="mudarQtd(${item.id}, -1)">-</button><span>${item.quantidade}</span><button onclick="mudarQtd(${item.id}, 1)">+</button></div>`;
       container.appendChild(div);
     });
   }
-
   totalEl.textContent = `R$ ${valorTotal.toFixed(2).replace('.', ',')}`;
   localStorage.setItem('green_cart', JSON.stringify(carrinho));
 }
 
 window.addCarrinho = function(id, nome, preco, img) {
-  if (!lojaAberta) {
-    alert("A loja está fechada no momento. Não é possível fazer pedidos.");
-    return;
-  }
-  const itemExistente = carrinho.find(i => i.id === id);
-  if (itemExistente) {
-    itemExistente.quantidade++;
-  } else {
-    carrinho.push({ id, nome, preco, imagem_url: img, quantidade: 1 });
-  }
+  if (!lojaAberta) return alert("A loja está fechada no momento.");
+  const item = carrinho.find(i => i.id === id);
+  if (item) item.quantidade++;
+  else carrinho.push({ id, nome, preco, imagem_url: img, quantidade: 1 });
   atualizarCarrinhoUI();
 };
 
@@ -699,45 +605,33 @@ window.mudarQtd = function(id, delta) {
   const item = carrinho.find(i => i.id === id);
   if (item) {
     item.quantidade += delta;
-    if (item.quantidade <= 0) {
-      carrinho = carrinho.filter(i => i.id !== id);
-    }
+    if (item.quantidade <= 0) carrinho = carrinho.filter(i => i.id !== id);
     atualizarCarrinhoUI();
   }
 };
 
-// Modais do Carrinho
 $('#cartBtn').addEventListener('click', () => $('#cartModal').classList.add('show'));
 $('#cartClose').addEventListener('click', () => $('#cartModal').classList.remove('show'));
 
-/* ============================ CHECKOUT ============================ */
 $('#btnGoCheckout').addEventListener('click', () => {
   if (carrinho.length === 0) return alert('Adicione itens ao carrinho primeiro.');
   if (!lojaAberta) return alert('A loja está fechada no momento.');
-  
   if (!clienteLogado) {
     alert('Você precisa estar logado para finalizar o pedido.');
-    $('#cartModal').classList.remove('show');
-    $('#authModal').classList.add('show');
-    mostrarTelaAuth('form');
+    $('#cartModal').classList.remove('show'); $('#authModal').classList.add('show'); mostrarTelaAuth('form');
     return;
   }
-
   if (clienteLogado.endereco) $('#checkRua').value = clienteLogado.endereco;
   if (clienteLogado.numero) $('#checkNumero').value = clienteLogado.numero;
-
-  $('#cartModal').classList.remove('show');
-  $('#checkoutModal').classList.add('show');
+  $('#cartModal').classList.remove('show'); $('#checkoutModal').classList.add('show');
 });
 
 $('#checkoutClose').addEventListener('click', () => $('#checkoutModal').classList.remove('show'));
 
 $('#formCheckout').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const btn = $('#btnEnviarPedido');
-  const erroBox = $('#checkErro');
-  erroBox.classList.remove('show');
-  btn.disabled = true; btn.textContent = 'Enviando...';
+  const btn = $('#btnEnviarPedido'); const erroBox = $('#checkErro');
+  erroBox.classList.remove('show'); btn.disabled = true; btn.textContent = 'Enviando...';
 
   try {
     let valorTotal = carrinho.reduce((acc, item) => {
@@ -745,36 +639,27 @@ $('#formCheckout').addEventListener('submit', async (e) => {
       return acc + (p * item.quantidade);
     }, 0);
 
+    const itensLimpos = carrinho.map(item => ({
+      id: item.id, nome: item.nome, quantidade: item.quantidade,
+      preco: parseFloat(item.preco.replace('R$', '').replace(',', '.').trim())
+    }));
+
     const pedido = {
-      itens: carrinho,
-      total: valorTotal,
-      pagamento: $('#checkPagamento').value,
-      endereco: $('#checkRua').value.trim(),
-      numero: $('#checkNumero').value.trim(),
-      observacao: $('#checkObs').value.trim()
+      itens: itensLimpos, total: valorTotal, pagamento: $('#checkPagamento').value,
+      endereco: $('#checkRua').value.trim(), numero: $('#checkNumero').value.trim(), observacao: $('#checkObs').value.trim()
     };
 
     await apiCli('/api/pedidos', { method: 'POST', body: JSON.stringify(pedido) });
     
     alert('Pedido enviado com sucesso! A loja entrará em contato.');
-    carrinho = [];
-    atualizarCarrinhoUI();
-    $('#checkoutModal').classList.remove('show');
-    
-    // Atualiza os dados do cliente logado localmente
-    clienteLogado.endereco = pedido.endereco;
-    clienteLogado.numero = pedido.numero;
+    carrinho = []; atualizarCarrinhoUI(); $('#checkoutModal').classList.remove('show');
+    clienteLogado.endereco = pedido.endereco; clienteLogado.numero = pedido.numero;
     localStorage.setItem('green_cli', JSON.stringify(clienteLogado));
-
   } catch (err) {
-    erroBox.textContent = err.message;
-    erroBox.classList.add('show');
-  } finally {
-    btn.disabled = false; btn.textContent = 'Enviar Pedido';
-  }
+    erroBox.textContent = err.message; erroBox.classList.add('show');
+  } finally { btn.disabled = false; btn.textContent = 'Enviar Pedido'; }
 });
 
-/* ============================ LOGIN E CLIENTE ============================ */
 function mostrarTelaAuth(tela) {
   $('#authScreenChoose').style.display = tela === 'choose' ? 'block' : 'none';
   $('#authScreenForm').style.display = tela === 'form' ? 'block' : 'none';
@@ -782,14 +667,10 @@ function mostrarTelaAuth(tela) {
 }
 
 function atualizarUILogin() {
-  const btn = $('#perfilBtn');
-  const tip = document.querySelector('.perfil-tip');
+  const btn = $('#perfilBtn'); const tip = document.querySelector('.perfil-tip');
   if (clienteLogado) {
-    if (clienteLogado.foto_url) {
-      btn.innerHTML = `<img src="${clienteLogado.foto_url}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
-    } else {
-      btn.innerHTML = `<span style="font-weight:900;font-size:18px;color:var(--green);">${clienteLogado.nome.charAt(0).toUpperCase()}</span>`;
-    }
+    if (clienteLogado.foto_url) btn.innerHTML = `<img src="${clienteLogado.foto_url}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+    else btn.innerHTML = `<span style="font-weight:900;font-size:18px;color:var(--green);">${clienteLogado.nome.charAt(0).toUpperCase()}</span>`;
     tip.textContent = clienteLogado.nome.split(' ')[0];
   } else {
     btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>`;
@@ -800,18 +681,13 @@ function atualizarUILogin() {
 $('#perfilBtn').addEventListener('click', () => {
   if (clienteLogado) {
     $('#authAvatar').innerHTML = clienteLogado.foto_url ? `<img src="${clienteLogado.foto_url}">` : clienteLogado.nome.charAt(0).toUpperCase();
-    $('#authUserName').textContent = clienteLogado.nome;
-    $('#authUserEmail').textContent = clienteLogado.email;
-    mostrarTelaAuth('logged');
-  } else {
-    mostrarTelaAuth('choose');
-  }
+    $('#authUserName').textContent = clienteLogado.nome; $('#authUserEmail').textContent = clienteLogado.email; mostrarTelaAuth('logged');
+  } else mostrarTelaAuth('choose');
   $('#authModal').classList.add('show');
 });
 
 $('#authClose').addEventListener('click', () => $('#authModal').classList.remove('show'));
 $('#authCloseLogged').addEventListener('click', () => $('#authModal').classList.remove('show'));
-
 $('#authBack').addEventListener('click', () => mostrarTelaAuth('choose'));
 
 $$('.auth-opt').forEach(btn => {
@@ -823,11 +699,9 @@ $$('.auth-opt').forEach(btn => {
 
 $$('.auth-tab').forEach(tab => {
   tab.addEventListener('click', () => {
-    $$('.auth-tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
+    $$('.auth-tab').forEach(t => t.classList.remove('active')); tab.classList.add('active');
     const isLogin = tab.dataset.tab === 'login';
-    $('#formLogin').style.display = isLogin ? 'block' : 'none';
-    $('#formCadastro').style.display = isLogin ? 'none' : 'block';
+    $('#formLogin').style.display = isLogin ? 'block' : 'none'; $('#formCadastro').style.display = isLogin ? 'none' : 'block';
   });
 });
 
@@ -837,26 +711,16 @@ $('#formLogin').addEventListener('submit', async (e) => {
   erroBox.classList.remove('show'); btn.disabled = true; btn.textContent = 'Entrando...';
   try {
     const data = await apiCli('/api/cliente/login', {
-      method: 'POST',
-      body: JSON.stringify({ email: $('#loginEmail').value.trim(), senha: $('#loginSenha').value })
+      method: 'POST', body: JSON.stringify({ email: $('#loginEmail').value.trim(), senha: $('#loginSenha').value })
     });
-
     if (data.isAdmin) {
-      localStorage.setItem('green_token', data.token);
-      localStorage.setItem('green_email', data.email);
-      alert('Bem-vindo, Administrador! Redirecionando para o painel...');
-      window.location.href = '/admin.html';
-      return;
+      localStorage.setItem('green_token', data.token); localStorage.setItem('green_email', data.email);
+      alert('Bem-vindo, Administrador! Redirecionando para o painel...'); window.location.href = '/admin.html'; return;
     }
-
-    setSessao(data.token, data.cliente);
-    atualizarUILogin();
-    $('#authModal').classList.remove('show');
-    
-    if(carrinho.length > 0) { $('#btnGoCheckout').click(); }
-  } catch (err) {
-    erroBox.textContent = err.message; erroBox.classList.add('show');
-  } finally { btn.disabled = false; btn.textContent = 'Entrar'; }
+    setSessao(data.token, data.cliente); atualizarUILogin(); $('#authModal').classList.remove('show');
+    if(carrinho.length > 0) $('#btnGoCheckout').click();
+  } catch (err) { erroBox.textContent = err.message; erroBox.classList.add('show'); } 
+  finally { btn.disabled = false; btn.textContent = 'Entrar'; }
 });
 
 $('#formCadastro').addEventListener('submit', async (e) => {
@@ -865,17 +729,12 @@ $('#formCadastro').addEventListener('submit', async (e) => {
   erroBox.classList.remove('show'); btn.disabled = true; btn.textContent = 'Criando...';
   try {
     const data = await apiCli('/api/cliente/cadastro', {
-      method: 'POST',
-      body: JSON.stringify({ nome: $('#cadNome').value.trim(), email: $('#cadEmail').value.trim(), senha: $('#cadSenha').value })
+      method: 'POST', body: JSON.stringify({ nome: $('#cadNome').value.trim(), email: $('#cadEmail').value.trim(), senha: $('#cadSenha').value })
     });
-    setSessao(data.token, data.cliente);
-    atualizarUILogin();
-    $('#authModal').classList.remove('show');
-    
-    if(carrinho.length > 0) { $('#btnGoCheckout').click(); }
-  } catch (err) {
-    erroBox.textContent = err.message; erroBox.classList.add('show');
-  } finally { btn.disabled = false; btn.textContent = 'Criar conta'; }
+    setSessao(data.token, data.cliente); atualizarUILogin(); $('#authModal').classList.remove('show');
+    if(carrinho.length > 0) $('#btnGoCheckout').click();
+  } catch (err) { erroBox.textContent = err.message; erroBox.classList.add('show'); } 
+  finally { btn.disabled = false; btn.textContent = 'Criar conta'; }
 });
 
 $('#authLogout').addEventListener('click', async () => {
@@ -883,42 +742,30 @@ $('#authLogout').addEventListener('click', async () => {
   limparSessao(); atualizarUILogin(); $('#authModal').classList.remove('show');
 });
 
-/* Verifica login pelo Google na URL */
 (function processarRetornoGoogle(){
   const params = new URLSearchParams(window.location.search);
   const erroG = params.get('google_erro');
   if (erroG) { alert('Falha no login com Google: ' + erroG); window.history.replaceState({}, '', window.location.pathname); return; }
   const t = params.get('google_token'), n = params.get('google_nome'), e = params.get('google_email'), f = params.get('google_foto');
   if (t && n && e) {
-    setSessao(t, { nome: n, email: e, foto_url: f || null });
-    atualizarUILogin();
-    window.history.replaceState({}, '', window.location.pathname);
+    setSessao(t, { nome: n, email: e, foto_url: f || null }); atualizarUILogin(); window.history.replaceState({}, '', window.location.pathname);
   }
 })();
 
-/* ============================ BOOT ============================ */
 (async function init(){
-  checarStatusLoja();
-  carregarProdutos();
-  atualizarCarrinhoUI();
-  
+  checarStatusLoja(); carregarProdutos(); atualizarCarrinhoUI();
   const token = getToken();
   if (token) {
-    try {
-      const data = await apiCli('/api/cliente/me');
-      clienteLogado = data.cliente;
-    } catch(_) { limparSessao(); }
+    try { const data = await apiCli('/api/cliente/me'); clienteLogado = data.cliente; } catch(_) { limparSessao(); }
   }
   atualizarUILogin();
 })();
 
-// Setas das categorias do topo
 $$('.cat-rail-wrap').forEach(wrap => {
   const rail = wrap.querySelector('[data-cat-rail]');
   wrap.querySelectorAll('.cat-rail-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      const dir = Number(btn.dataset.dir);
-      rail.scrollBy({ left: dir * (rail.clientWidth * 0.85), behavior: 'smooth' });
+      const dir = Number(btn.dataset.dir); rail.scrollBy({ left: dir * (rail.clientWidth * 0.85), behavior: 'smooth' });
     });
   });
 });
