@@ -312,7 +312,6 @@ async function criarPedido({ request, env }){
     const pedidoId = result.meta.last_row_id;
 
     for (let item of itens) {
-      // CORREÇÃO: Trata tanto string "R$ 4,25" quanto number 4.25
       let precoNumerico = item.preco;
       if (typeof item.preco === 'string') {
         precoNumerico = parseFloat(item.preco.replace('R$', '').replace(',', '.').trim());
@@ -324,14 +323,13 @@ async function criarPedido({ request, env }){
       ).bind(pedidoId, item.id, item.quantidade, precoNumerico).run();
     }
 
-    // CORREÇÃO BLINDADA: Tenta atualizar o endereço, mas se falhar, não derruba o pedido.
     try {
       if (!cli.endereco || !cli.numero) {
         await env.DB.prepare('UPDATE clientes SET endereco = ?, numero = ? WHERE id = ?')
           .bind(endereco, numero, cli.id).run();
       }
     } catch (errEndereco) {
-      console.error('Aviso: Erro ao salvar endereço no perfil, mas o pedido foi salvo com sucesso:', errEndereco);
+      console.error('Aviso: Erro ao salvar endereço no perfil:', errEndereco);
     }
 
     return json({ ok: true, pedidoId });
@@ -344,11 +342,42 @@ async function criarPedido({ request, env }){
 async function listarPedidos({ request, env }){
   const user = await autenticar(request, env);
   if (!user) return erro('Não autenticado', 401);
-  const { results } = await env.DB.prepare(`SELECT p.*, c.nome as cliente_nome, c.email as cliente_email FROM pedidos p JOIN clientes c ON c.id = p.cliente_id ORDER BY p.criado_em DESC`).all();
+
+  // 1. LIMPEZA AUTOMÁTICA: Apaga pedidos e itens com mais de 72 horas
+  try {
+    // Apaga os itens dos pedidos antigos primeiro (por causa da chave estrangeira)
+    await env.DB.prepare(`
+      DELETE FROM pedido_itens 
+      WHERE pedido_id IN (SELECT id FROM pedidos WHERE criado_em < datetime('now', '-72 hours'))
+    `).run();
+    
+    // Apaga os pedidos em si
+    await env.DB.prepare(`
+      DELETE FROM pedidos WHERE criado_em < datetime('now', '-72 hours')
+    `).run();
+  } catch (e) {
+    console.error('Erro ao limpar pedidos antigos:', e);
+  }
+
+  // 2. BUSCA: Traz apenas os pedidos que sobreviveram à limpeza
+  const { results } = await env.DB.prepare(`
+    SELECT p.*, c.nome as cliente_nome, c.email as cliente_email 
+    FROM pedidos p 
+    JOIN clientes c ON c.id = p.cliente_id 
+    WHERE p.criado_em >= datetime('now', '-72 hours')
+    ORDER BY p.criado_em DESC
+  `).all();
+
   for (let p of results) {
-    const itens = await env.DB.prepare(`SELECT pi.*, pr.nome as produto_nome FROM pedido_itens pi JOIN produtos pr ON pr.id = pi.produto_id WHERE pi.pedido_id = ?`).bind(p.id).all();
+    const itens = await env.DB.prepare(`
+      SELECT pi.*, pr.nome as produto_nome 
+      FROM pedido_itens pi 
+      JOIN produtos pr ON pr.id = pi.produto_id 
+      WHERE pi.pedido_id = ?
+    `).bind(p.id).all();
     p.itens = itens.results;
   }
+
   return json({ ok: true, pedidos: results });
 }
 
