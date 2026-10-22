@@ -55,6 +55,12 @@ export async function onRequest(context){
     if (rota === 'logout' && metodo === 'POST') return logout(context);
     if (rota === 'me' && metodo === 'GET') return me(context);
     
+    // Categorias
+    if (rota === 'categorias' && metodo === 'GET') return listarCategorias(context);
+    if (rota === 'admin/categorias' && metodo === 'GET') return listarCategorias(context);
+    if (rota === 'categorias' && metodo === 'POST') return criarCategoria(context);
+    if (rota === 'categoria' && metodo === 'DELETE') return deletarCategoria(context);
+
     // Produtos
     if (rota === 'produtos' && metodo === 'GET') return listarProdutos(context);
     if (rota === 'admin/produtos' && metodo === 'GET') return listarTodosProdutos(context);
@@ -129,17 +135,65 @@ async function me({ request, env }){
 }
 
 /* ============================================================
+ * CATEGORIAS
+ * ============================================================ */
+async function listarCategorias({ env }){
+  const { results } = await env.DB.prepare('SELECT * FROM categorias ORDER BY ordem ASC, nome ASC').all();
+  return json({ ok: true, categorias: results });
+}
+
+async function criarCategoria({ request, env }){
+  const user = await autenticar(request, env);
+  if (!user) return erro('Não autenticado', 401);
+
+  const p = await request.json();
+  if (!p.nome) return erro('Nome da categoria obrigatório');
+
+  // Gera o slug automaticamente (ex: "Bebidas Geladas" -> "bebidas-geladas")
+  const slug = p.nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  
+  const jaExiste = await env.DB.prepare('SELECT id FROM categorias WHERE slug = ? OR nome = ?').bind(slug, p.nome).first();
+  if (jaExiste) return erro('Já existe uma categoria com esse nome.', 409);
+
+  await env.DB.prepare(
+    'INSERT INTO categorias (nome, slug, ordem) VALUES (?, ?, ?)'
+  ).bind(p.nome, slug, p.ordem || 0).run();
+
+  return json({ ok: true });
+}
+
+async function deletarCategoria({ request, env }){
+  const user = await autenticar(request, env);
+  if (!user) return erro('Não autenticado', 401);
+  
+  const id = new URL(request.url).searchParams.get('id');
+  if (!id) return erro('ID obrigatório');
+
+  const cat = await env.DB.prepare('SELECT slug FROM categorias WHERE id = ?').bind(id).first();
+  if (!cat) return erro('Categoria não encontrada', 404);
+
+  // Verifica se tem produtos nessa categoria antes de apagar
+  const temProdutos = await env.DB.prepare('SELECT COUNT(*) AS n FROM produtos WHERE categoria = ?').bind(cat.slug).first();
+  if (temProdutos.n > 0) {
+    return erro('Não é possível excluir: existem produtos cadastrados nessa categoria.', 400);
+  }
+
+  await env.DB.prepare('DELETE FROM categorias WHERE id = ?').bind(id).run();
+  return json({ ok: true });
+}
+
+/* ============================================================
  * PRODUTOS
  * ============================================================ */
 async function listarProdutos({ env }){
-  const { results } = await env.DB.prepare('SELECT * FROM produtos WHERE ativo = 1 ORDER BY categoria, ordem, nome').all();
+  const { results } = await env.DB.prepare('SELECT * FROM produtos WHERE ativo = 1 ORDER BY ordem, nome').all();
   return json({ ok: true, produtos: results });
 }
 
 async function listarTodosProdutos({ request, env }){
   const user = await autenticar(request, env);
   if (!user) return erro('Não autenticado', 401);
-  const { results } = await env.DB.prepare('SELECT * FROM produtos ORDER BY categoria, ordem, nome').all();
+  const { results } = await env.DB.prepare('SELECT * FROM produtos ORDER BY ordem, nome').all();
   return json({ ok: true, produtos: results });
 }
 
@@ -201,17 +255,11 @@ async function setStatusLoja({ request, env }){
   try {
     const user = await autenticar(request, env);
     if (!user) return erro('Não autenticado', 401);
-    
     const { status } = await request.json();
     if (!['aberto', 'fechado'].includes(status)) return erro('Status inválido', 400);
-
-    await env.DB.prepare(
-      "INSERT OR REPLACE INTO configuracoes (chave, valor) VALUES ('status_loja', ?)"
-    ).bind(status).run();
-    
+    await env.DB.prepare("INSERT OR REPLACE INTO configuracoes (chave, valor) VALUES ('status_loja', ?)").bind(status).run();
     return json({ ok: true, status });
   } catch (e) {
-    console.error('Erro ao atualizar status:', e);
     return erro('Erro interno: ' + e.message, 500);
   }
 }
@@ -239,34 +287,25 @@ async function cadastrarCliente({ request, env }){
 async function loginCliente({ request, env }){
   const { email, senha } = await request.json();
   if (!email || !senha) return erro('Email e senha obrigatórios');
-
-  // 1. Tenta achar na tabela de CLIENTES
   const cli = await env.DB.prepare('SELECT * FROM clientes WHERE email = ?').bind(email).first();
   if (cli) {
     if (!cli.senha_hash) return erro('Essa conta usa login com Google. Clique em "Entrar com Google".', 401);
     const tentativa = await hashSenha(senha, cli.salt);
     if (tentativa !== cli.senha_hash) return erro('Email ou senha inválidos', 401);
-    
     const token = gerarToken();
     const expira_em = new Date(Date.now() + SESSAO_DURACAO_HORAS * 3600 * 1000).toISOString().slice(0, 19).replace('T', ' ');
     await env.DB.prepare('INSERT INTO sessoes_cliente (token, cliente_id, expira_em) VALUES (?, ?, ?)').bind(token, cli.id, expira_em).run();
-    
     return json({ ok: true, isAdmin: false, token, cliente: { id: cli.id, nome: cli.nome, email: cli.email, foto_url: cli.foto_url, endereco: cli.endereco, numero: cli.numero } });
   }
-
-  // 2. Se não achou cliente, tenta achar na tabela de ADMIN (usuarios)
   const admin = await env.DB.prepare('SELECT * FROM usuarios WHERE email = ?').bind(email).first();
   if (admin) {
     const tentativa = await hashSenha(senha, admin.salt);
     if (tentativa !== admin.senha_hash) return erro('Email ou senha inválidos', 401);
-    
     const token = gerarToken();
     const expira_em = new Date(Date.now() + SESSAO_DURACAO_HORAS * 3600 * 1000).toISOString().slice(0, 19).replace('T', ' ');
     await env.DB.prepare('INSERT INTO sessoes (token, usuario_id, expira_em) VALUES (?, ?, ?)').bind(token, admin.id, expira_em).run();
-    
     return json({ ok: true, isAdmin: true, token, email: admin.email });
   }
-
   return erro('Email ou senha inválidos', 401);
 }
 
@@ -298,43 +337,22 @@ async function criarPedido({ request, env }){
   try {
     const cli = await autenticarCliente(request, env);
     if (!cli) return erro('Não autenticado. Faça login para pedir.', 401);
-
     const { itens, total, pagamento, endereco, numero, observacao } = await request.json();
     if (!itens || itens.length === 0) return erro('Carrinho vazio');
     if (!pagamento || !endereco || !numero) return erro('Dados incompletos');
-
     const enderecoCompleto = `${endereco}, ${numero}`;
-    const result = await env.DB.prepare(
-      `INSERT INTO pedidos (cliente_id, total, metodo_pagamento, endereco, observacao) 
-       VALUES (?, ?, ?, ?, ?)`
-    ).bind(cli.id, total, pagamento, enderecoCompleto, observacao || null).run();
-    
+    const result = await env.DB.prepare(`INSERT INTO pedidos (cliente_id, total, metodo_pagamento, endereco, observacao) VALUES (?, ?, ?, ?, ?)`).bind(cli.id, total, pagamento, enderecoCompleto, observacao || null).run();
     const pedidoId = result.meta.last_row_id;
-
     for (let item of itens) {
       let precoNumerico = item.preco;
-      if (typeof item.preco === 'string') {
-        precoNumerico = parseFloat(item.preco.replace('R$', '').replace(',', '.').trim());
-      }
-      
-      await env.DB.prepare(
-        `INSERT INTO pedido_itens (pedido_id, produto_id, quantidade, preco_unitario) 
-         VALUES (?, ?, ?, ?)`
-      ).bind(pedidoId, item.id, item.quantidade, precoNumerico).run();
+      if (typeof item.preco === 'string') precoNumerico = parseFloat(item.preco.replace('R$', '').replace(',', '.').trim());
+      await env.DB.prepare(`INSERT INTO pedido_itens (pedido_id, produto_id, quantidade, preco_unitario) VALUES (?, ?, ?, ?)`).bind(pedidoId, item.id, item.quantidade, precoNumerico).run();
     }
-
     try {
-      if (!cli.endereco || !cli.numero) {
-        await env.DB.prepare('UPDATE clientes SET endereco = ?, numero = ? WHERE id = ?')
-          .bind(endereco, numero, cli.id).run();
-      }
-    } catch (errEndereco) {
-      console.error('Aviso: Erro ao salvar endereço no perfil:', errEndereco);
-    }
-
+      if (!cli.endereco || !cli.numero) await env.DB.prepare('UPDATE clientes SET endereco = ?, numero = ? WHERE id = ?').bind(endereco, numero, cli.id).run();
+    } catch (errEndereco) {}
     return json({ ok: true, pedidoId });
   } catch (e) {
-    console.error('Erro ao criar pedido:', e);
     return erro('Erro ao criar pedido: ' + e.message, 500);
   }
 }
@@ -342,42 +360,15 @@ async function criarPedido({ request, env }){
 async function listarPedidos({ request, env }){
   const user = await autenticar(request, env);
   if (!user) return erro('Não autenticado', 401);
-
-  // 1. LIMPEZA AUTOMÁTICA: Apaga pedidos e itens com mais de 72 horas
   try {
-    // Apaga os itens dos pedidos antigos primeiro (por causa da chave estrangeira)
-    await env.DB.prepare(`
-      DELETE FROM pedido_itens 
-      WHERE pedido_id IN (SELECT id FROM pedidos WHERE criado_em < datetime('now', '-72 hours'))
-    `).run();
-    
-    // Apaga os pedidos em si
-    await env.DB.prepare(`
-      DELETE FROM pedidos WHERE criado_em < datetime('now', '-72 hours')
-    `).run();
-  } catch (e) {
-    console.error('Erro ao limpar pedidos antigos:', e);
-  }
-
-  // 2. BUSCA: Traz apenas os pedidos que sobreviveram à limpeza
-  const { results } = await env.DB.prepare(`
-    SELECT p.*, c.nome as cliente_nome, c.email as cliente_email 
-    FROM pedidos p 
-    JOIN clientes c ON c.id = p.cliente_id 
-    WHERE p.criado_em >= datetime('now', '-72 hours')
-    ORDER BY p.criado_em DESC
-  `).all();
-
+    await env.DB.prepare(`DELETE FROM pedido_itens WHERE pedido_id IN (SELECT id FROM pedidos WHERE criado_em < datetime('now', '-72 hours'))`).run();
+    await env.DB.prepare(`DELETE FROM pedidos WHERE criado_em < datetime('now', '-72 hours')`).run();
+  } catch (e) {}
+  const { results } = await env.DB.prepare(`SELECT p.*, c.nome as cliente_nome, c.email as cliente_email FROM pedidos p JOIN clientes c ON c.id = p.cliente_id WHERE p.criado_em >= datetime('now', '-72 hours') ORDER BY p.criado_em DESC`).all();
   for (let p of results) {
-    const itens = await env.DB.prepare(`
-      SELECT pi.*, pr.nome as produto_nome 
-      FROM pedido_itens pi 
-      JOIN produtos pr ON pr.id = pi.produto_id 
-      WHERE pi.pedido_id = ?
-    `).bind(p.id).all();
+    const itens = await env.DB.prepare(`SELECT pi.*, pr.nome as produto_nome FROM pedido_itens pi JOIN produtos pr ON pr.id = pi.produto_id WHERE pi.pedido_id = ?`).bind(p.id).all();
     p.itens = itens.results;
   }
-
   return json({ ok: true, pedidos: results });
 }
 
@@ -393,16 +384,8 @@ async function atualizarStatusPedido({ request, env }){
  * CLIENTE — GOOGLE OAUTH
  * ============================================================ */
 async function iniciarGoogle({ env }){
-  const params = new URLSearchParams({
-    client_id: env.GOOGLE_CLIENT_ID,
-    redirect_uri: env.GOOGLE_REDIRECT_URI,
-    response_type: 'code',
-    scope: 'openid email profile',
-    access_type: 'online',
-    prompt: 'select_account'
-  });
-  const url = 'https://accounts.google.com/o/oauth2/v2/auth?' + params.toString();
-  return Response.redirect(url, 302);
+  const params = new URLSearchParams({ client_id: env.GOOGLE_CLIENT_ID, redirect_uri: env.GOOGLE_REDIRECT_URI, response_type: 'code', scope: 'openid email profile', access_type: 'online', prompt: 'select_account' });
+  return Response.redirect('https://accounts.google.com/o/oauth2/v2/auth?' + params.toString(), 302);
 }
 
 async function callbackGoogle({ request, env }){
@@ -410,63 +393,28 @@ async function callbackGoogle({ request, env }){
   const code = url.searchParams.get('code');
   const errorParam = url.searchParams.get('error');
   const site = env.SITE_URL;
-
-  if (errorParam || !code) {
-    return Response.redirect(site + '/?google_erro=' + encodeURIComponent(errorParam || 'sem_code'), 302);
-  }
-
+  if (errorParam || !code) return Response.redirect(site + '/?google_erro=' + encodeURIComponent(errorParam || 'sem_code'), 302);
   try {
-    const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({
-        code,
-        client_id: env.GOOGLE_CLIENT_ID,
-        client_secret: env.GOOGLE_CLIENT_SECRET,
-        redirect_uri: env.GOOGLE_REDIRECT_URI,
-        grant_type: 'authorization_code'
-      })
-    });
+    const tokenRes = await fetch('https://oauth2.googleapis.com/token', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ code, client_id: env.GOOGLE_CLIENT_ID, client_secret: env.GOOGLE_CLIENT_SECRET, redirect_uri: env.GOOGLE_REDIRECT_URI, grant_type: 'authorization_code' }) });
     const tokenData = await tokenRes.json();
-    if (!tokenData.access_token){
-      console.error('[google] token error:', tokenData);
-      return Response.redirect(site + '/?google_erro=token_falhou', 302);
-    }
-
-    const userRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
-      headers: { 'Authorization': 'Bearer ' + tokenData.access_token }
-    });
+    if (!tokenData.access_token) return Response.redirect(site + '/?google_erro=token_falhou', 302);
+    const userRes = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', { headers: { 'Authorization': 'Bearer ' + tokenData.access_token } });
     const guser = await userRes.json();
-    if (!guser.email){
-      return Response.redirect(site + '/?google_erro=email_falhou', 302);
-    }
-
+    if (!guser.email) return Response.redirect(site + '/?google_erro=email_falhou', 302);
     let cli = await env.DB.prepare('SELECT * FROM clientes WHERE email = ?').bind(guser.email).first();
-
     if (!cli){
       const result = await env.DB.prepare(`INSERT INTO clientes (nome, email, google_id, foto_url) VALUES (?, ?, ?, ?)`).bind(guser.name || 'Usuário', guser.email, guser.id || null, guser.picture || null).run();
       cli = { id: result.meta.last_row_id, nome: guser.name || 'Usuário', email: guser.email, foto_url: guser.picture || null, endereco: null, numero: null };
-    } else {
-      if (!cli.foto_url || !cli.google_id){
-        await env.DB.prepare('UPDATE clientes SET foto_url = ?, google_id = ? WHERE id = ?').bind(guser.picture || cli.foto_url, guser.id || null, cli.id).run();
-        cli.foto_url = guser.picture || cli.foto_url;
-      }
+    } else if (!cli.foto_url || !cli.google_id){
+      await env.DB.prepare('UPDATE clientes SET foto_url = ?, google_id = ? WHERE id = ?').bind(guser.picture || cli.foto_url, guser.id || null, cli.id).run();
+      cli.foto_url = guser.picture || cli.foto_url;
     }
-
     const token = gerarToken();
     const expira_em = new Date(Date.now() + SESSAO_DURACAO_HORAS * 3600 * 1000).toISOString().slice(0, 19).replace('T', ' ');
     await env.DB.prepare('INSERT INTO sessoes_cliente (token, cliente_id, expira_em) VALUES (?, ?, ?)').bind(token, cli.id, expira_em).run();
-
-    const params = new URLSearchParams({
-      google_token: token,
-      google_nome: cli.nome || '',
-      google_email: cli.email || '',
-      google_foto: cli.foto_url || ''
-    });
+    const params = new URLSearchParams({ google_token: token, google_nome: cli.nome || '', google_email: cli.email || '', google_foto: cli.foto_url || '' });
     return Response.redirect(site + '/?' + params.toString(), 302);
-
   } catch (e){
-    console.error('[google] erro:', e);
     return Response.redirect(site + '/?google_erro=excecao', 302);
   }
 }
