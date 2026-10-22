@@ -215,6 +215,13 @@ footer{ padding:46px 24px 34px; }
 .form-row > div { flex:1; }
 .checkout-form textarea { resize:none; height:60px; }
 
+/* TELA DE SUCESSO */
+.checkout-success { text-align: center; padding: 20px 0; }
+.checkout-success .icon-check { width: 80px; height: 80px; border-radius: 50%; background: var(--green-soft); border: 2px solid var(--green); display: grid; place-items: center; margin: 0 auto 20px; color: var(--green); }
+.checkout-success .icon-check svg { width: 40px; height: 40px; }
+.checkout-success h2 { color: var(--green); margin-bottom: 10px; }
+.checkout-success p { color: var(--muted); font-size: 14.5px; line-height: 1.5; margin-bottom: 24px; }
+
 @media (max-width:780px){
   .cat-rail-wrap, .logo-mini .txt{ display:none; }
   .nav{ padding:12px 16px; gap:8px; }
@@ -397,25 +404,39 @@ footer{ padding:46px 24px 34px; }
 
 <div class="modal-overlay" id="checkoutModal">
   <div class="modal-box">
-    <button class="modal-close" id="checkoutClose">×</button>
-    <h2>Finalizar Pedido</h2>
-    <form id="formCheckout" class="checkout-form">
-      <div class="form-row">
-        <div><label>Rua / Endereço</label><input type="text" id="checkRua" required></div>
-        <div style="flex:0 0 100px;"><label>Número</label><input type="text" id="checkNumero" required></div>
+    <!-- TELA DE FORMULÁRIO -->
+    <div id="checkoutFormWrap">
+      <button class="modal-close" id="checkoutClose">×</button>
+      <h2>Finalizar Pedido</h2>
+      <form id="formCheckout" class="checkout-form">
+        <div class="form-row">
+          <div><label>Rua / Endereço</label><input type="text" id="checkRua" required></div>
+          <div style="flex:0 0 100px;"><label>Número</label><input type="text" id="checkNumero" required></div>
+        </div>
+        <label>Forma de Pagamento</label>
+        <select id="checkPagamento" required>
+          <option value="">Selecione...</option>
+          <option value="pix">PIX</option>
+          <option value="cartao">Cartão (na entrega)</option>
+          <option value="dinheiro">Dinheiro</option>
+        </select>
+        <label>Observação (Opcional)</label>
+        <textarea id="checkObs" placeholder="Ex: Troco para 50, sem cebola..."></textarea>
+        <div class="auth-erro" id="checkErro"></div>
+        <button type="submit" class="auth-submit" id="btnEnviarPedido" style="margin-top:20px;">Enviar Pedido</button>
+      </form>
+    </div>
+
+    <!-- TELA DE SUCESSO (Escondida inicialmente) -->
+    <div id="checkoutSuccessWrap" class="checkout-success" style="display:none;">
+      <button class="modal-close" id="successClose">×</button>
+      <div class="icon-check">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
       </div>
-      <label>Forma de Pagamento</label>
-      <select id="checkPagamento" required>
-        <option value="">Selecione...</option>
-        <option value="pix">PIX</option>
-        <option value="cartao">Cartão (na entrega)</option>
-        <option value="dinheiro">Dinheiro</option>
-      </select>
-      <label>Observação (Opcional)</label>
-      <textarea id="checkObs" placeholder="Ex: Troco para 50, sem cebola..."></textarea>
-      <div class="auth-erro" id="checkErro"></div>
-      <button type="submit" class="auth-submit" id="btnEnviarPedido" style="margin-top:20px;">Enviar Pedido</button>
-    </form>
+      <h2>Pedido finalizado com sucesso👍</h2>
+      <p>A loja já recebeu seu pedido e em breve entrará em contato para confirmar a entrega.</p>
+      <button class="auth-submit" id="btnFecharSucesso">Voltar ao site</button>
+    </div>
   </div>
 </div>
 
@@ -623,6 +644,12 @@ $('#btnGoCheckout').addEventListener('click', () => {
   }
   if (clienteLogado.endereco) $('#checkRua').value = clienteLogado.endereco;
   if (clienteLogado.numero) $('#checkNumero').value = clienteLogado.numero;
+  
+  // Reseta o modal para o formulário antes de abrir
+  $('#checkoutFormWrap').style.display = 'block';
+  $('#checkoutSuccessWrap').style.display = 'none';
+  $('#formCheckout').reset();
+  
   $('#cartModal').classList.remove('show'); $('#checkoutModal').classList.add('show');
 });
 
@@ -651,10 +678,9 @@ $('#formCheckout').addEventListener('submit', async (e) => {
 
     await apiCli('/api/pedidos', { method: 'POST', body: JSON.stringify(pedido) });
     
-    // LIMPA O CARRINHO E FECHA O MODAL
+    // LIMPA O CARRINHO
     carrinho = []; 
     atualizarCarrinhoUI(); 
-    $('#checkoutModal').classList.remove('show');
     
     // ATUALIZA O ENDEREÇO DO CLIENTE LOCALMENTE COM SEGURANÇA
     if (clienteLogado) {
@@ -663,8 +689,9 @@ $('#formCheckout').addEventListener('submit', async (e) => {
       localStorage.setItem('green_cli', JSON.stringify(clienteLogado));
     }
 
-    // A MENSAGEM DE SUCESSO QUE VOCÊ PEDIU 🎉
-    alert('Pedido finalizado com sucesso👍');
+    // MOSTRA A TELA DE SUCESSO NO LUGAR DO FORMULÁRIO 🎉
+    $('#checkoutFormWrap').style.display = 'none';
+    $('#checkoutSuccessWrap').style.display = 'block';
 
   } catch (err) {
     erroBox.textContent = err.message; 
@@ -674,6 +701,9 @@ $('#formCheckout').addEventListener('submit', async (e) => {
     btn.textContent = 'Enviar Pedido'; 
   }
 });
+
+$('#successClose').addEventListener('click', () => $('#checkoutModal').classList.remove('show'));
+$('#btnFecharSucesso').addEventListener('click', () => $('#checkoutModal').classList.remove('show'));
 
 function mostrarTelaAuth(tela) {
   $('#authScreenChoose').style.display = tela === 'choose' ? 'block' : 'none';
