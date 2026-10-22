@@ -202,7 +202,16 @@ async function criarProduto({ request, env }){
   if (!user) return erro('Não autenticado', 401);
   const p = await request.json();
   if (!p.nome || !p.categoria) return erro('Nome e categoria obrigatórios');
-  const result = await env.DB.prepare(`INSERT INTO produtos (nome, categoria, subcategoria, volume, preco, tag, imagem_url, ativo, ordem) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`).bind(p.nome, p.categoria, p.subcategoria || null, p.volume || null, p.preco || null, p.tag || null, p.imagem_url || null, p.ativo !== undefined ? p.ativo : 1, p.ordem || 0).run();
+  
+  const result = await env.DB.prepare(
+    `INSERT INTO produtos (nome, categoria, subcategoria, volume, preco, tag, imagem_url, ativo, ordem, variacoes) 
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+  ).bind(
+    p.nome, p.categoria, p.subcategoria || null, p.volume || null, 
+    p.preco || null, p.tag || null, p.imagem_url || null, 
+    p.ativo !== undefined ? p.ativo : 1, p.ordem || 0, p.variacoes || null
+  ).run();
+  
   return json({ ok: true, id: result.meta.last_row_id });
 }
 
@@ -211,7 +220,17 @@ async function editarProduto({ request, env }){
   if (!user) return erro('Não autenticado', 401);
   const p = await request.json();
   if (!p.id) return erro('ID obrigatório');
-  await env.DB.prepare(`UPDATE produtos SET nome=?, categoria=?, subcategoria=?, volume=?, preco=?, tag=?, imagem_url=?, ativo=?, ordem=? WHERE id=?`).bind(p.nome, p.categoria, p.subcategoria || null, p.volume || null, p.preco || null, p.tag || null, p.imagem_url || null, p.ativo !== undefined ? p.ativo : 1, p.ordem || 0, p.id).run();
+  
+  await env.DB.prepare(
+    `UPDATE produtos 
+     SET nome=?, categoria=?, subcategoria=?, volume=?, preco=?, tag=?, imagem_url=?, ativo=?, ordem=?, variacoes=? 
+     WHERE id=?`
+  ).bind(
+    p.nome, p.categoria, p.subcategoria || null, p.volume || null, 
+    p.preco || null, p.tag || null, p.imagem_url || null, 
+    p.ativo !== undefined ? p.ativo : 1, p.ordem || 0, p.variacoes || null, p.id
+  ).run();
+  
   return json({ ok: true });
 }
 
