@@ -651,13 +651,28 @@ $('#formCheckout').addEventListener('submit', async (e) => {
 
     await apiCli('/api/pedidos', { method: 'POST', body: JSON.stringify(pedido) });
     
-    alert('Pedido enviado com sucesso! A loja entrará em contato.');
-    carrinho = []; atualizarCarrinhoUI(); $('#checkoutModal').classList.remove('show');
-    clienteLogado.endereco = pedido.endereco; clienteLogado.numero = pedido.numero;
-    localStorage.setItem('green_cli', JSON.stringify(clienteLogado));
+    // LIMPA O CARRINHO E FECHA O MODAL
+    carrinho = []; 
+    atualizarCarrinhoUI(); 
+    $('#checkoutModal').classList.remove('show');
+    
+    // ATUALIZA O ENDEREÇO DO CLIENTE LOCALMENTE COM SEGURANÇA
+    if (clienteLogado) {
+      clienteLogado.endereco = pedido.endereco; 
+      clienteLogado.numero = pedido.numero;
+      localStorage.setItem('green_cli', JSON.stringify(clienteLogado));
+    }
+
+    // A MENSAGEM DE SUCESSO QUE VOCÊ PEDIU 🎉
+    alert('Pedido finalizado com sucesso👍');
+
   } catch (err) {
-    erroBox.textContent = err.message; erroBox.classList.add('show');
-  } finally { btn.disabled = false; btn.textContent = 'Enviar Pedido'; }
+    erroBox.textContent = err.message; 
+    erroBox.classList.add('show');
+  } finally { 
+    btn.disabled = false; 
+    btn.textContent = 'Enviar Pedido'; 
+  }
 });
 
 function mostrarTelaAuth(tela) {
