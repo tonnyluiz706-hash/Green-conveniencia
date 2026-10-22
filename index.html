@@ -519,7 +519,6 @@ async function carregarCategorias() {
     const data = await res.json();
     todasCategorias = data.categorias || [];
     
-    // Menu Topo
     const navLinks = document.querySelector('[data-cat-rail]');
     const navChips = $('#chipsCategorias');
     navLinks.innerHTML = todasCategorias.map(c => `<a href="#${c.slug}">${c.nome}</a>`).join('');
@@ -565,7 +564,6 @@ function renderizarCatalogo(produtos) {
         try {
           const vars = JSON.parse(p.variacoes);
           if (Array.isArray(vars) && vars.length > 0) {
-            // Pega o preço da primeira variação pra mostrar como principal
             precoBaseMostrar = vars[0].preco.replace('R$', '').trim();
             
             variacoesHTML = `<div class="variacoes-lista" id="vars-${p.id}">`;
@@ -587,7 +585,6 @@ function renderizarCatalogo(produtos) {
 
       const card = document.createElement('article');
       card.className = 'card';
-      card.id = `card-${p.id}`; // ID no card pra facilitar a busca
       card.innerHTML = `
         <div class="thumb">
           ${p.imagem_url ? `<img src="${p.imagem_url}" alt="${p.nome}" onerror="this.style.display='none'">` : `<div class="thumb-ph">Sem imagem</div>`}
@@ -614,16 +611,10 @@ function renderizarCatalogo(produtos) {
   configurarSetas();
 }
 
-// Função chamada quando clica numa opção da lista de variações
 window.selecionarVariacao = function(id, element) {
-  // Remove a classe 'active' de todas as opções deste card
   const container = document.getElementById(`vars-${id}`);
   container.querySelectorAll('.var-opt').forEach(el => el.classList.remove('active'));
-  
-  // Adiciona 'active' na que foi clicada
   element.classList.add('active');
-
-  // Atualiza o preço grande no card
   const preco = element.dataset.preco;
   document.getElementById(`preco-display-${id}`).innerHTML = `<small>R$</small>${preco}`;
 };
@@ -678,7 +669,6 @@ function atualizarCarrinhoUI() {
   localStorage.setItem('green_cart', JSON.stringify(carrinho));
 }
 
-// Lógica do addCarrinho: verifica se tem variação selecionada no card
 window.addCarrinho = function(id, nome, precoBase, img) {
   if (!lojaAberta) return alert("A loja está fechada no momento.");
   
@@ -686,7 +676,6 @@ window.addCarrinho = function(id, nome, precoBase, img) {
   let precoFinal = precoBase;
   let variacaoNome = '';
 
-  // Verifica se existe a lista de variações na tela
   const containerVar = document.getElementById(`vars-${id}`);
   if (containerVar) {
     const ativo = containerVar.querySelector('.var-opt.active');
@@ -697,14 +686,22 @@ window.addCarrinho = function(id, nome, precoBase, img) {
     }
   }
 
-  // Cria um ID único para o item (ex: 15-Gin Rock's) para não misturar variações diferentes do mesmo produto
-  const itemKey = variacaoNome ? `${id}-${variacaoNome}` : id;
+  // Usa "|" como separador para não dar conflito com o nome da variação
+  const itemKey = variacaoNome ? `${id}|${variacaoNome}` : id;
   
   const item = carrinho.find(i => i.id === itemKey);
   if (item) {
     item.quantidade++;
   } else {
-    carrinho.push({ id: itemKey, nome: nomeFinal, preco: precoFinal, imagem_url: img, quantidade: 1, variacao_nome: variacaoNome });
+    carrinho.push({ 
+      id: itemKey, 
+      id_real: id, // Guarda o ID puro para o banco de dados
+      nome: nomeFinal, 
+      preco: precoFinal, 
+      imagem_url: img, 
+      quantidade: 1, 
+      variacao_nome: variacaoNome 
+    });
   }
   
   atualizarCarrinhoUI();
@@ -754,11 +751,12 @@ $('#formCheckout').addEventListener('submit', async (e) => {
     }, 0);
 
     const itensLimpos = carrinho.map(item => {
-      // Pega o ID real do produto (antes do '-') se for uma variação
-      const idReal = String(item.id).includes('-') ? parseInt(String(item.id).split('-')[0]) : parseInt(item.id);
       return {
-        id: idReal, nome: item.nome, quantidade: item.quantidade,
-        preco: parseFloat(item.preco.replace('R$', '').replace(',', '.').trim())
+        id: item.id_real, // Usa o ID puro que foi salvo na hora da compra
+        nome: item.nome, 
+        quantidade: item.quantidade,
+        preco: parseFloat(item.preco.replace('R$', '').replace(',', '.').trim()),
+        variacao: item.variacao_nome || null
       };
     });
 
