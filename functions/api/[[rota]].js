@@ -362,14 +362,19 @@ async function criarPedido({ request, env }){
     const enderecoCompleto = `${endereco}, ${numero}`;
     const result = await env.DB.prepare(`INSERT INTO pedidos (cliente_id, total, metodo_pagamento, endereco, observacao) VALUES (?, ?, ?, ?, ?)`).bind(cli.id, total, pagamento, enderecoCompleto, observacao || null).run();
     const pedidoId = result.meta.last_row_id;
+    
     for (let item of itens) {
       let precoNumerico = item.preco;
       if (typeof item.preco === 'string') precoNumerico = parseFloat(item.preco.replace('R$', '').replace(',', '.').trim());
-      await env.DB.prepare(`INSERT INTO pedido_itens (pedido_id, produto_id, quantidade, preco_unitario) VALUES (?, ?, ?, ?)`).bind(pedidoId, item.id, item.quantidade, precoNumerico).run();
+      
+      // Salva a variação que veio do frontend
+      await env.DB.prepare(`INSERT INTO pedido_itens (pedido_id, produto_id, quantidade, preco_unitario, variacao) VALUES (?, ?, ?, ?, ?)`).bind(pedidoId, item.id, item.quantidade, precoNumerico, item.variacao || null).run();
     }
+    
     try {
       if (!cli.endereco || !cli.numero) await env.DB.prepare('UPDATE clientes SET endereco = ?, numero = ? WHERE id = ?').bind(endereco, numero, cli.id).run();
     } catch (errEndereco) {}
+    
     return json({ ok: true, pedidoId });
   } catch (e) {
     return erro('Erro ao criar pedido: ' + e.message, 500);
@@ -379,15 +384,20 @@ async function criarPedido({ request, env }){
 async function listarPedidos({ request, env }){
   const user = await autenticar(request, env);
   if (!user) return erro('Não autenticado', 401);
+  
+  // Limpeza automática de pedidos com mais de 72h
   try {
     await env.DB.prepare(`DELETE FROM pedido_itens WHERE pedido_id IN (SELECT id FROM pedidos WHERE criado_em < datetime('now', '-72 hours'))`).run();
     await env.DB.prepare(`DELETE FROM pedidos WHERE criado_em < datetime('now', '-72 hours')`).run();
   } catch (e) {}
+  
   const { results } = await env.DB.prepare(`SELECT p.*, c.nome as cliente_nome, c.email as cliente_email FROM pedidos p JOIN clientes c ON c.id = p.cliente_id WHERE p.criado_em >= datetime('now', '-72 hours') ORDER BY p.criado_em DESC`).all();
+  
   for (let p of results) {
     const itens = await env.DB.prepare(`SELECT pi.*, pr.nome as produto_nome FROM pedido_itens pi JOIN produtos pr ON pr.id = pi.produto_id WHERE pi.pedido_id = ?`).bind(p.id).all();
     p.itens = itens.results;
   }
+  
   return json({ ok: true, pedidos: results });
 }
 
