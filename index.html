@@ -136,12 +136,23 @@ header{ position:sticky; top:0; z-index:60; background:rgba(5,5,5,.82); backdrop
 .cat{ font-size:9.5px; font-weight:800; color:var(--green); text-transform:uppercase; }
 .card-body h3{ font-size:14px; font-weight:700; margin-top:3px; line-height:1.3; }
 .card-body .vol{ font-size:11.5px; color:var(--muted); margin-top:2px; }
+
 .price-row{ margin-top:auto; padding-top:14px; display:flex; align-items:center; justify-content:space-between; gap:8px; }
 .price{ font-size:20px; font-weight:900; color:var(--green); }
 .price small{ font-size:12px; margin-right:1px; }
 .btn-add{ width:32px; height:32px; border-radius:8px; background:var(--green-soft); color:var(--green); display:grid; place-items:center; transition:all .2s; flex-shrink:0; }
 .btn-add:hover{ background:var(--green); color:#001a09; transform:scale(1.05); }
 .btn-add svg{ width:18px; height:18px; }
+
+/* ESTILO DAS VARIAÇÕES EM LISTA */
+.variacoes-lista { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; margin-bottom: 4px; }
+.var-opt { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; font-size: 11.5px; cursor: pointer; transition: all .2s; }
+.var-opt:hover { border-color: var(--line-green); }
+.var-opt.active { background: var(--green-soft); border-color: var(--green); color: var(--txt); }
+.var-opt .var-nome { font-weight: 600; color: var(--muted); }
+.var-opt.active .var-nome { color: var(--green); font-weight: 800; }
+.var-opt .var-preco { font-weight: 800; color: var(--txt); }
+.var-opt.active .var-preco { color: var(--green); }
 
 .no-results{ display:none; max-width:1300px; margin:0 auto; padding:60px 24px; text-align:center; color:var(--muted); }
 .no-results svg{ width:56px; height:56px; margin:0 auto 18px; color:rgba(0,177,64,.4); }
@@ -215,7 +226,6 @@ footer{ padding:46px 24px 34px; }
 .form-row > div { flex:1; }
 .checkout-form textarea { resize:none; height:60px; }
 
-/* TELA DE SUCESSO */
 .checkout-success { text-align: center; padding: 20px 0; }
 .checkout-success .icon-check { width: 80px; height: 80px; border-radius: 50%; background: var(--green-soft); border: 2px solid var(--green); display: grid; place-items: center; margin: 0 auto 20px; color: var(--green); }
 .checkout-success .icon-check svg { width: 40px; height: 40px; }
@@ -290,17 +300,13 @@ footer{ padding:46px 24px 34px; }
       </button>
     </div>
 
-    <div class="cat-rail-wrap">
+    <div class="cat-rail-wrap" id="menuCategorias">
       <button class="cat-rail-btn left" data-dir="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></button>
-      <div class="nav-links" data-cat-rail>
-        <a href="#cervejas">Cervejas</a><a href="#destilados">Destilados</a><a href="#copao">Copão</a><a href="#tabacaria">Tabacaria</a><a href="#bebidas">Bebidas</a><a href="#salgadinhos">Salgadinhos</a><a href="#alimentos">Alimentos</a><a href="#doces">Doces</a><a href="#acessorios">Acessórios</a>
-      </div>
+      <div class="nav-links" data-cat-rail></div>
       <button class="cat-rail-btn right" data-dir="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg></button>
     </div>
   </nav>
-  <div class="nav-chips">
-    <a href="#cervejas">Cervejas</a><a href="#destilados">Destilados</a><a href="#copao">Copão</a><a href="#tabacaria">Tabacaria</a><a href="#bebidas">Bebidas</a><a href="#salgadinhos">Salgadinhos</a><a href="#alimentos">Alimentos</a><a href="#doces">Doces</a><a href="#acessorios">Acessórios</a>
-  </div>
+  <div class="nav-chips" id="chipsCategorias"></div>
 </header>
 
 <section class="hero">
@@ -404,7 +410,6 @@ footer{ padding:46px 24px 34px; }
 
 <div class="modal-overlay" id="checkoutModal">
   <div class="modal-box">
-    <!-- TELA DE FORMULÁRIO -->
     <div id="checkoutFormWrap">
       <button class="modal-close" id="checkoutClose">×</button>
       <h2>Finalizar Pedido</h2>
@@ -427,7 +432,6 @@ footer{ padding:46px 24px 34px; }
       </form>
     </div>
 
-    <!-- TELA DE SUCESSO (Escondida inicialmente) -->
     <div id="checkoutSuccessWrap" class="checkout-success" style="display:none;">
       <button class="modal-close" id="successClose">×</button>
       <div class="icon-check">
@@ -444,6 +448,7 @@ footer{ padding:46px 24px 34px; }
 let clienteLogado = null;
 let carrinho = JSON.parse(localStorage.getItem('green_cart')) || [];
 let lojaAberta = false;
+let todasCategorias = [];
 
 const $ = sel => document.querySelector(sel);
 const $$ = sel => document.querySelectorAll(sel);
@@ -508,6 +513,20 @@ async function checarStatusLoja(){
   } catch(e) { console.error('Erro status', e); }
 }
 
+async function carregarCategorias() {
+  try {
+    const res = await fetch('/api/categorias');
+    const data = await res.json();
+    todasCategorias = data.categorias || [];
+    
+    // Menu Topo
+    const navLinks = document.querySelector('[data-cat-rail]');
+    const navChips = $('#chipsCategorias');
+    navLinks.innerHTML = todasCategorias.map(c => `<a href="#${c.slug}">${c.nome}</a>`).join('');
+    navChips.innerHTML = todasCategorias.map(c => `<a href="#${c.slug}">${c.nome}</a>`).join('');
+  } catch(e) { console.error('Erro categorias', e); }
+}
+
 let todosProdutos = [];
 async function carregarProdutos() {
   try {
@@ -520,17 +539,16 @@ async function carregarProdutos() {
 
 function renderizarCatalogo(produtos) {
   const container = $('#catalogContainer');
-  const categorias = { 'cervejas': 'Cervejas geladas', 'destilados': 'Destilados', 'copao': 'Copão 700ml', 'tabacaria': 'Tabacaria', 'bebidas': 'Bebidas', 'salgadinhos': 'Salgadinhos & Chips', 'alimentos': 'Alimentos', 'doces': 'Doces', 'acessorios': 'Acessórios' };
   container.innerHTML = '<div id="noResults" class="no-results" style="display:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><b>Nenhum produto encontrado</b></div>';
 
-  for (const [catKey, catNome] of Object.entries(categorias)) {
-    const prodsCat = produtos.filter(p => p.categoria === catKey);
-    if (prodsCat.length === 0) continue;
+  todasCategorias.forEach(cat => {
+    const prodsCat = produtos.filter(p => p.categoria === cat.slug);
+    if (prodsCat.length === 0) return;
 
     const section = document.createElement('section');
-    section.className = 'row'; section.id = catKey; section.style.display = 'block';
+    section.className = 'row'; section.id = cat.slug; section.style.display = 'block';
     section.innerHTML = `
-      <div class="row-head"><h2>${catNome}</h2><span>${prodsCat.length} produto${prodsCat.length > 1 ? 's' : ''}</span></div>
+      <div class="row-head"><h2>${cat.nome}</h2><span>${prodsCat.length} produto${prodsCat.length > 1 ? 's' : ''}</span></div>
       <div class="rail-wrap">
         <button class="rail-btn left" data-dir="-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg></button>
         <div class="rail" data-rail></div>
@@ -539,8 +557,37 @@ function renderizarCatalogo(produtos) {
     const rail = section.querySelector('.rail');
 
     prodsCat.forEach(p => {
+      let variacoesHTML = '';
+      let precoBaseMostrar = p.preco ? p.preco.replace('R$', '').trim() : '0,00';
+      
+      // Verifica se o produto tem variações
+      if (p.variacoes) {
+        try {
+          const vars = JSON.parse(p.variacoes);
+          if (Array.isArray(vars) && vars.length > 0) {
+            // Pega o preço da primeira variação pra mostrar como principal
+            precoBaseMostrar = vars[0].preco.replace('R$', '').trim();
+            
+            variacoesHTML = `<div class="variacoes-lista" id="vars-${p.id}">`;
+            vars.forEach((v, index) => {
+              const precoLimpo = v.preco.replace('R$', '').trim();
+              variacoesHTML += `
+                <div class="var-opt ${index === 0 ? 'active' : ''}" 
+                     data-preco="${precoLimpo}" data-nome="${v.nome}"
+                     onclick="selecionarVariacao(${p.id}, this)">
+                  <span class="var-nome">${v.nome}</span>
+                  <span class="var-preco">R$ ${precoLimpo}</span>
+                </div>
+              `;
+            });
+            variacoesHTML += `</div>`;
+          }
+        } catch(e) { console.error('Erro ao ler variações', e); }
+      }
+
       const card = document.createElement('article');
       card.className = 'card';
+      card.id = `card-${p.id}`; // ID no card pra facilitar a busca
       card.innerHTML = `
         <div class="thumb">
           ${p.imagem_url ? `<img src="${p.imagem_url}" alt="${p.nome}" onerror="this.style.display='none'">` : `<div class="thumb-ph">Sem imagem</div>`}
@@ -550,8 +597,11 @@ function renderizarCatalogo(produtos) {
           <span class="cat">${p.subcategoria || p.categoria}</span>
           <h3>${p.nome}</h3>
           <p class="vol">${p.volume || ''}</p>
+          
+          ${variacoesHTML}
+
           <div class="price-row">
-            <div class="price"><small>R$</small>${p.preco ? p.preco.replace('R$', '').trim() : '0,00'}</div>
+            <div class="price" id="preco-display-${p.id}"><small>R$</small>${precoBaseMostrar}</div>
             <button class="btn-add" onclick="addCarrinho(${p.id}, '${p.nome.replace(/'/g, "\\'")}', '${p.preco}', '${p.imagem_url}')" aria-label="Adicionar">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
             </button>
@@ -560,9 +610,23 @@ function renderizarCatalogo(produtos) {
       rail.appendChild(card);
     });
     container.appendChild(section);
-  }
+  });
   configurarSetas();
 }
+
+// Função chamada quando clica numa opção da lista de variações
+window.selecionarVariacao = function(id, element) {
+  // Remove a classe 'active' de todas as opções deste card
+  const container = document.getElementById(`vars-${id}`);
+  container.querySelectorAll('.var-opt').forEach(el => el.classList.remove('active'));
+  
+  // Adiciona 'active' na que foi clicada
+  element.classList.add('active');
+
+  // Atualiza o preço grande no card
+  const preco = element.dataset.preco;
+  document.getElementById(`preco-display-${id}`).innerHTML = `<small>R$</small>${preco}`;
+};
 
 $('#search').addEventListener('input', (e) => {
   const termo = e.target.value.toLowerCase().trim();
@@ -606,7 +670,7 @@ function atualizarCarrinhoUI() {
       div.innerHTML = `
         <img src="${item.imagem_url || ''}" onerror="this.style.display='none'">
         <div class="cart-item-info"><h4>${item.nome}</h4><span>R$ ${item.preco.replace('R$', '').trim()}</span></div>
-        <div class="cart-item-actions"><button onclick="mudarQtd(${item.id}, -1)">-</button><span>${item.quantidade}</span><button onclick="mudarQtd(${item.id}, 1)">+</button></div>`;
+        <div class="cart-item-actions"><button onclick="mudarQtd('${item.id}', -1)">-</button><span>${item.quantidade}</span><button onclick="mudarQtd('${item.id}', 1)">+</button></div>`;
       container.appendChild(div);
     });
   }
@@ -614,11 +678,35 @@ function atualizarCarrinhoUI() {
   localStorage.setItem('green_cart', JSON.stringify(carrinho));
 }
 
-window.addCarrinho = function(id, nome, preco, img) {
+// Lógica do addCarrinho: verifica se tem variação selecionada no card
+window.addCarrinho = function(id, nome, precoBase, img) {
   if (!lojaAberta) return alert("A loja está fechada no momento.");
-  const item = carrinho.find(i => i.id === id);
-  if (item) item.quantidade++;
-  else carrinho.push({ id, nome, preco, imagem_url: img, quantidade: 1 });
+  
+  let nomeFinal = nome;
+  let precoFinal = precoBase;
+  let variacaoNome = '';
+
+  // Verifica se existe a lista de variações na tela
+  const containerVar = document.getElementById(`vars-${id}`);
+  if (containerVar) {
+    const ativo = containerVar.querySelector('.var-opt.active');
+    if (ativo) {
+      variacaoNome = ativo.dataset.nome;
+      precoFinal = 'R$ ' + ativo.dataset.preco;
+      nomeFinal = `${nome} (${variacaoNome})`;
+    }
+  }
+
+  // Cria um ID único para o item (ex: 15-Gin Rock's) para não misturar variações diferentes do mesmo produto
+  const itemKey = variacaoNome ? `${id}-${variacaoNome}` : id;
+  
+  const item = carrinho.find(i => i.id === itemKey);
+  if (item) {
+    item.quantidade++;
+  } else {
+    carrinho.push({ id: itemKey, nome: nomeFinal, preco: precoFinal, imagem_url: img, quantidade: 1, variacao_nome: variacaoNome });
+  }
+  
   atualizarCarrinhoUI();
 };
 
@@ -645,7 +733,6 @@ $('#btnGoCheckout').addEventListener('click', () => {
   if (clienteLogado.endereco) $('#checkRua').value = clienteLogado.endereco;
   if (clienteLogado.numero) $('#checkNumero').value = clienteLogado.numero;
   
-  // Reseta o modal para o formulário antes de abrir
   $('#checkoutFormWrap').style.display = 'block';
   $('#checkoutSuccessWrap').style.display = 'none';
   $('#formCheckout').reset();
@@ -666,10 +753,14 @@ $('#formCheckout').addEventListener('submit', async (e) => {
       return acc + (p * item.quantidade);
     }, 0);
 
-    const itensLimpos = carrinho.map(item => ({
-      id: item.id, nome: item.nome, quantidade: item.quantidade,
-      preco: parseFloat(item.preco.replace('R$', '').replace(',', '.').trim())
-    }));
+    const itensLimpos = carrinho.map(item => {
+      // Pega o ID real do produto (antes do '-') se for uma variação
+      const idReal = String(item.id).includes('-') ? parseInt(String(item.id).split('-')[0]) : parseInt(item.id);
+      return {
+        id: idReal, nome: item.nome, quantidade: item.quantidade,
+        preco: parseFloat(item.preco.replace('R$', '').replace(',', '.').trim())
+      };
+    });
 
     const pedido = {
       itens: itensLimpos, total: valorTotal, pagamento: $('#checkPagamento').value,
@@ -678,18 +769,15 @@ $('#formCheckout').addEventListener('submit', async (e) => {
 
     await apiCli('/api/pedidos', { method: 'POST', body: JSON.stringify(pedido) });
     
-    // LIMPA O CARRINHO
     carrinho = []; 
     atualizarCarrinhoUI(); 
     
-    // ATUALIZA O ENDEREÇO DO CLIENTE LOCALMENTE COM SEGURANÇA
     if (clienteLogado) {
       clienteLogado.endereco = pedido.endereco; 
       clienteLogado.numero = pedido.numero;
       localStorage.setItem('green_cli', JSON.stringify(clienteLogado));
     }
 
-    // MOSTRA A TELA DE SUCESSO NO LUGAR DO FORMULÁRIO 🎉
     $('#checkoutFormWrap').style.display = 'none';
     $('#checkoutSuccessWrap').style.display = 'block';
 
@@ -798,7 +886,10 @@ $('#authLogout').addEventListener('click', async () => {
 })();
 
 (async function init(){
-  checarStatusLoja(); carregarProdutos(); atualizarCarrinhoUI();
+  await carregarCategorias();
+  checarStatusLoja(); 
+  carregarProdutos(); 
+  atualizarCarrinhoUI();
   const token = getToken();
   if (token) {
     try { const data = await apiCli('/api/cliente/me'); clienteLogado = data.cliente; } catch(_) { limparSessao(); }
