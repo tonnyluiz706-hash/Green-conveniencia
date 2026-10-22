@@ -312,8 +312,11 @@ async function criarPedido({ request, env }){
     const pedidoId = result.meta.last_row_id;
 
     for (let item of itens) {
-      // A MÁGICA ACONTECE AQUI: Transforma "R$ 4,25" no número 4.25
-      const precoNumerico = parseFloat(item.preco.replace('R$', '').replace(',', '.').trim());
+      // CORREÇÃO: Trata tanto string "R$ 4,25" quanto number 4.25
+      let precoNumerico = item.preco;
+      if (typeof item.preco === 'string') {
+        precoNumerico = parseFloat(item.preco.replace('R$', '').replace(',', '.').trim());
+      }
       
       await env.DB.prepare(
         `INSERT INTO pedido_itens (pedido_id, produto_id, quantidade, preco_unitario) 
@@ -321,9 +324,14 @@ async function criarPedido({ request, env }){
       ).bind(pedidoId, item.id, item.quantidade, precoNumerico).run();
     }
 
-    if (!cli.endereco || !cli.numero) {
-      await env.DB.prepare('UPDATE clientes SET endereco = ?, numero = ? WHERE id = ?')
-        .bind(endereco, numero, cli.id).run();
+    // CORREÇÃO BLINDADA: Tenta atualizar o endereço, mas se falhar, não derruba o pedido.
+    try {
+      if (!cli.endereco || !cli.numero) {
+        await env.DB.prepare('UPDATE clientes SET endereco = ?, numero = ? WHERE id = ?')
+          .bind(endereco, numero, cli.id).run();
+      }
+    } catch (errEndereco) {
+      console.error('Aviso: Erro ao salvar endereço no perfil, mas o pedido foi salvo com sucesso:', errEndereco);
     }
 
     return json({ ok: true, pedidoId });
