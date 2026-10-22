@@ -114,8 +114,8 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 .status-select.entregue{ color:var(--green); border-color:var(--line-green); }
 .status-select.cancelado{ color:var(--red); border-color:rgba(230,57,70,.3); }
 
-/* ---------- ABA CONFIGURAÇÕES ---------- */
-.config-card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:24px; max-width:500px; }
+/* ---------- ABA CONFIGURAÇÕES e CATEGORIAS ---------- */
+.config-card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:24px; max-width:600px; margin-bottom: 24px; }
 .config-card h3{ font-size:18px; font-weight:800; margin-bottom:8px; }
 .config-card p{ font-size:13.5px; color:var(--muted); margin-bottom:24px; }
 .btn-toggle-status{ width:100%; padding:16px; border-radius:12px; font-size:16px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:10px; transition:all .2s; border:2px solid; }
@@ -123,6 +123,17 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 .btn-toggle-status.aberto:hover{ background:var(--green); color:#001a09; }
 .btn-toggle-status.fechado{ background:var(--red-soft); color:#ff8895; border-color:rgba(230,57,70,.4); }
 .btn-toggle-status.fechado:hover{ background:var(--red); color:#fff; }
+
+.form-cat { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+.form-cat input { padding: 10px; border-radius: 8px; background: var(--surface-2); border: 1px solid var(--line); color: white; flex: 1; min-width: 150px; }
+.form-cat input:focus { border-color: var(--green); outline: none; }
+.form-cat button { width: auto; padding: 10px 20px; }
+
+.list-cats { display: flex; flex-direction: column; gap: 10px; }
+.cat-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; }
+.cat-item span { font-weight: 600; }
+.cat-item button { color: var(--red); background: var(--red-soft); padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; }
+.cat-item button:hover { background: var(--red); color: white; }
 
 /* ---------- MODAL ---------- */
 #modal{ position:fixed; inset:0; background:rgba(0,0,0,.85); backdrop-filter:blur(6px); z-index:100; display:none; overflow-y:auto; padding:24px; }
@@ -173,7 +184,6 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 </head>
 <body>
 
-<!-- ================= LOGIN ================= -->
 <div id="loginScreen">
   <div class="login-box">
     <div class="brand">
@@ -192,7 +202,6 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
   </div>
 </div>
 
-<!-- ================= DASHBOARD ================= -->
 <div id="dashboard">
   <header class="admin">
     <div class="logo">
@@ -206,6 +215,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 
   <div class="nav-tabs">
     <button class="active" data-tab="produtos">Produtos</button>
+    <button data-tab="categorias">Categorias</button>
     <button data-tab="pedidos">Pedidos</button>
     <button data-tab="config">Configurações</button>
   </div>
@@ -218,15 +228,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
         <input type="search" id="busca" placeholder="Buscar produto...">
         <select id="filtroCategoria">
           <option value="">Todas as categorias</option>
-          <option value="cervejas">Cervejas</option>
-          <option value="destilados">Destilados</option>
-          <option value="copao">Copão 700ml</option>
-          <option value="tabacaria">Tabacaria</option>
-          <option value="bebidas">Bebidas</option>
-          <option value="salgadinhos">Salgadinhos & Chips</option>
-          <option value="alimentos">Alimentos</option>
-          <option value="doces">Doces</option>
-          <option value="acessorios">Acessórios</option>
+          <!-- Preenchido via JS -->
         </select>
         <button class="btn-new" id="btnNovo">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
@@ -234,6 +236,23 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
         </button>
       </div>
       <div class="grid-produtos" id="gridProdutos"></div>
+    </div>
+
+    <!-- ABA CATEGORIAS -->
+    <div class="tab-content" id="tab-categorias">
+      <div class="toolbar">
+        <h2>Gerenciar Categorias</h2>
+      </div>
+      <div class="config-card">
+        <h3>Nova Categoria</h3>
+        <p>Crie uma nova seção para o site (ex: Bebidas Geladas, Importados).</p>
+        <form id="formCategoria" class="form-cat">
+          <input type="text" id="catNome" placeholder="Nome da Categoria" required>
+          <input type="number" id="catOrdem" placeholder="Ordem (ex: 10)" value="0">
+          <button type="submit" class="btn-primary" id="btnSalvarCategoria">Criar</button>
+        </form>
+      </div>
+      <div class="list-cats" id="listaCategorias"></div>
     </div>
 
     <!-- ABA PEDIDOS -->
@@ -261,7 +280,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
   </div>
 </div>
 
-<!-- ================= MODAL ================= -->
+<!-- MODAL PRODUTO -->
 <div id="modal">
   <div class="modal-box">
     <div class="modal-head">
@@ -279,16 +298,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
           <div class="form-group">
             <label for="pCategoria">Categoria *</label>
             <select id="pCategoria" required>
-              <option value="">Selecione...</option>
-              <option value="cervejas">Cervejas</option>
-              <option value="destilados">Destilados</option>
-              <option value="copao">Copão 700ml</option>
-              <option value="tabacaria">Tabacaria</option>
-              <option value="bebidas">Bebidas</option>
-              <option value="salgadinhos">Salgadinhos & Chips</option>
-              <option value="alimentos">Alimentos</option>
-              <option value="doces">Doces</option>
-              <option value="acessorios">Acessórios</option>
+              <!-- Preenchido via JS -->
             </select>
           </div>
           <div class="form-group">
@@ -338,14 +348,13 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 <div id="toast"></div>
 
 <script>
-/* ============================ CONFIG / ESTADO ============================ */
 const API = '';
 let token = localStorage.getItem('green_token') || '';
 let emailLogado = localStorage.getItem('green_email') || '';
 let produtos = [];
+let categorias = [];
 let editandoId = null;
 
-/* ============================ HELPERS ============================ */
 const $ = sel => document.querySelector(sel);
 
 function toast(msg, erro = false){
@@ -364,72 +373,114 @@ async function api(path, opts = {}){
   return data;
 }
 
-/* ============================ LOGIN E NAVEGAÇÃO ============================ */
+/* ============================ LOGIN ============================ */
 $('#loginForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const btn = $('#btnLogin');
-  const erroBox = $('#loginErro');
-  erroBox.classList.remove('show');
-  btn.disabled = true;
-  btn.textContent = 'Entrando...';
-
+  const btn = $('#btnLogin'); const erroBox = $('#loginErro');
+  erroBox.classList.remove('show'); btn.disabled = true; btn.textContent = 'Entrando...';
   try {
     const data = await api('/api/login', {
-      method: 'POST',
-      body: JSON.stringify({ email: $('#email').value.trim(), senha: $('#senha').value })
+      method: 'POST', body: JSON.stringify({ email: $('#email').value.trim(), senha: $('#senha').value })
     });
-    token = data.token;
-    emailLogado = data.email;
-    localStorage.setItem('green_token', token);
-    localStorage.setItem('green_email', emailLogado);
+    token = data.token; emailLogado = data.email;
+    localStorage.setItem('green_token', token); localStorage.setItem('green_email', emailLogado);
     abrirDashboard();
   } catch (err) {
-    erroBox.textContent = err.message;
-    erroBox.classList.add('show');
-  } finally {
-    btn.disabled = false;
-    btn.textContent = 'Entrar';
-  }
+    erroBox.textContent = err.message; erroBox.classList.add('show');
+  } finally { btn.disabled = false; btn.textContent = 'Entrar'; }
 });
 
-function abrirDashboard(){
+async function abrirDashboard(){
   $('#loginScreen').style.display = 'none';
   $('#dashboard').classList.add('show');
   $('#userEmail').textContent = emailLogado;
+  await carregarCategorias(); // Carrega categorias primeiro
   carregarProdutos();
   carregarStatusLoja();
 }
 
 $('#btnSair').addEventListener('click', () => {
-  localStorage.removeItem('green_token');
-  localStorage.removeItem('green_email');
-  token = ''; emailLogado = '';
-  location.reload();
+  localStorage.removeItem('green_token'); localStorage.removeItem('green_email');
+  token = ''; emailLogado = ''; location.reload();
 });
 
-// Tabs
 document.querySelectorAll('.nav-tabs button').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.nav-tabs button').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     btn.classList.add('active');
     $(`#tab-${btn.dataset.tab}`).classList.add('active');
-
     if (btn.dataset.tab === 'pedidos') carregarPedidos();
     if (btn.dataset.tab === 'config') carregarStatusLoja();
+    if (btn.dataset.tab === 'categorias') renderizarCategorias();
   });
 });
 
-/* ============================ ABA PRODUTOS ============================ */
+/* ============================ CATEGORIAS ============================ */
+async function carregarCategorias(){
+  try {
+    const data = await api('/api/admin/categorias');
+    categorias = data.categorias || [];
+    renderizarCategorias();
+    popularSelectsCategoria();
+  } catch (err) { toast('Erro ao carregar categorias', true); }
+}
+
+function popularSelectsCategoria() {
+  const options = categorias.map(c => `<option value="${c.slug}">${c.nome}</option>`).join('');
+  
+  // Filtro de produtos
+  $('#filtroCategoria').innerHTML = `<option value="">Todas as categorias</option>${options}`;
+  
+  // Select do modal
+  $('#pCategoria').innerHTML = `<option value="">Selecione...</option>${options}`;
+}
+
+function renderizarCategorias() {
+  const container = $('#listaCategorias');
+  if (categorias.length === 0) {
+    container.innerHTML = '<p style="color:var(--muted);">Nenhuma categoria cadastrada.</p>';
+    return;
+  }
+  container.innerHTML = categorias.map(c => `
+    <div class="cat-item">
+      <span>${c.nome}</span>
+      <button onclick="deletarCategoria(${c.id})">Excluir</button>
+    </div>
+  `).join('');
+}
+
+$('#formCategoria').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = $('#btnSalvarCategoria'); btn.disabled = true; btn.textContent = 'Criando...';
+  try {
+    await api('/api/categorias', {
+      method: 'POST',
+      body: JSON.stringify({ nome: $('#catNome').value.trim(), ordem: parseInt($('#catOrdem').value) || 0 })
+    });
+    toast('Categoria criada!');
+    $('#catNome').value = ''; $('#catOrdem').value = '0';
+    await carregarCategorias();
+  } catch (err) { toast(err.message, true); }
+  finally { btn.disabled = false; btn.textContent = 'Criar'; }
+});
+
+window.deletarCategoria = async (id) => {
+  if (!confirm('Tem certeza que deseja excluir esta categoria?')) return;
+  try {
+    await api('/api/categoria?id=' + id, { method: 'DELETE' });
+    toast('Categoria excluída');
+    await carregarCategorias();
+  } catch (err) { toast(err.message, true); }
+};
+
+/* ============================ PRODUTOS ============================ */
 async function carregarProdutos(){
   try {
     const data = await api('/api/admin/produtos');
     produtos = data.produtos || [];
     renderizarProdutos();
-  } catch (err) {
-    if (err.message.includes('Não autenticado')) $('#btnSair').click();
-    else toast('Erro ao carregar: ' + err.message, true);
-  }
+  } catch (err) { toast('Erro ao carregar: ' + err.message, true); }
 }
 
 function renderizarProdutos(){
@@ -492,23 +543,15 @@ function abrirModal(produto = null){
     $('#pOrdem').value = produto.ordem || 0;
     $('#pImagemUrl').value = produto.imagem_url || '';
     $('#pAtivo').checked = produto.ativo == 1;
-    if (produto.imagem_url){
-      $('#previewImg').src = produto.imagem_url;
-      $('#previewImg').style.display = 'block';
-    } else $('#previewImg').style.display = 'none';
+    if (produto.imagem_url){ $('#previewImg').src = produto.imagem_url; $('#previewImg').style.display = 'block'; } else $('#previewImg').style.display = 'none';
   } else {
-    $('#formProduto').reset();
-    $('#pOrdem').value = 0;
-    $('#pAtivo').checked = true;
-    $('#pImagemUrl').value = '';
-    $('#previewImg').style.display = 'none';
+    $('#formProduto').reset(); $('#pOrdem').value = 0; $('#pAtivo').checked = true;
+    $('#pImagemUrl').value = ''; $('#previewImg').style.display = 'none';
   }
-  $('#modal').classList.add('show');
-  document.body.style.overflow = 'hidden';
+  $('#modal').classList.add('show'); document.body.style.overflow = 'hidden';
 }
 
 function fecharModal(){ $('#modal').classList.remove('show'); document.body.style.overflow = ''; editandoId = null; }
-
 $('#btnNovo').addEventListener('click', () => abrirModal());
 $('#btnFecharModal').addEventListener('click', fecharModal);
 $('#btnCancelar').addEventListener('click', fecharModal);
@@ -524,39 +567,26 @@ window.deletarProduto = async (id) => {
 
 $('#uploadArea').addEventListener('click', () => $('#pFile').click());
 $('#pFile').addEventListener('change', async (e) => {
-  const file = e.target.files[0];
-  if (!file) return;
-  const preview = $('#previewImg');
-  preview.src = URL.createObjectURL(file);
-  preview.style.display = 'block';
-
+  const file = e.target.files[0]; if (!file) return;
+  const preview = $('#previewImg'); preview.src = URL.createObjectURL(file); preview.style.display = 'block';
   const fd = new FormData(); fd.append('file', file);
   try {
     const res = await fetch('/api/upload', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, body: fd });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.erro || 'Falha no upload');
-    $('#pImagemUrl').value = data.url;
-    preview.src = data.url;
-    toast('Imagem enviada!');
+    const data = await res.json(); if (!res.ok) throw new Error(data.erro || 'Falha no upload');
+    $('#pImagemUrl').value = data.url; preview.src = data.url; toast('Imagem enviada!');
   } catch (err){ toast('Erro no upload: ' + err.message, true); }
 });
 
 $('#formProduto').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const btn = $('#btnSalvar');
-  const msg = $('#msgForm');
-  msg.classList.remove('show');
-  btn.disabled = true; btn.textContent = 'Salvando...';
+  const btn = $('#btnSalvar'); const msg = $('#msgForm');
+  msg.classList.remove('show'); btn.disabled = true; btn.textContent = 'Salvando...';
 
   const dados = {
-    nome: $('#pNome').value.trim(),
-    categoria: $('#pCategoria').value,
-    subcategoria: $('#pSubcategoria').value.trim() || null,
-    volume: $('#pVolume').value.trim() || null,
-    preco: $('#pPreco').value.trim() || null,
-    tag: $('#pTag').value.trim() || null,
-    imagem_url: $('#pImagemUrl').value || null,
-    ordem: parseInt($('#pOrdem').value) || 0,
+    nome: $('#pNome').value.trim(), categoria: $('#pCategoria').value,
+    subcategoria: $('#pSubcategoria').value.trim() || null, volume: $('#pVolume').value.trim() || null,
+    preco: $('#pPreco').value.trim() || null, tag: $('#pTag').value.trim() || null,
+    imagem_url: $('#pImagemUrl').value || null, ordem: parseInt($('#pOrdem').value) || 0,
     ativo: $('#pAtivo').checked ? 1 : 0
   };
 
@@ -568,32 +598,22 @@ $('#formProduto').addEventListener('submit', async (e) => {
   finally { btn.disabled = false; btn.textContent = 'Salvar'; }
 });
 
-/* ============================ ABA PEDIDOS ============================ */
+/* ============================ PEDIDOS ============================ */
 async function carregarPedidos(){
   const lista = $('#listaPedidos');
   lista.innerHTML = '<div style="color:var(--muted);text-align:center;padding:40px;">Carregando pedidos...</div>';
-  
   try {
     const data = await api('/api/admin/pedidos');
     const pedidos = data.pedidos || [];
-    
     $('#contadorPedidos').textContent = `${pedidos.length} pedido${pedidos.length === 1 ? '' : 's'}`;
-
-    if (pedidos.length === 0) {
-      lista.innerHTML = '<div style="color:var(--muted);text-align:center;padding:40px;">Nenhum pedido recebido ainda.</div>';
-      return;
-    }
+    if (pedidos.length === 0) { lista.innerHTML = '<div style="color:var(--muted);text-align:center;padding:40px;">Nenhum pedido recebido nas últimas 72h.</div>'; return; }
 
     lista.innerHTML = pedidos.map(p => {
       const dataFormatada = new Date(p.criado_em).toLocaleString('pt-BR');
       const itensHtml = p.itens.map(i => `<li><span>${i.quantidade}x ${i.produto_nome}</span> <span>R$ ${(i.quantidade * i.preco_unitario).toFixed(2).replace('.', ',')}</span></li>`).join('');
-      
       return `
         <div class="pedido-card">
-          <div class="pedido-header">
-            <h3>Pedido #${p.id} - ${p.cliente_nome}</h3>
-            <span class="data">${dataFormatada}</span>
-          </div>
+          <div class="pedido-header"><h3>Pedido #${p.id} - ${p.cliente_nome}</h3><span class="data">${dataFormatada}</span></div>
           <div class="pedido-body">
             <div class="pedido-info">
               <p><strong>Cliente:</strong> ${p.cliente_nome}</p>
@@ -601,9 +621,7 @@ async function carregarPedidos(){
               <p><strong>Pagamento:</strong> ${p.metodo_pagamento.toUpperCase()}</p>
               ${p.observacao ? `<p><strong>Obs:</strong> ${p.observacao}</p>` : ''}
             </div>
-            <div class="pedido-itens">
-              <ul>${itensHtml}</ul>
-            </div>
+            <div class="pedido-itens"><ul>${itensHtml}</ul></div>
           </div>
           <div class="pedido-footer">
             <span class="pedido-total">Total: R$ ${p.total.toFixed(2).replace('.', ',')}</span>
@@ -613,70 +631,44 @@ async function carregarPedidos(){
               <option value="cancelado" ${p.status === 'cancelado' ? 'selected' : ''}>Cancelado</option>
             </select>
           </div>
-        </div>
-      `;
+        </div>`;
     }).join('');
-  } catch (err) {
-    lista.innerHTML = `<div style="color:var(--red);text-align:center;padding:40px;">Erro: ${err.message}</div>`;
-  }
+  } catch (err) { lista.innerHTML = `<div style="color:var(--red);text-align:center;padding:40px;">Erro: ${err.message}</div>`; }
 }
 
 $('#btnAtualizarPedidos').addEventListener('click', carregarPedidos);
-
 window.mudarStatusPedido = async (id, status) => {
   try {
     await api('/api/admin/pedido/status', { method: 'PUT', body: JSON.stringify({ id, status }) });
     toast('Status atualizado!');
     const sel = document.querySelector(`select[onchange*="mudarStatusPedido(${id},"]`);
     if(sel) sel.className = `status-select ${status}`;
-  } catch (err) {
-    toast('Erro: ' + err.message, true);
-  }
+  } catch (err) { toast('Erro: ' + err.message, true); }
 };
 
-/* ============================ ABA CONFIGURAÇÕES ============================ */
+/* ============================ CONFIGURAÇÕES ============================ */
 async function carregarStatusLoja(){
   try {
     const data = await api('/api/config/status');
-    atualizarBotaoStatus(data.status);
-  } catch (err) {
-    toast('Erro ao buscar status: ' + err.message, true);
-  }
-}
-
-function atualizarBotaoStatus(status) {
-  const btn = $('#btnStatusLoja');
-  const txt = $('#statusTexto');
-  if (status === 'aberto') {
-    btn.className = 'btn-toggle-status aberto';
-    txt.textContent = 'Loja Aberta (Clique para fechar)';
-  } else {
-    btn.className = 'btn-toggle-status fechado';
-    txt.textContent = 'Loja Fechada (Clique para abrir)';
-  }
+    const btn = $('#btnStatusLoja'); const txt = $('#statusTexto');
+    if (data.status === 'aberto') { btn.className = 'btn-toggle-status aberto'; txt.textContent = 'Loja Aberta (Clique para fechar)'; }
+    else { btn.className = 'btn-toggle-status fechado'; txt.textContent = 'Loja Fechada (Clique para abrir)'; }
+  } catch (err) { toast('Erro ao buscar status: ' + err.message, true); }
 }
 
 $('#btnStatusLoja').addEventListener('click', async () => {
   const btn = $('#btnStatusLoja');
-  const abrindo = btn.classList.contains('fechado');
-  const novoStatus = abrindo ? 'aberto' : 'fechado';
-  
+  const novoStatus = btn.classList.contains('fechado') ? 'aberto' : 'fechado';
   btn.disabled = true;
   try {
     await api('/api/config/status', { method: 'PUT', body: JSON.stringify({ status: novoStatus }) });
-    atualizarBotaoStatus(novoStatus);
-    toast(abrindo ? 'Loja aberta!' : 'Loja fechada!');
-  } catch (err) {
-    toast('Erro ao mudar status: ' + err.message, true);
-  } finally {
-    btn.disabled = false;
-  }
+    toast(novoStatus === 'aberto' ? 'Loja aberta!' : 'Loja fechada!');
+    carregarStatusLoja();
+  } catch (err) { toast('Erro ao mudar status: ' + err.message, true); }
+  finally { btn.disabled = false; }
 });
 
-/* ============================ BOOT ============================ */
-if (token) {
-  abrirDashboard();
-}
+if (token) { abrirDashboard(); }
 </script>
 
 </body>
