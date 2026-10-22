@@ -159,7 +159,6 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 .msg-form.erro{ background:var(--red-soft); color:#ff8895; border:1px solid rgba(230,57,70,.35); }
 .msg-form.ok{ background:var(--green-soft); color:var(--green); border:1px solid var(--line-green); }
 
-/* ESTILO DAS VARIAÇÕES */
 .variacoes-container { margin-top: 15px; padding: 15px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; }
 .variacao-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
 .variacao-row input { flex: 1; padding: 8px 12px; background: #000; border: 1px solid var(--line); border-radius: 6px; color: white; }
@@ -318,12 +317,9 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
             <div class="hint">Menor = aparece primeiro</div>
           </div>
           
-          <!-- AREA DE VARIAÇÕES -->
           <div class="form-group full">
             <label>Variações (Opcional)</label>
-            <div class="variacoes-container" id="containerVariacoes">
-              <!-- As linhas vão aparecer aqui -->
-            </div>
+            <div class="variacoes-container" id="containerVariacoes"></div>
             <button type="button" class="btn-add-variacao" onclick="adicionarLinhaVariacao()">+ Adicionar Variação</button>
             <div class="hint">Ex: Nome: Monster | Preço: R$ 20,00</div>
           </div>
@@ -558,7 +554,6 @@ function abrirModal(produto = null){
     $('#pImagemUrl').value = produto.imagem_url || '';
     $('#pAtivo').checked = produto.ativo == 1;
     
-    // Carrega as variações se existirem
     if (produto.variacoes) {
       try {
         const vars = JSON.parse(produto.variacoes);
@@ -607,7 +602,6 @@ $('#formProduto').addEventListener('submit', async (e) => {
   const btn = $('#btnSalvar'); const msg = $('#msgForm');
   msg.classList.remove('show'); btn.disabled = true; btn.textContent = 'Salvando...';
 
-  // Coleta as variações da tela
   const varRows = document.querySelectorAll('.variacao-row');
   const variacoesArray = [];
   varRows.forEach(row => {
@@ -633,6 +627,7 @@ $('#formProduto').addEventListener('submit', async (e) => {
   finally { btn.disabled = false; btn.textContent = 'Salvar'; }
 });
 
+/* ============================ PEDIDOS ============================ */
 async function carregarPedidos(){
   const lista = $('#listaPedidos');
   lista.innerHTML = '<div style="color:var(--muted);text-align:center;padding:40px;">Carregando pedidos...</div>';
@@ -644,7 +639,13 @@ async function carregarPedidos(){
 
     lista.innerHTML = pedidos.map(p => {
       const dataFormatada = new Date(p.criado_em).toLocaleString('pt-BR');
-      const itensHtml = p.itens.map(i => `<li><span>${i.quantidade}x ${i.produto_nome}</span> <span>R$ ${(i.quantidade * i.preco_unitario).toFixed(2).replace('.', ',')}</span></li>`).join('');
+      
+      // AQUI ESTÁ A CORREÇÃO DA VARIAÇÃO NA LISTAGEM
+      const itensHtml = p.itens.map(i => {
+        const textoVariacao = i.variacao ? ` (${i.variacao})` : '';
+        return `<li><span>${i.quantidade}x ${i.produto_nome}${textoVariacao}</span> <span>R$ ${(i.quantidade * i.preco_unitario).toFixed(2).replace('.', ',')}</span></li>`;
+      }).join('');
+
       return `
         <div class="pedido-card">
           <div class="pedido-header"><h3>Pedido #${p.id} - ${p.cliente_nome}</h3><span class="data">${dataFormatada}</span></div>
@@ -680,6 +681,7 @@ window.mudarStatusPedido = async (id, status) => {
   } catch (err) { toast('Erro: ' + err.message, true); }
 };
 
+/* ============================ CONFIGURAÇÕES ============================ */
 async function carregarStatusLoja(){
   try {
     const data = await api('/api/config/status');
