@@ -144,7 +144,6 @@ header{ position:sticky; top:0; z-index:60; background:rgba(5,5,5,.82); backdrop
 .btn-add:hover{ background:var(--green); color:#001a09; transform:scale(1.05); }
 .btn-add svg{ width:18px; height:18px; }
 
-/* ESTILO DAS VARIAÇÕES EM LISTA */
 .variacoes-lista { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; margin-bottom: 4px; }
 .var-opt { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; font-size: 11.5px; cursor: pointer; transition: all .2s; }
 .var-opt:hover { border-color: var(--line-green); }
@@ -475,20 +474,48 @@ async function apiCli(path, opts = {}){
   return data;
 }
 
+// ==========================================
+// LÓGICA DO SPLASH (CORRIGIDA PARA MOBILE)
+// ==========================================
 (function(){
   const splash = $('#splash'), logoStage = $('#logoStage'), videoWrap = $('#introVideoWrap'), video = $('#introVideo'), tapHint = $('#tapHint');
   let estado = 'logo', entrou = false;
+
   function tocarVideo(){
     if (estado !== 'logo') return;
     estado = 'video';
     logoStage.classList.add('hide'); tapHint.classList.add('hide');
     setTimeout(() => tapHint.classList.remove('show'), 400);
     videoWrap.classList.add('show');
+    
+    // Detecta se é mobile para carregar o vídeo certo
     const ehMobile = window.matchMedia('(max-width: 900px)').matches;
     video.src = ehMobile ? 'Mobile.mp4' : 'PC.mp4';
-    video.load(); video.muted = false;
-    video.play().catch(() => { video.muted = true; video.play().catch(() => enterSite()); });
+    video.load(); 
+    video.muted = false; // Tenta com som
+    video.play().catch(() => { 
+      // Se falhar (bloqueio do navegador), tenta mudo e depois entra
+      video.muted = true; 
+      video.play().catch(() => enterSite()); 
+    });
+
+    // TIMEOUT INTELIGENTE: Se o vídeo não começar a tocar em 5 segundos, pula
+    setTimeout(() => {
+      if (estado === 'video' && video.currentTime < 0.1) {
+        console.warn('[Green] Vídeo demorou para iniciar, pulando.');
+        enterSite();
+      }
+    }, 5000);
+
+    // TIMEOUT MÁXIMO: Se o vídeo travar no meio (8s de vídeo, limite de 15s)
+    setTimeout(() => {
+      if (estado === 'video') {
+        console.warn('[Green] Vídeo travou no meio, pulando.');
+        enterSite();
+      }
+    }, 15000);
   }
+
   function enterSite(){
     if (entrou) return;
     entrou = true; estado = 'done';
@@ -496,10 +523,11 @@ async function apiCli(path, opts = {}){
     splash.classList.add('hide'); document.body.style.overflow = '';
     setTimeout(() => splash.remove(), 650);
   }
+
   video.addEventListener('ended', enterSite);
   video.addEventListener('error', enterSite);
+  
   splash.addEventListener('click', () => { if (estado === 'logo') tocarVideo(); });
-  setTimeout(() => { if (estado === 'video') enterSite(); }, 30000);
 })();
 
 async function checarStatusLoja(){
@@ -559,7 +587,6 @@ function renderizarCatalogo(produtos) {
       let variacoesHTML = '';
       let precoBaseMostrar = p.preco ? p.preco.replace('R$', '').trim() : '0,00';
       
-      // Verifica se o produto tem variações
       if (p.variacoes) {
         try {
           const vars = JSON.parse(p.variacoes);
@@ -686,7 +713,6 @@ window.addCarrinho = function(id, nome, precoBase, img) {
     }
   }
 
-  // Usa "|" como separador para não dar conflito com o nome da variação
   const itemKey = variacaoNome ? `${id}|${variacaoNome}` : id;
   
   const item = carrinho.find(i => i.id === itemKey);
@@ -695,7 +721,7 @@ window.addCarrinho = function(id, nome, precoBase, img) {
   } else {
     carrinho.push({ 
       id: itemKey, 
-      id_real: id, // Guarda o ID puro para o banco de dados
+      id_real: id,
       nome: nomeFinal, 
       preco: precoFinal, 
       imagem_url: img, 
@@ -752,7 +778,7 @@ $('#formCheckout').addEventListener('submit', async (e) => {
 
     const itensLimpos = carrinho.map(item => {
       return {
-        id: item.id_real, // Usa o ID puro que foi salvo na hora da compra
+        id: item.id_real,
         nome: item.nome, 
         quantidade: item.quantidade,
         preco: parseFloat(item.preco.replace('R$', '').replace(',', '.').trim()),
