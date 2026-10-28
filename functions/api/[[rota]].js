@@ -87,6 +87,11 @@ export async function onRequest(context){
     if (rota === 'admin/pedidos' && metodo === 'GET') return listarPedidos(context);
     if (rota === 'admin/pedido/status' && metodo === 'PUT') return atualizarStatusPedido(context);
 
+    // Financeiro
+    if (rota === 'admin/financeiro' && metodo === 'GET') return listarFinanceiro(context);
+    if (rota === 'admin/financeiro' && metodo === 'POST') return criarTransacao(context);
+    if (rota === 'admin/financeiro' && metodo === 'DELETE') return deletarTransacao(context);
+
     return erro('Rota não encontrada: ' + rota, 404);
   } catch (e){
     console.error('[api] erro:', e);
@@ -149,7 +154,6 @@ async function criarCategoria({ request, env }){
   const p = await request.json();
   if (!p.nome) return erro('Nome da categoria obrigatório');
 
-  // Gera o slug automaticamente (ex: "Bebidas Geladas" -> "bebidas-geladas")
   const slug = p.nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   
   const jaExiste = await env.DB.prepare('SELECT id FROM categorias WHERE slug = ? OR nome = ?').bind(slug, p.nome).first();
@@ -172,7 +176,6 @@ async function deletarCategoria({ request, env }){
   const cat = await env.DB.prepare('SELECT slug FROM categorias WHERE id = ?').bind(id).first();
   if (!cat) return erro('Categoria não encontrada', 404);
 
-  // Verifica se tem produtos nessa categoria antes de apagar
   const temProdutos = await env.DB.prepare('SELECT COUNT(*) AS n FROM produtos WHERE categoria = ?').bind(cat.slug).first();
   if (temProdutos.n > 0) {
     return erro('Não é possível excluir: existem produtos cadastrados nessa categoria.', 400);
@@ -367,7 +370,6 @@ async function criarPedido({ request, env }){
       let precoNumerico = item.preco;
       if (typeof item.preco === 'string') precoNumerico = parseFloat(item.preco.replace('R$', '').replace(',', '.').trim());
       
-      // Salva a variação que veio do frontend
       await env.DB.prepare(`INSERT INTO pedido_itens (pedido_id, produto_id, quantidade, preco_unitario, variacao) VALUES (?, ?, ?, ?, ?)`).bind(pedidoId, item.id, item.quantidade, precoNumerico, item.variacao || null).run();
     }
     
@@ -385,7 +387,6 @@ async function listarPedidos({ request, env }){
   const user = await autenticar(request, env);
   if (!user) return erro('Não autenticado', 401);
   
-  // Limpeza automática de pedidos com mais de 72h
   try {
     await env.DB.prepare(`DELETE FROM pedido_itens WHERE pedido_id IN (SELECT id FROM pedidos WHERE criado_em < datetime('now', '-72 hours'))`).run();
     await env.DB.prepare(`DELETE FROM pedidos WHERE criado_em < datetime('now', '-72 hours')`).run();
@@ -406,6 +407,53 @@ async function atualizarStatusPedido({ request, env }){
   if (!user) return erro('Não autenticado', 401);
   const { id, status } = await request.json();
   await env.DB.prepare('UPDATE pedidos SET status = ? WHERE id = ?').bind(status, id).run();
+  return json({ ok: true });
+}
+
+/* ============================================================
+ * FINANCEIRO
+ * ============================================================ */
+async function listarFinanceiro({ request, env }){
+  const user = await autenticar(request, env);
+  if (!user) return erro('Não autenticado', 401);
+
+  const url = new URL(request.url);
+  const ano = url.searchParams.get('ano');
+  const mes = url.searchParams.get('mes');
+
+  if (!ano || !mes) return erro('Ano e Mês são obrigatórios');
+
+  const prefixo = `${ano}-${String(mes).padStart(2, '0')}%`;
+
+  const { results } = await env.DB.prepare(
+    'SELECT * FROM financeiro WHERE data LIKE ? ORDER BY data DESC, criado_em DESC'
+  ).bind(prefixo).all();
+
+  return json({ ok: true, transacoes: results });
+}
+
+async function criarTransacao({ request, env }){
+  const user = await autenticar(request, env);
+  if (!user) return erro('Não autenticado', 401);
+
+  const { data, valor, metodo_pagamento, descricao } = await request.json();
+  if (!data || !valor || !metodo_pagamento) return erro('Data, valor e método são obrigatórios');
+
+  await env.DB.prepare(
+    'INSERT INTO financeiro (data, valor, metodo_pagamento, descricao) VALUES (?, ?, ?, ?)'
+  ).bind(data, valor, metodo_pagamento, descricao || null).run();
+
+  return json({ ok: true });
+}
+
+async function deletarTransacao({ request, env }){
+  const user = await autenticar(request, env);
+  if (!user) return erro('Não autenticado', 401);
+
+  const id = new URL(request.url).searchParams.get('id');
+  if (!id) return erro('ID obrigatório');
+
+  await env.DB.prepare('DELETE FROM financeiro WHERE id = ?').bind(id).run();
   return json({ ok: true });
 }
 
