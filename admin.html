@@ -170,7 +170,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 .fin-resumo-total { display:flex; justify-content:space-between; margin-top:20px; padding-top:16px; border-top:2px solid var(--line-green); font-size:18px; font-weight:900; color:var(--green); }
 
 .fin-add-form { display:flex; gap:10px; background:var(--surface-2); padding:16px; border-radius:10px; margin-bottom:20px; flex-wrap:wrap; align-items:flex-end; border:1px solid var(--line); }
-.fin-add-form .form-group { flex:1; min-width:100px; margin:0; }
+.fin-add-form .form-group { flex:1; min-width:120px; margin:0; }
 .fin-add-form input, .fin-add-form select { width:100%; padding:10px; border-radius:8px; background:var(--bg); border:1px solid var(--line); color:white; }
 .fin-add-form input:focus, .fin-add-form select:focus { border-color:var(--green); outline:none; }
 .fin-add-form button { padding:10px 20px; height: 41px; }
@@ -355,17 +355,13 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
               <option value="PIX">PIX</option>
             </select>
           </div>
-          <div class="form-group">
-            <label>Descrição (Opcional)</label>
-            <input type="text" id="finDescricao" placeholder="Ex: Venda balcão">
-          </div>
-          <button type="submit" class="btn-primary">Lançar</button>
+          <button type="submit" class="btn-primary" style="flex:0 0 100px;">Lançar</button>
         </form>
 
         <div class="fin-grid">
           <div>
             <table class="fin-tabela">
-              <thead><tr><th>Descrição</th><th>Método</th><th>Valor</th><th></th></tr></thead>
+              <thead><tr><th>Método</th><th>Valor</th><th></th></tr></thead>
               <tbody id="finTabelaBody"></tbody>
             </table>
           </div>
@@ -524,7 +520,6 @@ async function abrirDashboard(){
   carregarProdutos();
   carregarStatusLoja();
   
-  // Inicializa o Financeiro com Mês/Ano atual
   const hoje = new Date();
   $('#finMes').value = String(hoje.getMonth() + 1).padStart(2, '0');
   
@@ -824,7 +819,6 @@ async function carregarFinanceiro() {
   const mes = $('#finMes').value;
   const ano = $('#finAno').value;
   
-  // Mostra os dias do mês
   const diasNoMes = new Date(ano, parseInt(mes), 0).getDate();
   const listaDias = $('#finListaDias');
   listaDias.innerHTML = '';
@@ -840,7 +834,7 @@ async function carregarFinanceiro() {
     listaDias.appendChild(card);
   }
 
-  fecharCaixa(); // Volta pra listagem
+  fecharCaixa();
 }
 
 async function abrirCaixaDia(dataStr) {
@@ -867,7 +861,6 @@ async function carregarTransacoesDia() {
     const mes = $('#finMes').value;
     const ano = $('#finAno').value;
     
-    // Traz os dados do mês e filtra no front pelo dia exato
     const data = await api(`/api/admin/financeiro?ano=${ano}&mes=${mes}`);
     const todas = data.transacoes || [];
     
@@ -886,7 +879,7 @@ function renderizarTransacoes() {
   let totDeb = 0, totDin = 0, totCred = 0, totPix = 0;
 
   if (finTransacoes.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--muted);">Nenhum lançamento neste dia.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:var(--muted);">Nenhum lançamento neste dia.</td></tr>';
   } else {
     finTransacoes.forEach(t => {
       if (t.metodo_pagamento === 'DÉB.') totDeb += t.valor;
@@ -896,7 +889,6 @@ function renderizarTransacoes() {
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td>${t.descricao || '—'}</td>
         <td>${t.metodo_pagamento}</td>
         <td class="valor-col">R$ ${t.valor.toFixed(2).replace('.', ',')}</td>
         <td style="text-align:right;"><button class="btn-del" onclick="deletarTransacao(${t.id})">X</button></td>
@@ -925,13 +917,12 @@ $('#formTransacao').addEventListener('submit', async (e) => {
       data: finDataAtual,
       valor: parseFloat($('#finValor').value),
       metodo_pagamento: $('#finMetodo').value,
-      descricao: $('#finDescricao').value.trim() || null
+      descricao: null // Enviando nulo já que o campo foi removido
     };
 
     await api('/api/admin/financeiro', { method: 'POST', body: JSON.stringify(dados) });
     
     $('#finValor').value = '';
-    $('#finDescricao').value = '';
     toast('Lançado com sucesso!');
     
     await carregarTransacoesDia();
