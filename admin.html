@@ -23,6 +23,7 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; color
 input,select,textarea{ font-family:inherit; }
 a{ color:inherit; text-decoration:none; }
 
+/* ---------- LOGIN ---------- */
 #loginScreen{ min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
 .login-box{ width:100%; max-width:400px; background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:36px 32px; box-shadow:0 30px 80px -30px rgba(0,177,64,.3); }
 .login-box .brand{ display:flex; align-items:center; gap:12px; margin-bottom:28px; justify-content:center; }
@@ -39,6 +40,7 @@ a{ color:inherit; text-decoration:none; }
 .msg-erro{ margin-top:14px; padding:11px; background:var(--red-soft); border:1px solid rgba(230,57,70,.35); color:#ff8895; font-size:13px; border-radius:8px; display:none; }
 .msg-erro.show{ display:block; }
 
+/* ---------- DASHBOARD ---------- */
 #dashboard{ display:none; min-height:100vh; }
 #dashboard.show{ display:block; }
 header.admin{ position:sticky; top:0; z-index:30; background:rgba(5,5,5,.9); backdrop-filter:blur(14px); border-bottom:1px solid var(--line); padding:14px 24px; display:flex; align-items:center; gap:16px; }
@@ -51,6 +53,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 .btn-ghost{ padding:9px 16px; border:1px solid var(--line); border-radius:9px; font-size:13px; font-weight:700; color:var(--muted); transition:border-color .2s, color .2s, background .2s; }
 .btn-ghost:hover{ border-color:var(--green); color:var(--green); background:var(--green-soft); }
 
+/* ---------- NAVEGAÇÃO DAS ABAS ---------- */
 .nav-tabs{ display:flex; gap:8px; padding:16px 24px 0; max-width:1300px; margin:0 auto; border-bottom:1px solid var(--line); overflow-x:auto; }
 .nav-tabs button{ padding:12px 20px; font-size:14px; font-weight:700; color:var(--muted); border-bottom:3px solid transparent; transition:color .2s, border-color .2s; white-space:nowrap; }
 .nav-tabs button:hover{ color:var(--txt); }
@@ -61,6 +64,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 .tab-content.active{ display:block; animation:fadeIn .3s; }
 @keyframes fadeIn { from { opacity:0; transform:translateY(5px);} to { opacity:1; transform:translateY(0);} }
 
+/* ---------- ABA PRODUTOS ---------- */
 .toolbar{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-bottom:24px; }
 .toolbar h2{ font-size:22px; font-weight:800; letter-spacing:-.02em; flex:1; min-width:200px; }
 .toolbar h2 small{ display:block; font-size:12px; color:var(--muted); font-weight:500; margin-top:2px; }
@@ -91,6 +95,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 .card-prod .acoes .btn-del{ background:var(--red-soft); color:#ff8895; }
 .card-prod .acoes .btn-del:hover{ background:var(--red); color:#fff; }
 
+/* ---------- ABA PEDIDOS ---------- */
 .pedido-card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); margin-bottom:16px; overflow:hidden; }
 .pedido-header{ padding:14px 20px; background:var(--surface-2); border-bottom:1px solid var(--line); display:flex; flex-wrap:wrap; align-items:center; gap:16px; }
 .pedido-header h3{ font-size:15px; font-weight:800; flex:1; }
@@ -109,6 +114,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 .status-select.entregue{ color:var(--green); border-color:var(--line-green); }
 .status-select.cancelado{ color:var(--red); border-color:rgba(230,57,70,.3); }
 
+/* ---------- ABA CONFIGURAÇÕES e CATEGORIAS ---------- */
 .config-card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:24px; max-width:600px; margin-bottom: 24px; }
 .config-card h3{ font-size:18px; font-weight:800; margin-bottom:8px; }
 .config-card p{ font-size:13.5px; color:var(--muted); margin-bottom:24px; }
@@ -129,6 +135,47 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 .cat-item button { color: var(--red); background: var(--red-soft); padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; }
 .cat-item button:hover { background: var(--red); color: white; }
 
+/* ---------- ABA FINANCEIRO ---------- */
+.fin-nav { display:flex; gap:16px; margin-bottom:20px; background: var(--surface); padding:16px; border-radius:12px; border:1px solid var(--line); }
+.fin-nav select { padding:10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); color:white; outline:none; font-size:14px; }
+.fin-nav select:focus { border-color: var(--green); }
+
+.fin-dias { display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:12px; margin-bottom:30px; }
+.fin-dia-card { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:16px; text-align:center; cursor:pointer; transition:all .2s; }
+.fin-dia-card:hover { border-color:var(--green); background:var(--green-soft); }
+.fin-dia-card h4 { font-size:16px; font-weight:800; margin-bottom:4px; }
+.fin-dia-card p { font-size:12px; color:var(--green); font-weight:700; }
+
+.fin-caixa { background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:20px; display:none; margin-top:20px; }
+.fin-caixa.active { display:block; animation:fadeIn .3s; }
+.fin-caixa-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid var(--line); padding-bottom:16px; }
+.fin-caixa-header h3 { font-size:18px; font-weight:800; }
+.btn-fechar-caixa { color:var(--muted); font-size:13px; font-weight:700; }
+.btn-fechar-caixa:hover { color:var(--red); }
+
+.fin-grid { display:grid; grid-template-columns: 2fr 1fr; gap:24px; }
+@media(max-width: 800px) { .fin-grid { grid-template-columns: 1fr; } }
+
+.fin-tabela { width:100%; border-collapse:collapse; margin-bottom:20px; }
+.fin-tabela th { text-align:left; padding:10px; color:var(--muted); font-size:11px; text-transform:uppercase; border-bottom:1px solid var(--line); }
+.fin-tabela td { padding:12px 10px; border-bottom:1px dashed var(--line); font-size:14px; }
+.fin-tabela .valor-col { font-weight:800; color:var(--green); }
+.fin-tabela .btn-del { background:var(--red-soft); color:var(--red); padding:4px 8px; border-radius:6px; font-size:11px; }
+.fin-tabela .btn-del:hover { background:var(--red); color:white; }
+
+.fin-resumo { background:var(--surface-2); border:1px solid var(--line); border-radius:12px; padding:20px; }
+.fin-resumo h4 { font-size:15px; font-weight:800; margin-bottom:16px; text-transform:uppercase; color:var(--green); }
+.fin-resumo-linha { display:flex; justify-content:space-between; margin-bottom:10px; font-size:14px; }
+.fin-resumo-linha span:last-child { font-weight:800; }
+.fin-resumo-total { display:flex; justify-content:space-between; margin-top:20px; padding-top:16px; border-top:2px solid var(--line-green); font-size:18px; font-weight:900; color:var(--green); }
+
+.fin-add-form { display:flex; gap:10px; background:var(--surface-2); padding:16px; border-radius:10px; margin-bottom:20px; flex-wrap:wrap; align-items:flex-end; border:1px solid var(--line); }
+.fin-add-form .form-group { flex:1; min-width:100px; margin:0; }
+.fin-add-form input, .fin-add-form select { width:100%; padding:10px; border-radius:8px; background:var(--bg); border:1px solid var(--line); color:white; }
+.fin-add-form input:focus, .fin-add-form select:focus { border-color:var(--green); outline:none; }
+.fin-add-form button { padding:10px 20px; height: 41px; }
+
+/* ---------- MODAL ---------- */
 #modal{ position:fixed; inset:0; background:rgba(0,0,0,.85); backdrop-filter:blur(6px); z-index:100; display:none; overflow-y:auto; padding:24px; }
 #modal.show{ display:block; }
 .modal-box{ max-width:680px; margin:40px auto; background:var(--surface); border:1px solid var(--line); border-radius:16px; overflow:hidden; box-shadow:0 30px 80px -30px rgba(0,177,64,.3); }
@@ -218,6 +265,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
     <button class="active" data-tab="produtos">Produtos</button>
     <button data-tab="categorias">Categorias</button>
     <button data-tab="pedidos">Pedidos</button>
+    <button data-tab="financeiro">Financeiro</button>
     <button data-tab="config">Configurações</button>
   </div>
 
@@ -259,6 +307,79 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
         <button class="btn-ghost" id="btnAtualizarPedidos">Atualizar</button>
       </div>
       <div id="listaPedidos"></div>
+    </div>
+
+    <!-- ABA FINANCEIRO -->
+    <div class="tab-content" id="tab-financeiro">
+      <div class="toolbar">
+        <h2>Controle Financeiro</h2>
+      </div>
+      
+      <div class="fin-nav">
+        <select id="finMes">
+          <option value="01">Janeiro</option>
+          <option value="02">Fevereiro</option>
+          <option value="03">Março</option>
+          <option value="04">Abril</option>
+          <option value="05">Maio</option>
+          <option value="06">Junho</option>
+          <option value="07">Julho</option>
+          <option value="08">Agosto</option>
+          <option value="09">Setembro</option>
+          <option value="10">Outubro</option>
+          <option value="11">Novembro</option>
+          <option value="12">Dezembro</option>
+        </select>
+        <select id="finAno"></select>
+      </div>
+
+      <div class="fin-dias" id="finListaDias"></div>
+
+      <div class="fin-caixa" id="finCaixa">
+        <div class="fin-caixa-header">
+          <h3 id="finTituloCaixa">Caixa do Dia</h3>
+          <button class="btn-fechar-caixa" onclick="fecharCaixa()">Voltar para os dias</button>
+        </div>
+
+        <form class="fin-add-form" id="formTransacao">
+          <div class="form-group">
+            <label>Valor (R$)</label>
+            <input type="number" step="0.01" id="finValor" required placeholder="0.00">
+          </div>
+          <div class="form-group">
+            <label>Método</label>
+            <select id="finMetodo" required>
+              <option value="DIN.">DIN.</option>
+              <option value="DÉB.">DÉB.</option>
+              <option value="CRÉD.">CRÉD.</option>
+              <option value="PIX">PIX</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Descrição (Opcional)</label>
+            <input type="text" id="finDescricao" placeholder="Ex: Venda balcão">
+          </div>
+          <button type="submit" class="btn-primary">Lançar</button>
+        </form>
+
+        <div class="fin-grid">
+          <div>
+            <table class="fin-tabela">
+              <thead><tr><th>Descrição</th><th>Método</th><th>Valor</th><th></th></tr></thead>
+              <tbody id="finTabelaBody"></tbody>
+            </table>
+          </div>
+          
+          <div class="fin-resumo">
+            <h4>Resumo do Dia</h4>
+            <div class="fin-resumo-linha"><span>DÉB.</span><span id="resDeb">R$ 0,00</span></div>
+            <div class="fin-resumo-linha"><span>DIN.</span><span id="resDin">R$ 0,00</span></div>
+            <div class="fin-resumo-linha"><span>CRÉD.</span><span id="resCred">R$ 0,00</span></div>
+            <div class="fin-resumo-linha"><span>PIX</span><span id="resPix">R$ 0,00</span></div>
+            <div class="fin-resumo-total"><span>TOTAL</span><span id="resTotal">R$ 0,00</span></div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="tab-content" id="tab-config">
@@ -357,6 +478,10 @@ let produtos = [];
 let categorias = [];
 let editandoId = null;
 
+// Variáveis do Financeiro
+let finDataAtual = '';
+let finTransacoes = [];
+
 const $ = sel => document.querySelector(sel);
 
 function toast(msg, erro = false){
@@ -398,6 +523,19 @@ async function abrirDashboard(){
   await carregarCategorias();
   carregarProdutos();
   carregarStatusLoja();
+  
+  // Inicializa o Financeiro com Mês/Ano atual
+  const hoje = new Date();
+  $('#finMes').value = String(hoje.getMonth() + 1).padStart(2, '0');
+  
+  const selectAno = $('#finAno');
+  for (let i = hoje.getFullYear() - 2; i <= hoje.getFullYear() + 2; i++) {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = i;
+    if (i === hoje.getFullYear()) opt.selected = true;
+    selectAno.appendChild(opt);
+  }
 }
 
 $('#btnSair').addEventListener('click', () => {
@@ -411,9 +549,11 @@ document.querySelectorAll('.nav-tabs button').forEach(btn => {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     btn.classList.add('active');
     $(`#tab-${btn.dataset.tab}`).classList.add('active');
+    
     if (btn.dataset.tab === 'pedidos') carregarPedidos();
     if (btn.dataset.tab === 'config') carregarStatusLoja();
     if (btn.dataset.tab === 'categorias') renderizarCategorias();
+    if (btn.dataset.tab === 'financeiro') carregarFinanceiro();
   });
 });
 
@@ -541,7 +681,7 @@ function abrirModal(produto = null){
   editandoId = produto ? produto.id : null;
   $('#modalTitulo').textContent = produto ? 'Editar produto' : 'Novo produto';
   $('#msgForm').classList.remove('show');
-  $('#containerVariacoes').innerHTML = ''; // Limpa variações antigas
+  $('#containerVariacoes').innerHTML = '';
 
   if (produto){
     $('#pNome').value = produto.nome || '';
@@ -639,8 +779,6 @@ async function carregarPedidos(){
 
     lista.innerHTML = pedidos.map(p => {
       const dataFormatada = new Date(p.criado_em).toLocaleString('pt-BR');
-      
-      // AQUI ESTÁ A CORREÇÃO DA VARIAÇÃO NA LISTAGEM
       const itensHtml = p.itens.map(i => {
         const textoVariacao = i.variacao ? ` (${i.variacao})` : '';
         return `<li><span>${i.quantidade}x ${i.produto_nome}${textoVariacao}</span> <span>R$ ${(i.quantidade * i.preco_unitario).toFixed(2).replace('.', ',')}</span></li>`;
@@ -680,6 +818,143 @@ window.mudarStatusPedido = async (id, status) => {
     if(sel) sel.className = `status-select ${status}`;
   } catch (err) { toast('Erro: ' + err.message, true); }
 };
+
+/* ============================ FINANCEIRO ============================ */
+async function carregarFinanceiro() {
+  const mes = $('#finMes').value;
+  const ano = $('#finAno').value;
+  
+  // Mostra os dias do mês
+  const diasNoMes = new Date(ano, parseInt(mes), 0).getDate();
+  const listaDias = $('#finListaDias');
+  listaDias.innerHTML = '';
+  
+  for (let i = 1; i <= diasNoMes; i++) {
+    const diaStr = String(i).padStart(2, '0');
+    const dataStr = `${ano}-${mes}-${diaStr}`;
+    
+    const card = document.createElement('div');
+    card.className = 'fin-dia-card';
+    card.onclick = () => abrirCaixaDia(dataStr);
+    card.innerHTML = `<h4>${diaStr}/${mes}</h4><p>Ver caixa</p>`;
+    listaDias.appendChild(card);
+  }
+
+  fecharCaixa(); // Volta pra listagem
+}
+
+async function abrirCaixaDia(dataStr) {
+  finDataAtual = dataStr;
+  
+  const partes = dataStr.split('-');
+  $('#finTituloCaixa').textContent = `Caixa do Dia: ${partes[2]}/${partes[1]}/${partes[0]}`;
+  
+  $('#finListaDias').style.display = 'none';
+  $('#finCaixa').classList.add('active');
+  
+  await carregarTransacoesDia();
+}
+
+window.fecharCaixa = function() {
+  $('#finListaDias').style.display = 'grid';
+  $('#finCaixa').classList.remove('active');
+  $('#formTransacao').reset();
+  finDataAtual = '';
+};
+
+async function carregarTransacoesDia() {
+  try {
+    const mes = $('#finMes').value;
+    const ano = $('#finAno').value;
+    
+    // Traz os dados do mês e filtra no front pelo dia exato
+    const data = await api(`/api/admin/financeiro?ano=${ano}&mes=${mes}`);
+    const todas = data.transacoes || [];
+    
+    finTransacoes = todas.filter(t => t.data === finDataAtual);
+    
+    renderizarTransacoes();
+  } catch (err) {
+    toast('Erro ao carregar financeiro: ' + err.message, true);
+  }
+}
+
+function renderizarTransacoes() {
+  const tbody = $('#finTabelaBody');
+  tbody.innerHTML = '';
+  
+  let totDeb = 0, totDin = 0, totCred = 0, totPix = 0;
+
+  if (finTransacoes.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--muted);">Nenhum lançamento neste dia.</td></tr>';
+  } else {
+    finTransacoes.forEach(t => {
+      if (t.metodo_pagamento === 'DÉB.') totDeb += t.valor;
+      if (t.metodo_pagamento === 'DIN.') totDin += t.valor;
+      if (t.metodo_pagamento === 'CRÉD.') totCred += t.valor;
+      if (t.metodo_pagamento === 'PIX') totPix += t.valor;
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${t.descricao || '—'}</td>
+        <td>${t.metodo_pagamento}</td>
+        <td class="valor-col">R$ ${t.valor.toFixed(2).replace('.', ',')}</td>
+        <td style="text-align:right;"><button class="btn-del" onclick="deletarTransacao(${t.id})">X</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  const format = (v) => `R$ ${v.toFixed(2).replace('.', ',')}`;
+  const totalGeral = totDeb + totDin + totCred + totPix;
+
+  $('#resDeb').textContent = format(totDeb);
+  $('#resDin').textContent = format(totDin);
+  $('#resCred').textContent = format(totCred);
+  $('#resPix').textContent = format(totPix);
+  $('#resTotal').textContent = format(totalGeral);
+}
+
+$('#formTransacao').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = e.target.querySelector('button[type="submit"]');
+  btn.disabled = true; btn.textContent = '...';
+
+  try {
+    const dados = {
+      data: finDataAtual,
+      valor: parseFloat($('#finValor').value),
+      metodo_pagamento: $('#finMetodo').value,
+      descricao: $('#finDescricao').value.trim() || null
+    };
+
+    await api('/api/admin/financeiro', { method: 'POST', body: JSON.stringify(dados) });
+    
+    $('#finValor').value = '';
+    $('#finDescricao').value = '';
+    toast('Lançado com sucesso!');
+    
+    await carregarTransacoesDia();
+  } catch (err) {
+    toast('Erro: ' + err.message, true);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Lançar';
+  }
+});
+
+window.deletarTransacao = async (id) => {
+  if (!confirm('Apagar este lançamento?')) return;
+  try {
+    await api('/api/admin/financeiro?id=' + id, { method: 'DELETE' });
+    toast('Apagado!');
+    await carregarTransacoesDia();
+  } catch (err) {
+    toast('Erro: ' + err.message, true);
+  }
+};
+
+$('#finMes').addEventListener('change', carregarFinanceiro);
+$('#finAno').addEventListener('change', carregarFinanceiro);
 
 /* ============================ CONFIGURAÇÕES ============================ */
 async function carregarStatusLoja(){
