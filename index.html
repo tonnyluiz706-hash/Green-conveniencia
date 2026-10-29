@@ -188,11 +188,6 @@ footer{ padding:46px 24px 34px; }
 .modal-box h2{ font-size:21px; font-weight:800; text-align:center; margin-bottom:6px; }
 .modal-box .sub{ font-size:13px; color:var(--muted); text-align:center; margin-bottom:22px; }
 
-.auth-opt{ width:100%; padding:13px 16px; border:1px solid var(--line); border-radius:11px; background:var(--surface-2); color:var(--txt); font-size:14px; font-weight:700; display:flex; align-items:center; gap:12px; margin-bottom:10px; transition:all .2s; text-align:left; }
-.auth-opt:hover{ border-color:var(--green); background:#111; }
-.auth-opt svg{ width:20px; height:20px; flex-shrink:0; }
-.auth-opt.google svg{ color:#fff; } .auth-opt.email svg{ color:var(--green); }
-.auth-back{ position:absolute; top:12px; left:12px; width:34px; height:34px; display:grid; place-items:center; color:var(--muted); font-size:18px; }
 .auth-tabs{ display:flex; gap:4px; background:var(--surface-2); border-radius:10px; padding:4px; margin-bottom:20px; }
 .auth-tab{ flex:1; padding:10px; font-size:13px; font-weight:700; color:var(--muted); border-radius:7px; transition:all .2s; }
 .auth-tab.active{ background:var(--green); color:#001a09; }
@@ -354,17 +349,10 @@ footer{ padding:46px 24px 34px; }
 
 <div class="modal-overlay" id="authModal">
   <div class="modal-box">
-    <div id="authScreenChoose">
+    <!-- TELA DE FORMULÁRIO DIRETO -->
+    <div id="authScreenForm">
       <button class="modal-close" id="authClose">×</button>
-      <h2>Entrar ou criar conta</h2>
-      <p class="sub">Escolha como quer continuar</p>
-      <button class="auth-opt google" data-tipo="google"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg> Entrar com Google</button>
-      <button class="auth-opt email" data-tipo="email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg> Entrar com e-mail</button>
-    </div>
-
-    <div id="authScreenForm" style="display:none;">
-      <button class="auth-back" id="authBack">←</button>
-      <h2 style="margin-top:8px;">Acesse sua conta</h2>
+      <h2>Acesse sua conta</h2>
       <p class="sub">Entre ou crie uma conta nova</p>
       <div class="auth-tabs">
         <button class="auth-tab active" data-tab="login">Entrar</button>
@@ -474,48 +462,30 @@ async function apiCli(path, opts = {}){
   return data;
 }
 
-// ==========================================
-// LÓGICA DO SPLASH (CORRIGIDA PARA MOBILE)
-// ==========================================
 (function(){
   const splash = $('#splash'), logoStage = $('#logoStage'), videoWrap = $('#introVideoWrap'), video = $('#introVideo'), tapHint = $('#tapHint');
   let estado = 'logo', entrou = false;
-
+  
   function tocarVideo(){
     if (estado !== 'logo') return;
     estado = 'video';
     logoStage.classList.add('hide'); tapHint.classList.add('hide');
     setTimeout(() => tapHint.classList.remove('show'), 400);
     videoWrap.classList.add('show');
-    
-    // Detecta se é mobile para carregar o vídeo certo
     const ehMobile = window.matchMedia('(max-width: 900px)').matches;
     video.src = ehMobile ? 'Mobile.mp4' : 'PC.mp4';
-    video.load(); 
-    video.muted = false; // Tenta com som
-    video.play().catch(() => { 
-      // Se falhar (bloqueio do navegador), tenta mudo e depois entra
-      video.muted = true; 
-      video.play().catch(() => enterSite()); 
-    });
+    video.load(); video.muted = false;
+    video.play().catch(() => { video.muted = true; video.play().catch(() => enterSite()); });
 
-    // TIMEOUT INTELIGENTE: Se o vídeo não começar a tocar em 5 segundos, pula
+    // Timeout para não travar no mobile
     setTimeout(() => {
-      if (estado === 'video' && video.currentTime < 0.1) {
-        console.warn('[Green] Vídeo demorou para iniciar, pulando.');
-        enterSite();
-      }
+      if (estado === 'video' && video.currentTime < 0.1) enterSite();
     }, 5000);
-
-    // TIMEOUT MÁXIMO: Se o vídeo travar no meio (8s de vídeo, limite de 15s)
     setTimeout(() => {
-      if (estado === 'video') {
-        console.warn('[Green] Vídeo travou no meio, pulando.');
-        enterSite();
-      }
+      if (estado === 'video') enterSite();
     }, 15000);
   }
-
+  
   function enterSite(){
     if (entrou) return;
     entrou = true; estado = 'done';
@@ -523,10 +493,9 @@ async function apiCli(path, opts = {}){
     splash.classList.add('hide'); document.body.style.overflow = '';
     setTimeout(() => splash.remove(), 650);
   }
-
+  
   video.addEventListener('ended', enterSite);
   video.addEventListener('error', enterSite);
-  
   splash.addEventListener('click', () => { if (estado === 'logo') tocarVideo(); });
 })();
 
@@ -750,7 +719,7 @@ $('#btnGoCheckout').addEventListener('click', () => {
   if (!lojaAberta) return alert('A loja está fechada no momento.');
   if (!clienteLogado) {
     alert('Você precisa estar logado para finalizar o pedido.');
-    $('#cartModal').classList.remove('show'); $('#authModal').classList.add('show'); mostrarTelaAuth('form');
+    $('#cartModal').classList.remove('show'); $('#authModal').classList.add('show');
     return;
   }
   if (clienteLogado.endereco) $('#checkRua').value = clienteLogado.endereco;
@@ -818,7 +787,6 @@ $('#successClose').addEventListener('click', () => $('#checkoutModal').classList
 $('#btnFecharSucesso').addEventListener('click', () => $('#checkoutModal').classList.remove('show'));
 
 function mostrarTelaAuth(tela) {
-  $('#authScreenChoose').style.display = tela === 'choose' ? 'block' : 'none';
   $('#authScreenForm').style.display = tela === 'form' ? 'block' : 'none';
   $('#authScreenLogged').style.display = tela === 'logged' ? 'block' : 'none';
 }
@@ -838,21 +806,17 @@ function atualizarUILogin() {
 $('#perfilBtn').addEventListener('click', () => {
   if (clienteLogado) {
     $('#authAvatar').innerHTML = clienteLogado.foto_url ? `<img src="${clienteLogado.foto_url}">` : clienteLogado.nome.charAt(0).toUpperCase();
-    $('#authUserName').textContent = clienteLogado.nome; $('#authUserEmail').textContent = clienteLogado.email; mostrarTelaAuth('logged');
-  } else mostrarTelaAuth('choose');
+    $('#authUserName').textContent = clienteLogado.nome; $('#authUserEmail').textContent = clienteLogado.email; 
+    mostrarTelaAuth('logged');
+  } else {
+    // Abre direto na tela de formulário de email
+    mostrarTelaAuth('form');
+  }
   $('#authModal').classList.add('show');
 });
 
 $('#authClose').addEventListener('click', () => $('#authModal').classList.remove('show'));
 $('#authCloseLogged').addEventListener('click', () => $('#authModal').classList.remove('show'));
-$('#authBack').addEventListener('click', () => mostrarTelaAuth('choose'));
-
-$$('.auth-opt').forEach(btn => {
-  btn.addEventListener('click', () => {
-    if (btn.dataset.tipo === 'email') mostrarTelaAuth('form');
-    else if (btn.dataset.tipo === 'google') window.location.href = '/api/cliente/auth-google';
-  });
-});
 
 $$('.auth-tab').forEach(tab => {
   tab.addEventListener('click', () => {
@@ -898,16 +862,6 @@ $('#authLogout').addEventListener('click', async () => {
   try { await apiCli('/api/cliente/logout', { method: 'POST' }); } catch(_){}
   limparSessao(); atualizarUILogin(); $('#authModal').classList.remove('show');
 });
-
-(function processarRetornoGoogle(){
-  const params = new URLSearchParams(window.location.search);
-  const erroG = params.get('google_erro');
-  if (erroG) { alert('Falha no login com Google: ' + erroG); window.history.replaceState({}, '', window.location.pathname); return; }
-  const t = params.get('google_token'), n = params.get('google_nome'), e = params.get('google_email'), f = params.get('google_foto');
-  if (t && n && e) {
-    setSessao(t, { nome: n, email: e, foto_url: f || null }); atualizarUILogin(); window.history.replaceState({}, '', window.location.pathname);
-  }
-})();
 
 (async function init(){
   await carregarCategorias();
