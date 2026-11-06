@@ -79,6 +79,8 @@ export async function onRequest(context){
     if (rota === 'cliente/logout' && metodo === 'POST') return logoutCliente(context);
     if (rota === 'cliente/me' && metodo === 'GET') return meCliente(context);
     if (rota === 'cliente/endereco' && metodo === 'PUT') return atualizarEnderecoCliente(context);
+    
+    // Google OAuth (mantido no backend, mas escondido no front)
     if (rota === 'cliente/auth-google' && metodo === 'GET') return iniciarGoogle(context);
     if (rota === 'cliente/auth-google/callback' && metodo === 'GET') return callbackGoogle(context);
 
@@ -87,10 +89,17 @@ export async function onRequest(context){
     if (rota === 'admin/pedidos' && metodo === 'GET') return listarPedidos(context);
     if (rota === 'admin/pedido/status' && metodo === 'PUT') return atualizarStatusPedido(context);
 
-    // Financeiro
+    // Financeiro (Caixa Diário)
     if (rota === 'admin/financeiro' && metodo === 'GET') return listarFinanceiro(context);
     if (rota === 'admin/financeiro' && metodo === 'POST') return criarTransacao(context);
     if (rota === 'admin/financeiro' && metodo === 'DELETE') return deletarTransacao(context);
+    
+    // Financeiro (Fluxo e Fechamento)
+    if (rota === 'admin/fluxo' && metodo === 'GET') return listarFluxo(context);
+    if (rota === 'admin/fluxo' && metodo === 'POST') return criarFluxo(context);
+    if (rota === 'admin/fluxo' && metodo === 'DELETE') return deletarFluxo(context);
+    if (rota === 'admin/financeiro/fechar' && metodo === 'POST') return fecharCaixa(context);
+    if (rota === 'admin/financeiro/status' && metodo === 'GET') return statusCaixa(context);
 
     return erro('Rota não encontrada: ' + rota, 404);
   } catch (e){
@@ -411,7 +420,7 @@ async function atualizarStatusPedido({ request, env }){
 }
 
 /* ============================================================
- * FINANCEIRO
+ * FINANCEIRO — CONTROLE DE CAIXA (Diário)
  * ============================================================ */
 async function listarFinanceiro({ request, env }){
   const user = await autenticar(request, env);
@@ -420,11 +429,9 @@ async function listarFinanceiro({ request, env }){
   const url = new URL(request.url);
   const ano = url.searchParams.get('ano');
   const mes = url.searchParams.get('mes');
-
   if (!ano || !mes) return erro('Ano e Mês são obrigatórios');
 
   const prefixo = `${ano}-${String(mes).padStart(2, '0')}%`;
-
   const { results } = await env.DB.prepare(
     'SELECT * FROM financeiro WHERE data LIKE ? ORDER BY data DESC, criado_em DESC'
   ).bind(prefixo).all();
@@ -435,30 +442,107 @@ async function listarFinanceiro({ request, env }){
 async function criarTransacao({ request, env }){
   const user = await autenticar(request, env);
   if (!user) return erro('Não autenticado', 401);
-
-  const { data, valor, metodo_pagamento, descricao } = await request.json();
+  const { data, valor, metodo_pagamento } = await request.json();
   if (!data || !valor || !metodo_pagamento) return erro('Data, valor e método são obrigatórios');
-
   await env.DB.prepare(
-    'INSERT INTO financeiro (data, valor, metodo_pagamento, descricao) VALUES (?, ?, ?, ?)'
-  ).bind(data, valor, metodo_pagamento, descricao || null).run();
-
+    'INSERT INTO financeiro (data, valor, metodo_pagamento) VALUES (?, ?, ?)'
+  ).bind(data, valor, metodo_pagamento).run();
   return json({ ok: true });
 }
 
 async function deletarTransacao({ request, env }){
   const user = await autenticar(request, env);
   if (!user) return erro('Não autenticado', 401);
-
   const id = new URL(request.url).searchParams.get('id');
   if (!id) return erro('ID obrigatório');
-
   await env.DB.prepare('DELETE FROM financeiro WHERE id = ?').bind(id).run();
   return json({ ok: true });
 }
 
 /* ============================================================
- * CLIENTE — GOOGLE OAUTH
+ * FINANCEIRO — FLUXO DE CAIXA E FECHAMENTO
+ * ============================================================ */
+async function listarFluxo({ request, env }){
+  const user = await autenticar(request, env);
+  if (!user) return erro('Não autenticado', 401);
+
+  const url = new URL(request.url);
+  const ano = url.searchParams.get('ano');
+  const mes = url.searchParams.get('mes');
+  if (!ano || !mes) return erro('Ano e Mês são obrigatórios');
+
+  const prefixo = `${ano}-${String(mes).padStart(2, '0')}%`;
+  const { results } = await env.DB.prepare(
+    'SELECT * FROM fluxo_caixa WHERE data LIKE ? ORDER BY data DESC, criado_em DESC'
+  ).bind(prefixo).all();
+
+  return json({ ok: true, fluxo: results });
+}
+
+async function criarFluxo({ request, env }){
+  const user = await autenticar(request, env);
+  if (!user) return erro('Não autenticado', 401);
+
+  const { data, tipo, valor, descricao } = await request.json();
+  if (!data || !tipo || !valor || !descricao) return erro('Dados incompletos');
+
+  await env.DB.prepare(
+    'INSERT INTO fluxo_caixa (data, tipo, valor, descricao) VALUES (?, ?, ?, ?)'
+  ).bind(data, tipo, valor, descricao).run();
+
+  return json({ ok: true });
+}
+
+async function deletarFluxo({ request, env }){
+  const user = await autenticar(request, env);
+  if (!user) return erro('Não autenticado', 401);
+  const id = new URL(request.url).searchParams.get('id');
+  await env.DB.prepare('DELETE FROM fluxo_caixa WHERE id = ?').bind(id).run();
+  return json({ ok: true });
+}
+
+async function statusCaixa({ request, env }){
+  const user = await autenticar(request, env);
+  if (!user) return erro('Não autenticado', 401);
+  const url = new URL(request.url);
+  const ano = url.searchParams.get('ano');
+  const mes = url.searchParams.get('mes');
+  
+  const prefixo = `${ano}-${String(mes).padStart(2, '0')}%`;
+  const { results } = await env.DB.prepare(
+    'SELECT * FROM caixa_status WHERE data LIKE ?'
+  ).bind(prefixo).all();
+
+  return json({ ok: true, status: results });
+}
+
+async function fecharCaixa({ request, env }){
+  const user = await autenticar(request, env);
+  if (!user) return erro('Não autenticado', 401);
+
+  const { data, total } = await request.json();
+  if (!data || total === undefined) return erro('Dados incompletos');
+
+  // Verifica se já foi fechado
+  const jaFechado = await env.DB.prepare('SELECT fechado FROM caixa_status WHERE data = ?').bind(data).first();
+  if (jaFechado && jaFechado.fechado === 1) return erro('Este caixa já está fechado!', 400);
+
+  // 1. Marca o status como fechado
+  await env.DB.prepare(
+    'INSERT OR REPLACE INTO caixa_status (data, fechado, total) VALUES (?, 1, ?)'
+  ).bind(data, total).run();
+
+  // 2. Insere a entrada no fluxo de caixa
+  const dataFormatada = data.split('-').reverse().join('/');
+  await env.DB.prepare(
+    'INSERT INTO fluxo_caixa (data, tipo, valor, descricao) VALUES (?, "entrada", ?, ?)'
+  ).bind(data, total, `Fechamento de Caixa - ${dataFormatada}`).run();
+
+  return json({ ok: true });
+}
+
+/* ============================================================
+ * CLIENTE — GOOGLE OAUTH (Mantido por compatibilidade)
  * ============================================================ */
 async function iniciarGoogle({ env }){
   const params = new URLSearchParams({ client_id: env.GOOGLE_CLIENT_ID, redirect_uri: env.GOOGLE_REDIRECT_URI, response_type: 'code', scope: 'openid email profile', access_type: 'online', prompt: 'select_account' });
