@@ -114,7 +114,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 .status-select.entregue{ color:var(--green); border-color:var(--line-green); }
 .status-select.cancelado{ color:var(--red); border-color:rgba(230,57,70,.3); }
 
-/* ---------- ABA CONFIGURAÇÕES e CATEGORIAS ---------- */
+/* ---------- ABAS CONFIGURAÇÕES e CATEGORIAS ---------- */
 .config-card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:24px; max-width:600px; margin-bottom: 24px; }
 .config-card h3{ font-size:18px; font-weight:800; margin-bottom:8px; }
 .config-card p{ font-size:13.5px; color:var(--muted); margin-bottom:24px; }
@@ -135,20 +135,33 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 .cat-item button { color: var(--red); background: var(--red-soft); padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; }
 .cat-item button:hover { background: var(--red); color: white; }
 
-/* ---------- ABA FINANCEIRO ---------- */
-.fin-nav { display:flex; gap:16px; margin-bottom:20px; background: var(--surface); padding:16px; border-radius:12px; border:1px solid var(--line); }
+/* ---------- ABA FINANCEIRO (MENU E SUB-TELAS) ---------- */
+.fin-menu { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+.fin-menu-card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 30px; text-align: center; cursor: pointer; transition: all .2s; }
+.fin-menu-card:hover { border-color: var(--green); transform: translateY(-4px); box-shadow: 0 10px 30px -10px rgba(0,177,64,.3); }
+.fin-menu-card h3 { font-size: 20px; font-weight: 800; margin-bottom: 10px; color: var(--green); }
+.fin-menu-card p { font-size: 13.5px; color: var(--muted); }
+
+.fin-subview { display: none; }
+.fin-subview.active { display: block; animation: fadeIn .3s; }
+
+.fin-nav { display:flex; gap:16px; margin-bottom:20px; background: var(--surface); padding:16px; border-radius:12px; border:1px solid var(--line); align-items: center; }
 .fin-nav select { padding:10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); color:white; outline:none; font-size:14px; }
 .fin-nav select:focus { border-color: var(--green); }
+.btn-voltar-fin { margin-left: auto; font-size: 13px; color: var(--muted); font-weight: 700; border: 1px solid var(--line); padding: 8px 16px; border-radius: 8px; }
+.btn-voltar-fin:hover { color: var(--txt); border-color: var(--txt); }
 
 .fin-dias { display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:12px; margin-bottom:30px; }
-.fin-dia-card { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:16px; text-align:center; cursor:pointer; transition:all .2s; }
+.fin-dia-card { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:16px; text-align:center; cursor:pointer; transition:all .2s; position: relative; }
 .fin-dia-card:hover { border-color:var(--green); background:var(--green-soft); }
 .fin-dia-card h4 { font-size:16px; font-weight:800; margin-bottom:4px; }
 .fin-dia-card p { font-size:12px; color:var(--green); font-weight:700; }
+.fin-dia-card.fechado { border-color: rgba(230,57,70,.3); opacity: 0.7; }
+.fin-dia-card.fechado::after { content: 'FECHADO'; position: absolute; top: 5px; right: 5px; font-size: 8px; color: var(--red); font-weight: 900; }
 
 .fin-caixa { background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:20px; display:none; margin-top:20px; }
 .fin-caixa.active { display:block; animation:fadeIn .3s; }
-.fin-caixa-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid var(--line); padding-bottom:16px; }
+.fin-caixa-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid var(--line); padding-bottom:16px; flex-wrap: wrap; gap: 10px; }
 .fin-caixa-header h3 { font-size:18px; font-weight:800; }
 .btn-fechar-caixa { color:var(--muted); font-size:13px; font-weight:700; }
 .btn-fechar-caixa:hover { color:var(--red); }
@@ -174,6 +187,17 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 .fin-add-form input, .fin-add-form select { width:100%; padding:10px; border-radius:8px; background:var(--bg); border:1px solid var(--line); color:white; }
 .fin-add-form input:focus, .fin-add-form select:focus { border-color:var(--green); outline:none; }
 .fin-add-form button { padding:10px 20px; height: 41px; }
+
+/* FLUXO DE CAIXA (ENTRADA/SAÍDA) */
+.fin-fluxo-tipo { display: flex; gap: 10px; margin-bottom: 20px; }
+.btn-fluxo-tipo { flex: 1; padding: 12px; border-radius: 8px; font-weight: 800; font-size: 14px; border: 1px solid var(--line); text-align: center; transition: all .2s; }
+.btn-fluxo-tipo.entrada { color: var(--green); }
+.btn-fluxo-tipo.entrada.active { background: var(--green-soft); border-color: var(--green); }
+.btn-fluxo-tipo.saida { color: var(--red); }
+.btn-fluxo-tipo.saida.active { background: var(--red-soft); border-color: var(--red); }
+
+.valor-entrada { color: var(--green) !important; }
+.valor-saida { color: var(--red) !important; }
 
 /* ---------- MODAL ---------- */
 #modal{ position:fixed; inset:0; background:rgba(0,0,0,.85); backdrop-filter:blur(6px); z-index:100; display:none; overflow-y:auto; padding:24px; }
@@ -227,6 +251,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
   .nav-tabs button{ padding:10px 14px; font-size:13px; }
   .container{ padding:20px 16px 40px; }
   .pedido-footer{ flex-direction:column; align-items:flex-start; }
+  .fin-menu { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -270,6 +295,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
   </div>
 
   <div class="container">
+    <!-- ABA PRODUTOS -->
     <div class="tab-content active" id="tab-produtos">
       <div class="toolbar">
         <h2>Produtos <small id="contador">—</small></h2>
@@ -285,6 +311,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
       <div class="grid-produtos" id="gridProdutos"></div>
     </div>
 
+    <!-- ABA CATEGORIAS -->
     <div class="tab-content" id="tab-categorias">
       <div class="toolbar">
         <h2>Gerenciar Categorias</h2>
@@ -301,6 +328,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
       <div class="list-cats" id="listaCategorias"></div>
     </div>
 
+    <!-- ABA PEDIDOS -->
     <div class="tab-content" id="tab-pedidos">
       <div class="toolbar">
         <h2>Pedidos Recebidos <small id="contadorPedidos">—</small></h2>
@@ -309,75 +337,142 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
       <div id="listaPedidos"></div>
     </div>
 
-    <!-- ABA FINANCEIRO -->
+    <!-- ABA FINANCEIRO (MENU) -->
     <div class="tab-content" id="tab-financeiro">
       <div class="toolbar">
-        <h2>Controle Financeiro</h2>
+        <h2>Financeiro</h2>
       </div>
       
-      <div class="fin-nav">
-        <select id="finMes">
-          <option value="01">Janeiro</option>
-          <option value="02">Fevereiro</option>
-          <option value="03">Março</option>
-          <option value="04">Abril</option>
-          <option value="05">Maio</option>
-          <option value="06">Junho</option>
-          <option value="07">Julho</option>
-          <option value="08">Agosto</option>
-          <option value="09">Setembro</option>
-          <option value="10">Outubro</option>
-          <option value="11">Novembro</option>
-          <option value="12">Dezembro</option>
-        </select>
-        <select id="finAno"></select>
-      </div>
-
-      <div class="fin-dias" id="finListaDias"></div>
-
-      <div class="fin-caixa" id="finCaixa">
-        <div class="fin-caixa-header">
-          <h3 id="finTituloCaixa">Caixa do Dia</h3>
-          <button class="btn-fechar-caixa" onclick="fecharCaixa()">Voltar para os dias</button>
+      <div class="fin-menu">
+        <div class="fin-menu-card" onclick="abrirSubView('caixa')">
+          <h3>📁 Controle de Caixa</h3>
+          <p>Lançamento diário de vendas por método de pagamento (DÉB, DIN, CRÉD, PIX) e fechamento de caixa.</p>
         </div>
-
-        <form class="fin-add-form" id="formTransacao">
-          <div class="form-group">
-            <label>Valor (R$)</label>
-            <input type="number" step="0.01" id="finValor" required placeholder="0.00">
-          </div>
-          <div class="form-group">
-            <label>Método</label>
-            <select id="finMetodo" required>
-              <option value="DIN.">DIN.</option>
-              <option value="DÉB.">DÉB.</option>
-              <option value="CRÉD.">CRÉD.</option>
-              <option value="PIX">PIX</option>
-            </select>
-          </div>
-          <button type="submit" class="btn-primary" style="flex:0 0 100px;">Lançar</button>
-        </form>
-
-        <div class="fin-grid">
-          <div>
-            <table class="fin-tabela">
-              <thead><tr><th>Método</th><th>Valor</th><th></th></tr></thead>
-              <tbody id="finTabelaBody"></tbody>
-            </table>
-          </div>
-          
-          <div class="fin-resumo">
-            <h4>Resumo do Dia</h4>
-            <div class="fin-resumo-linha"><span>DÉB.</span><span id="resDeb">R$ 0,00</span></div>
-            <div class="fin-resumo-linha"><span>DIN.</span><span id="resDin">R$ 0,00</span></div>
-            <div class="fin-resumo-linha"><span>CRÉD.</span><span id="resCred">R$ 0,00</span></div>
-            <div class="fin-resumo-linha"><span>PIX</span><span id="resPix">R$ 0,00</span></div>
-            <div class="fin-resumo-total"><span>TOTAL</span><span id="resTotal">R$ 0,00</span></div>
-          </div>
+        <div class="fin-menu-card" onclick="abrirSubView('fluxo')">
+          <h3>📁 Entradas e Saídas</h3>
+          <p>Controle geral de fluxo de caixa (aluguel, reposição de estoque, contas a pagar e receber).</p>
         </div>
       </div>
+
+      <!-- SUB-VIEW: CONTROLE DE CAIXA -->
+      <div class="fin-subview" id="view-caixa">
+        <div class="fin-nav">
+          <select id="finMes">
+            <option value="01">Janeiro</option><option value="02">Fevereiro</option><option value="03">Março</option>
+            <option value="04">Abril</option><option value="05">Maio</option><option value="06">Junho</option>
+            <option value="07">Julho</option><option value="08">Agosto</option><option value="09">Setembro</option>
+            <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
+          </select>
+          <select id="finAno"></select>
+          <button class="btn-voltar-fin" onclick="voltarMenuFin()">Voltar</button>
+        </div>
+
+        <div class="fin-dias" id="finListaDias"></div>
+
+        <div class="fin-caixa" id="finCaixa">
+          <div class="fin-caixa-header">
+            <h3 id="finTituloCaixa">Caixa do Dia</h3>
+            <button class="btn-fechar-caixa" onclick="fecharCaixa()" id="btnFecharCaixa">Fechar Caixa e Enviar p/ Fluxo</button>
+          </div>
+
+          <form class="fin-add-form" id="formTransacao">
+            <div class="form-group">
+              <label>Valor (R$)</label>
+              <input type="number" step="0.01" id="finValor" required placeholder="0.00">
+            </div>
+            <div class="form-group">
+              <label>Método</label>
+              <select id="finMetodo" required>
+                <option value="DIN.">DIN.</option>
+                <option value="DÉB.">DÉB.</option>
+                <option value="CRÉD.">CRÉD.</option>
+                <option value="PIX">PIX</option>
+              </select>
+            </div>
+            <button type="submit" class="btn-primary" style="flex:0 0 100px;">Lançar</button>
+          </form>
+
+          <div class="fin-grid">
+            <div>
+              <table class="fin-tabela">
+                <thead><tr><th>Método</th><th>Valor</th><th></th></tr></thead>
+                <tbody id="finTabelaBody"></tbody>
+              </table>
+            </div>
+            
+            <div class="fin-resumo">
+              <h4>Resumo do Dia</h4>
+              <div class="fin-resumo-linha"><span>DÉB.</span><span id="resDeb">R$ 0,00</span></div>
+              <div class="fin-resumo-linha"><span>DIN.</span><span id="resDin">R$ 0,00</span></div>
+              <div class="fin-resumo-linha"><span>CRÉD.</span><span id="resCred">R$ 0,00</span></div>
+              <div class="fin-resumo-linha"><span>PIX</span><span id="resPix">R$ 0,00</span></div>
+              <div class="fin-resumo-total"><span>TOTAL</span><span id="resTotal">R$ 0,00</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-VIEW: FLUXO DE CAIXA (ENTRADAS E SAÍDAS) -->
+      <div class="fin-subview" id="view-fluxo">
+        <div class="fin-nav">
+          <select id="fluxoMes">
+            <option value="01">Janeiro</option><option value="02">Fevereiro</option><option value="03">Março</option>
+            <option value="04">Abril</option><option value="05">Maio</option><option value="06">Junho</option>
+            <option value="07">Julho</option><option value="08">Agosto</option><option value="09">Setembro</option>
+            <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
+          </select>
+          <select id="fluxoAno"></select>
+          <button class="btn-voltar-fin" onclick="voltarMenuFin()">Voltar</button>
+        </div>
+
+        <div class="fin-dias" id="fluxoListaDias"></div>
+
+        <div class="fin-caixa" id="fluxoCaixa">
+          <div class="fin-caixa-header">
+            <h3 id="fluxoTituloCaixa">Fluxo do Dia</h3>
+            <button class="btn-fechar-caixa" onclick="fecharFluxo()">Voltar para os dias</button>
+          </div>
+
+          <form class="fin-add-form" id="formFluxo">
+            <div class="form-group">
+              <label>Tipo</label>
+              <select id="fluxoTipo" required>
+                <option value="entrada">Entrada (+)</option>
+                <option value="saida">Saída (-)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Valor (R$)</label>
+              <input type="number" step="0.01" id="fluxoValor" required placeholder="0.00">
+            </div>
+            <div class="form-group">
+              <label>Descrição</label>
+              <input type="text" id="fluxoDesc" required placeholder="Ex: Aluguel, Reposição...">
+            </div>
+            <button type="submit" class="btn-primary" style="flex:0 0 100px;">Lançar</button>
+          </form>
+
+          <div class="fin-grid">
+            <div>
+              <table class="fin-tabela">
+                <thead><tr><th>Descrição</th><th>Valor</th><th></th></tr></thead>
+                <tbody id="fluxoTabelaBody"></tbody>
+              </table>
+            </div>
+            
+            <div class="fin-resumo">
+              <h4>Resumo do Dia</h4>
+              <div class="fin-resumo-linha"><span>Entradas</span><span id="fluxoResEntrada" class="valor-entrada">R$ 0,00</span></div>
+              <div class="fin-resumo-linha"><span>Saídas</span><span id="fluxoResSaida" class="valor-saida">R$ 0,00</span></div>
+              <div class="fin-resumo-total"><span>SALDO</span><span id="fluxoResTotal">R$ 0,00</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
+    <!-- ABA CONFIGURAÇÕES -->
     <div class="tab-content" id="tab-config">
       <div class="toolbar">
         <h2>Configurações da Loja</h2>
@@ -474,8 +569,14 @@ let produtos = [];
 let categorias = [];
 let editandoId = null;
 
+// Variáveis do Financeiro - Caixa
 let finDataAtual = '';
 let finTransacoes = [];
+let diasFechados = [];
+
+// Variáveis do Financeiro - Fluxo
+let fluxoDataAtual = '';
+let fluxoTransacoes = [];
 
 const $ = sel => document.querySelector(sel);
 
@@ -520,15 +621,17 @@ async function abrirDashboard(){
   carregarStatusLoja();
   
   const hoje = new Date();
-  $('#finMes').value = String(hoje.getMonth() + 1).padStart(2, '0');
+  const mesAtual = String(hoje.getMonth() + 1).padStart(2, '0');
+  const anoAtual = hoje.getFullYear();
+
+  $('#finMes').value = mesAtual;
+  $('#fluxoMes').value = mesAtual;
   
   const selectAno = $('#finAno');
-  for (let i = hoje.getFullYear() - 2; i <= hoje.getFullYear() + 2; i++) {
-    const opt = document.createElement('option');
-    opt.value = i;
-    opt.textContent = i;
-    if (i === hoje.getFullYear()) opt.selected = true;
-    selectAno.appendChild(opt);
+  const selectAnoFluxo = $('#fluxoAno');
+  for (let i = anoAtual - 2; i <= anoAtual + 2; i++) {
+    const opt1 = document.createElement('option'); opt1.value = i; opt1.textContent = i; if (i === anoAtual) opt1.selected = true; selectAno.appendChild(opt1);
+    const opt2 = document.createElement('option'); opt2.value = i; opt2.textContent = i; if (i === anoAtual) opt2.selected = true; selectAnoFluxo.appendChild(opt2);
   }
 }
 
@@ -547,7 +650,7 @@ document.querySelectorAll('.nav-tabs button').forEach(btn => {
     if (btn.dataset.tab === 'pedidos') carregarPedidos();
     if (btn.dataset.tab === 'config') carregarStatusLoja();
     if (btn.dataset.tab === 'categorias') renderizarCategorias();
-    if (btn.dataset.tab === 'financeiro') carregarFinanceiro();
+    if (btn.dataset.tab === 'financeiro') voltarMenuFin();
   });
 });
 
@@ -813,32 +916,60 @@ window.mudarStatusPedido = async (id, status) => {
   } catch (err) { toast('Erro: ' + err.message, true); }
 };
 
-/* ============================ FINANCEIRO ============================ */
-async function carregarFinanceiro() {
+/* ============================ FINANCEIRO (MENU) ============================ */
+window.abrirSubView = function(view) {
+  document.querySelector('.fin-menu').style.display = 'none';
+  document.querySelectorAll('.fin-subview').forEach(el => el.classList.remove('active'));
+  
+  if (view === 'caixa') {
+    $('#view-caixa').classList.add('active');
+    carregarCaixaDias();
+  } else if (view === 'fluxo') {
+    $('#view-fluxo').classList.add('active');
+    carregarFluxoDias();
+  }
+};
+
+window.voltarMenuFin = function() {
+  document.querySelector('.fin-menu').style.display = 'grid';
+  document.querySelectorAll('.fin-subview').forEach(el => el.classList.remove('active'));
+  fecharCaixa();
+  fecharFluxo();
+};
+
+/* ============================ CONTROLE DE CAIXA ============================ */
+async function carregarCaixaDias() {
   const mes = $('#finMes').value;
   const ano = $('#finAno').value;
   
-  const diasNoMes = new Date(ano, parseInt(mes), 0).getDate();
-  const listaDias = $('#finListaDias');
-  listaDias.innerHTML = '';
-  
-  for (let i = 1; i <= diasNoMes; i++) {
-    const diaStr = String(i).padStart(2, '0');
-    const dataStr = `${ano}-${mes}-${diaStr}`;
+  try {
+    // Busca status dos caixas (fechados)
+    const dataStatus = await api(`/api/admin/financeiro/status?ano=${ano}&mes=${mes}`);
+    diasFechados = dataStatus.status || [];
     
-    const card = document.createElement('div');
-    card.className = 'fin-dia-card';
-    card.onclick = () => abrirCaixaDia(dataStr);
-    card.innerHTML = `<h4>${diaStr}/${mes}</h4><p>Ver caixa</p>`;
-    listaDias.appendChild(card);
+    const diasNoMes = new Date(ano, parseInt(mes), 0).getDate();
+    const listaDias = $('#finListaDias');
+    listaDias.innerHTML = '';
+    
+    for (let i = 1; i <= diasNoMes; i++) {
+      const diaStr = String(i).padStart(2, '0');
+      const dataStr = `${ano}-${mes}-${diaStr}`;
+      
+      const isFechado = diasFechados.find(d => d.data === dataStr && d.fechado === 1);
+      
+      const card = document.createElement('div');
+      card.className = `fin-dia-card ${isFechado ? 'fechado' : ''}`;
+      card.onclick = () => abrirCaixaDia(dataStr);
+      card.innerHTML = `<h4>${diaStr}/${mes}</h4><p>${isFechado ? 'Fechado' : 'Ver caixa'}</p>`;
+      listaDias.appendChild(card);
+    }
+  } catch (err) {
+    toast('Erro ao carregar dias: ' + err.message, true);
   }
-
-  fecharCaixa();
 }
 
 async function abrirCaixaDia(dataStr) {
   finDataAtual = dataStr;
-  
   const partes = dataStr.split('-');
   $('#finTituloCaixa').textContent = `Caixa do Dia: ${partes[2]}/${partes[1]}/${partes[0]}`;
   
@@ -864,6 +995,18 @@ async function carregarTransacoesDia() {
     const todas = data.transacoes || [];
     
     finTransacoes = todas.filter(t => t.data === finDataAtual);
+    
+    const isFechado = diasFechados.find(d => d.data === finDataAtual && d.fechado === 1);
+    const btnFechar = $('#btnFecharCaixa');
+    const formTransacao = $('#formTransacao');
+    
+    if (isFechado) {
+      btnFechar.style.display = 'none';
+      formTransacao.style.display = 'none';
+    } else {
+      btnFechar.style.display = 'block';
+      formTransacao.style.display = 'flex';
+    }
     
     renderizarTransacoes();
   } catch (err) {
@@ -915,21 +1058,14 @@ $('#formTransacao').addEventListener('submit', async (e) => {
     const dados = {
       data: finDataAtual,
       valor: parseFloat($('#finValor').value),
-      metodo_pagamento: $('#finMetodo').value,
-      descricao: null
+      metodo_pagamento: $('#finMetodo').value
     };
-
     await api('/api/admin/financeiro', { method: 'POST', body: JSON.stringify(dados) });
-    
     $('#finValor').value = '';
     toast('Lançado com sucesso!');
-    
     await carregarTransacoesDia();
-  } catch (err) {
-    toast('Erro: ' + err.message, true);
-  } finally {
-    btn.disabled = false; btn.textContent = 'Lançar';
-  }
+  } catch (err) { toast('Erro: ' + err.message, true); }
+  finally { btn.disabled = false; btn.textContent = 'Lançar'; }
 });
 
 window.deletarTransacao = async (id) => {
@@ -938,13 +1074,152 @@ window.deletarTransacao = async (id) => {
     await api('/api/admin/financeiro?id=' + id, { method: 'DELETE' });
     toast('Apagado!');
     await carregarTransacoesDia();
+  } catch (err) { toast('Erro: ' + err.message, true); }
+};
+
+window.fecharCaixaAcao = async function() {
+  if (!confirm('Tem certeza que deseja FECHAR o caixa? O valor total será enviado para o Fluxo de Caixa e o dia não poderá mais ser editado.')) return;
+  
+  const totalStr = $('#resTotal').textContent.replace('R$ ', '').replace(',', '.');
+  const total = parseFloat(totalStr);
+
+  if (total <= 0) {
+    return alert('Não é possível fechar um caixa com valor zerado.');
+  }
+
+  try {
+    await api('/api/admin/financeiro/fechar', { method: 'POST', body: JSON.stringify({ data: finDataAtual, total }) });
+    toast('Caixa Fechado com Sucesso!');
+    await carregarCaixaDias();
+    await abrirCaixaDia(finDataAtual);
   } catch (err) {
-    toast('Erro: ' + err.message, true);
+    toast('Erro ao fechar caixa: ' + err.message, true);
   }
 };
 
-$('#finMes').addEventListener('change', carregarFinanceiro);
-$('#finAno').addEventListener('change', carregarFinanceiro);
+$('#btnFecharCaixa').addEventListener('click', fecharCaixaAcao);
+$('#finMes').addEventListener('change', carregarCaixaDias);
+$('#finAno').addEventListener('change', carregarCaixaDias);
+
+/* ============================ FLUXO DE CAIXA (ENTRADAS/SAÍDAS) ============================ */
+async function carregarFluxoDias() {
+  const mes = $('#fluxoMes').value;
+  const ano = $('#fluxoAno').value;
+  
+  const diasNoMes = new Date(ano, parseInt(mes), 0).getDate();
+  const listaDias = $('#fluxoListaDias');
+  listaDias.innerHTML = '';
+  
+  for (let i = 1; i <= diasNoMes; i++) {
+    const diaStr = String(i).padStart(2, '0');
+    const dataStr = `${ano}-${mes}-${diaStr}`;
+    
+    const card = document.createElement('div');
+    card.className = 'fin-dia-card';
+    card.onclick = () => abrirFluxoDia(dataStr);
+    card.innerHTML = `<h4>${diaStr}/${mes}</h4><p>Ver movimentações</p>`;
+    listaDias.appendChild(card);
+  }
+}
+
+async function abrirFluxoDia(dataStr) {
+  fluxoDataAtual = dataStr;
+  const partes = dataStr.split('-');
+  $('#fluxoTituloCaixa').textContent = `Fluxo do Dia: ${partes[2]}/${partes[1]}/${partes[0]}`;
+  
+  $('#fluxoListaDias').style.display = 'none';
+  $('#fluxoCaixa').classList.add('active');
+  
+  await carregarFluxoDia();
+}
+
+window.fecharFluxo = function() {
+  $('#fluxoListaDias').style.display = 'grid';
+  $('#fluxoCaixa').classList.remove('active');
+  $('#formFluxo').reset();
+  fluxoDataAtual = '';
+};
+
+async function carregarFluxoDia() {
+  try {
+    const mes = $('#fluxoMes').value;
+    const ano = $('#fluxoAno').value;
+    
+    const data = await api(`/api/admin/fluxo?ano=${ano}&mes=${mes}`);
+    const todas = data.fluxo || [];
+    fluxoTransacoes = todas.filter(t => t.data === fluxoDataAtual);
+    
+    renderizarFluxo();
+  } catch (err) {
+    toast('Erro ao carregar fluxo: ' + err.message, true);
+  }
+}
+
+function renderizarFluxo() {
+  const tbody = $('#fluxoTabelaBody');
+  tbody.innerHTML = '';
+  
+  let totEntrada = 0, totSaida = 0;
+
+  if (fluxoTransacoes.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:var(--muted);">Nenhuma movimentação neste dia.</td></tr>';
+  } else {
+    fluxoTransacoes.forEach(t => {
+      const isEntrada = t.tipo === 'entrada';
+      if (isEntrada) totEntrada += t.valor;
+      else totSaida += t.valor;
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${t.descricao}</td>
+        <td class="${isEntrada ? 'valor-entrada' : 'valor-saida'}">${isEntrada ? '+' : '-'} R$ ${t.valor.toFixed(2).replace('.', ',')}</td>
+        <td style="text-align:right;"><button class="btn-del" onclick="deletarFluxo(${t.id})">X</button></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  const format = (v) => `R$ ${v.toFixed(2).replace('.', ',')}`;
+  const saldo = totEntrada - totSaida;
+
+  $('#fluxoResEntrada').textContent = format(totEntrada);
+  $('#fluxoResSaida').textContent = format(totSaida);
+  $('#fluxoResTotal').textContent = format(saldo);
+  $('#fluxoResTotal').className = saldo >= 0 ? 'valor-entrada' : 'valor-saida';
+}
+
+$('#formFluxo').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = e.target.querySelector('button[type="submit"]');
+  btn.disabled = true; btn.textContent = '...';
+
+  try {
+    const dados = {
+      data: fluxoDataAtual,
+      tipo: $('#fluxoTipo').value,
+      valor: parseFloat($('#fluxoValor').value),
+      descricao: $('#fluxoDesc').value.trim()
+    };
+    await api('/api/admin/fluxo', { method: 'POST', body: JSON.stringify(dados) });
+    $('#fluxoValor').value = '';
+    $('#fluxoDesc').value = '';
+    toast('Lançado com sucesso!');
+    await carregarFluxoDia();
+  } catch (err) { toast('Erro: ' + err.message, true); }
+  finally { btn.disabled = false; btn.textContent = 'Lançar'; }
+});
+
+window.deletarFluxo = async (id) => {
+  if (!confirm('Apagar esta movimentação?')) return;
+  try {
+    await api('/api/admin/fluxo?id=' + id, { method: 'DELETE' });
+    toast('Apagado!');
+    await carregarFluxoDia();
+  } catch (err) { toast('Erro: ' + err.message, true); }
+};
+
+$('#fluxoMes').addEventListener('change', carregarFluxoDias);
+$('#fluxoAno').addEventListener('change', carregarFluxoDias);
 
 /* ============================ CONFIGURAÇÕES ============================ */
 async function carregarStatusLoja(){
