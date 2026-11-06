@@ -337,8 +337,8 @@ footer{ padding:46px 24px 34px; }
     <div class="foot-col"><h4>Horário</h4><p>Todos os dias</p><p>11:30 às 23:00</p></div>
   </div>
   <div class="foot-bottom">
-    <strong>Venda de bebidas alcoolicas e tabacaria proibida para menores de 18 anos.</strong><br>
-    Estes produtos são destinados exclusivamente a maiores de idade.
+    <strong>Beba com moderação. Venda proibida para menores de 18 anos.</strong><br>
+    Este produto é destinado exclusivamente a maiores de idade. Se for dirigir, não beba.
   </div>
 </footer>
 
@@ -553,54 +553,58 @@ function renderizarCatalogo(produtos) {
     const rail = section.querySelector('.rail');
 
     prodsCat.forEach(p => {
-      let variacoesHTML = '';
-      let precoBaseMostrar = p.preco ? p.preco.replace('R$', '').trim() : '0,00';
-      
-      if (p.variacoes) {
-        try {
-          const vars = JSON.parse(p.variacoes);
-          if (Array.isArray(vars) && vars.length > 0) {
-            precoBaseMostrar = vars[0].preco.replace('R$', '').trim();
-            
-            variacoesHTML = `<div class="variacoes-lista" id="vars-${p.id}">`;
-            vars.forEach((v, index) => {
-              const precoLimpo = v.preco.replace('R$', '').trim();
-              variacoesHTML += `
-                <div class="var-opt ${index === 0 ? 'active' : ''}" 
-                     data-preco="${precoLimpo}" data-nome="${v.nome}"
-                     onclick="selecionarVariacao(${p.id}, this)">
-                  <span class="var-nome">${v.nome}</span>
-                  <span class="var-preco">R$ ${precoLimpo}</span>
-                </div>
-              `;
-            });
-            variacoesHTML += `</div>`;
-          }
-        } catch(e) { console.error('Erro ao ler variações', e); }
-      }
+      try {
+        let variacoesHTML = '';
+        let precoBaseMostrar = p.preco ? p.preco.replace('R$', '').trim() : '0,00';
+        
+        if (p.variacoes) {
+          try {
+            const vars = JSON.parse(p.variacoes);
+            if (Array.isArray(vars) && vars.length > 0) {
+              precoBaseMostrar = vars[0].preco ? vars[0].preco.replace('R$', '').trim() : '0,00';
+              
+              variacoesHTML = `<div class="variacoes-lista" id="vars-${p.id}">`;
+              vars.forEach((v, index) => {
+                const precoLimpo = v.preco ? v.preco.replace('R$', '').trim() : '0,00';
+                variacoesHTML += `
+                  <div class="var-opt ${index === 0 ? 'active' : ''}" 
+                       data-preco="${precoLimpo}" data-nome="${v.nome || ''}"
+                       onclick="selecionarVariacao(${p.id}, this)">
+                    <span class="var-nome">${v.nome || 'Padrão'}</span>
+                    <span class="var-preco">R$ ${precoLimpo}</span>
+                  </div>
+                `;
+              });
+              variacoesHTML += `</div>`;
+            }
+          } catch(e) { console.error('Erro ao ler variações', e); }
+        }
 
-      const card = document.createElement('article');
-      card.className = 'card';
-      card.innerHTML = `
-        <div class="thumb">
-          ${p.imagem_url ? `<img src="${p.imagem_url}" alt="${p.nome}" onerror="this.style.display='none'">` : `<div class="thumb-ph">Sem imagem</div>`}
-          ${p.tag ? `<span class="tag">${p.tag}</span>` : ''}
-        </div>
-        <div class="card-body">
-          <span class="cat">${p.subcategoria || p.categoria}</span>
-          <h3>${p.nome}</h3>
-          <p class="vol">${p.volume || ''}</p>
-          
-          ${variacoesHTML}
-
-          <div class="price-row">
-            <div class="price" id="preco-display-${p.id}"><small>R$</small>${precoBaseMostrar}</div>
-            <button class="btn-add" onclick="addCarrinho(${p.id}, '${p.nome.replace(/'/g, "\\'")}', '${p.preco}', '${p.imagem_url}')" aria-label="Adicionar">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-            </button>
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="thumb">
+            ${p.imagem_url ? `<img src="${p.imagem_url}" alt="${p.nome}" onerror="this.style.display='none'">` : `<div class="thumb-ph">Sem imagem</div>`}
+            ${p.tag ? `<span class="tag">${p.tag}</span>` : ''}
           </div>
-        </div>`;
-      rail.appendChild(card);
+          <div class="card-body">
+            <span class="cat">${p.subcategoria || p.categoria}</span>
+            <h3>${p.nome}</h3>
+            <p class="vol">${p.volume || ''}</p>
+            
+            ${variacoesHTML}
+
+            <div class="price-row">
+              <div class="price" id="preco-display-${p.id}"><small>R$</small>${precoBaseMostrar}</div>
+              <button class="btn-add" onclick="addCarrinho(${p.id}, '${p.nome.replace(/'/g, "\\'")}', '${p.preco || '0'}', '${p.imagem_url || ''}')" aria-label="Adicionar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+              </button>
+            </div>
+          </div>`;
+        rail.appendChild(card);
+      } catch (err) {
+        console.error('Erro ao renderizar produto:', p.nome, err);
+      }
     });
     container.appendChild(section);
   });
@@ -809,7 +813,6 @@ $('#perfilBtn').addEventListener('click', () => {
     $('#authUserName').textContent = clienteLogado.nome; $('#authUserEmail').textContent = clienteLogado.email; 
     mostrarTelaAuth('logged');
   } else {
-    // Abre direto na tela de formulário de email
     mostrarTelaAuth('form');
   }
   $('#authModal').classList.add('show');
