@@ -137,21 +137,35 @@ header{ position:sticky; top:0; z-index:60; background:rgba(5,5,5,.82); backdrop
 .card-body h3{ font-size:14px; font-weight:700; margin-top:3px; line-height:1.3; }
 .card-body .vol{ font-size:11.5px; color:var(--muted); margin-top:2px; }
 
+/* ESTILO DO DROPDOWN (SELECT) NO CARD */
+.variacoes-wrap { margin-top: 10px; width: 100%; }
+.select-var { 
+  width: 100%; 
+  padding: 8px 10px; 
+  background: var(--surface-2); 
+  border: 1px solid var(--line); 
+  border-radius: 8px; 
+  color: var(--txt); 
+  font-size: 12px; 
+  font-weight: 600;
+  outline: none; 
+  cursor: pointer; 
+  appearance: none; 
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2300B140%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px top 50%;
+  background-size: 10px auto;
+}
+.select-var:focus { border-color: var(--green); }
+.select-var option { background: #000; color: #fff; }
+
 .price-row{ margin-top:auto; padding-top:14px; display:flex; align-items:center; justify-content:space-between; gap:8px; }
 .price{ font-size:20px; font-weight:900; color:var(--green); }
 .price small{ font-size:12px; margin-right:1px; }
 .btn-add{ width:32px; height:32px; border-radius:8px; background:var(--green-soft); color:var(--green); display:grid; place-items:center; transition:all .2s; flex-shrink:0; }
 .btn-add:hover{ background:var(--green); color:#001a09; transform:scale(1.05); }
 .btn-add svg{ width:18px; height:18px; }
-
-.variacoes-lista { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; margin-bottom: 4px; }
-.var-opt { display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; font-size: 11.5px; cursor: pointer; transition: all .2s; }
-.var-opt:hover { border-color: var(--line-green); }
-.var-opt.active { background: var(--green-soft); border-color: var(--green); color: var(--txt); }
-.var-opt .var-nome { font-weight: 600; color: var(--muted); }
-.var-opt.active .var-nome { color: var(--green); font-weight: 800; }
-.var-opt .var-preco { font-weight: 800; color: var(--txt); }
-.var-opt.active .var-preco { color: var(--green); }
 
 .no-results{ display:none; max-width:1300px; margin:0 auto; padding:60px 24px; text-align:center; color:var(--muted); }
 .no-results svg{ width:56px; height:56px; margin:0 auto 18px; color:rgba(0,177,64,.4); }
@@ -477,7 +491,6 @@ async function apiCli(path, opts = {}){
     video.load(); video.muted = false;
     video.play().catch(() => { video.muted = true; video.play().catch(() => enterSite()); });
 
-    // Timeout para não travar no mobile
     setTimeout(() => {
       if (estado === 'video' && video.currentTime < 0.1) enterSite();
     }, 5000);
@@ -563,19 +576,14 @@ function renderizarCatalogo(produtos) {
             if (Array.isArray(vars) && vars.length > 0) {
               precoBaseMostrar = vars[0].preco ? vars[0].preco.replace('R$', '').trim() : '0,00';
               
-              variacoesHTML = `<div class="variacoes-lista" id="vars-${p.id}">`;
-              vars.forEach((v, index) => {
+              variacoesHTML = `<div class="variacoes-wrap">
+                <select class="select-var" id="var-${p.id}" onchange="mudarPrecoDropdown(${p.id})">
+              `;
+              vars.forEach((v) => {
                 const precoLimpo = v.preco ? v.preco.replace('R$', '').trim() : '0,00';
-                variacoesHTML += `
-                  <div class="var-opt ${index === 0 ? 'active' : ''}" 
-                       data-preco="${precoLimpo}" data-nome="${v.nome || ''}"
-                       onclick="selecionarVariacao(${p.id}, this)">
-                    <span class="var-nome">${v.nome || 'Padrão'}</span>
-                    <span class="var-preco">R$ ${precoLimpo}</span>
-                  </div>
-                `;
+                variacoesHTML += `<option value="${precoLimpo}">${v.nome || 'Padrão'} - R$ ${precoLimpo}</option>`;
               });
-              variacoesHTML += `</div>`;
+              variacoesHTML += `</select></div>`;
             }
           } catch(e) { console.error('Erro ao ler variações', e); }
         }
@@ -602,21 +610,19 @@ function renderizarCatalogo(produtos) {
             </div>
           </div>`;
         rail.appendChild(card);
-      } catch (err) {
-        console.error('Erro ao renderizar produto:', p.nome, err);
-      }
+      } catch (err) { console.error('Erro ao renderizar produto:', p.nome, err); }
     });
     container.appendChild(section);
   });
   configurarSetas();
 }
 
-window.selecionarVariacao = function(id, element) {
-  const container = document.getElementById(`vars-${id}`);
-  container.querySelectorAll('.var-opt').forEach(el => el.classList.remove('active'));
-  element.classList.add('active');
-  const preco = element.dataset.preco;
-  document.getElementById(`preco-display-${id}`).innerHTML = `<small>R$</small>${preco}`;
+window.mudarPrecoDropdown = function(id) {
+  const select = document.getElementById(`var-${id}`);
+  const precoDisplay = document.getElementById(`preco-display-${id}`);
+  if (select && precoDisplay) {
+    precoDisplay.innerHTML = `<small>R$</small>${select.value}`;
+  }
 };
 
 $('#search').addEventListener('input', (e) => {
@@ -676,14 +682,12 @@ window.addCarrinho = function(id, nome, precoBase, img) {
   let precoFinal = precoBase;
   let variacaoNome = '';
 
-  const containerVar = document.getElementById(`vars-${id}`);
-  if (containerVar) {
-    const ativo = containerVar.querySelector('.var-opt.active');
-    if (ativo) {
-      variacaoNome = ativo.dataset.nome;
-      precoFinal = 'R$ ' + ativo.dataset.preco;
-      nomeFinal = `${nome} (${variacaoNome})`;
-    }
+  const selectVar = document.getElementById(`var-${id}`);
+  if (selectVar) {
+    const optText = selectVar.options[selectVar.selectedIndex].text;
+    variacaoNome = optText.split(' - ')[0];
+    precoFinal = 'R$ ' + selectVar.value;
+    nomeFinal = `${nome} (${variacaoNome})`;
   }
 
   const itemKey = variacaoNome ? `${id}|${variacaoNome}` : id;
