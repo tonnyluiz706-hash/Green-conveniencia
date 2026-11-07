@@ -520,8 +520,12 @@ async function fecharCaixa({ request, env }){
   const user = await autenticar(request, env);
   if (!user) return erro('Não autenticado', 401);
 
-  const { data, total } = await request.json();
-  if (!data || total === undefined) return erro('Dados incompletos');
+  const body = await request.json();
+  console.log('Corpo recebido no fechamento:', body); // Log de debug para o desenvolvedor
+
+  const { data, total } = body;
+
+  if (!data || total === undefined) return erro('Dados incompletos', 400);
 
   // Verifica se já foi fechado
   const jaFechado = await env.DB.prepare('SELECT fechado FROM caixa_status WHERE data = ?').bind(data).first();
