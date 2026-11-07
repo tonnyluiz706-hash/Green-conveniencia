@@ -365,7 +365,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
         <div class="fin-caixa" id="finCaixa">
           <div class="fin-caixa-header">
             <h3 id="finTituloCaixa">Caixa do Dia</h3>
-            <button class="btn-fechar-caixa" onclick="fecharCaixa()" id="btnFecharCaixa">Fechar Caixa e Enviar p/ Fluxo</button>
+            <button class="btn-fechar-caixa" onclick="fecharCaixaAcao()" id="btnFecharCaixa">Fechar Caixa e Enviar p/ Fluxo</button>
           </div>
 
           <form class="fin-add-form" id="formTransacao">
@@ -959,7 +959,13 @@ async function carregarCaixaDias() {
 }
 
 async function abrirCaixaDia(dataStr) {
+  if (!dataStr) {
+    console.error('Erro: dataStr está vazia');
+    return;
+  }
+  
   finDataAtual = dataStr;
+  
   const partes = dataStr.split('-');
   $('#finTituloCaixa').textContent = `Caixa do Dia: ${partes[2]}/${partes[1]}/${partes[0]}`;
   
@@ -1068,20 +1074,37 @@ window.deletarTransacao = async (id) => {
 };
 
 window.fecharCaixaAcao = async function() {
+  if (!finDataAtual) {
+    return toast('Erro: A data do caixa não foi identificada. Volte e selecione o dia novamente.', true);
+  }
+
   if (!confirm('Tem certeza que deseja FECHAR o caixa? O valor total será enviado para o Fluxo de Caixa e o dia não poderá mais ser editado.')) return;
   
-  const totalStr = $('#resTotal').textContent.replace('R$ ', '').replace(',', '.');
+  let totalStr = $('#resTotal').textContent;
+  totalStr = totalStr.replace('R$', '').replace(/\s/g, '').replace(',', '.');
   const total = parseFloat(totalStr);
 
-  if (total <= 0) {
-    return alert('Não é possível fechar um caixa com valor zerado.');
+  if (isNaN(total) || total <= 0) {
+    return alert('Não é possível fechar um caixa com valor zerado ou inválido.');
   }
 
   try {
-    await api('/api/admin/financeiro/fechar', { method: 'POST', body: JSON.stringify({ data: finDataAtual, total }) });
+    const payload = { 
+      data: finDataAtual, 
+      total: total 
+    };
+    
+    console.log('Enviando para o backend:', payload);
+
+    await api('/api/admin/financeiro/fechar', { 
+      method: 'POST', 
+      body: JSON.stringify(payload) 
+    });
+
     toast('Caixa Fechado com Sucesso!');
     await carregarCaixaDias();
     await abrirCaixaDia(finDataAtual);
+    
   } catch (err) {
     toast('Erro ao fechar caixa: ' + err.message, true);
   }
