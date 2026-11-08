@@ -236,6 +236,39 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 #toast.show{ transform:translateY(0); opacity:1; }
 #toast.erro{ border-color:rgba(230,57,70,.5); color:#ff8895; }
 
+/* ---------- NOVOS MODAIS DE AÇÃO (CONFIRMAÇÃO E SUCESSO) ---------- */
+.modal-action-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.85); backdrop-filter: blur(6px);
+  z-index: 300; display: none; align-items: center; justify-content: center; padding: 20px;
+}
+.modal-action-overlay.show { display: flex; }
+.action-box {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+  padding: 40px 30px; max-width: 420px; width: 100%; text-align: center;
+  box-shadow: 0 30px 80px -20px rgba(0,0,0,.8); animation: modalIn .3s cubic-bezier(.2,.8,.3,1);
+}
+.action-box.success-box { border-color: var(--line-green); box-shadow: 0 30px 80px -20px rgba(0,177,64,.4); }
+
+.icon-circle { width: 80px; height: 80px; border-radius: 50%; display: grid; place-items: center; margin: 0 auto 20px; }
+.success-box .icon-circle { background: var(--green-soft); border: 2px solid var(--green); color: var(--green); }
+.confirm-box .icon-circle { background: rgba(252,163,17,.1); border: 2px solid #fca311; color: #fca311; }
+
+.icon-circle svg { width: 40px; height: 40px; }
+
+.action-box h2 { font-size: 22px; font-weight: 900; margin-bottom: 10px; }
+.success-box h2 { color: var(--green); }
+.confirm-box h2 { color: #fca311; }
+
+.action-box p { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 26px; }
+.action-box p strong { color: var(--txt); font-size: 16px; }
+.action-btn-group { display: flex; gap: 10px; }
+.action-btn-group button { flex: 1; padding: 13px; border-radius: 10px; font-weight: 800; font-size: 14.5px; transition: all .2s; }
+.btn-confirm { background: var(--green); color: #001a09; }
+.btn-confirm:hover { background: #00c94a; }
+.btn-cancel-action { background: var(--surface-2); color: var(--txt); border: 1px solid var(--line); }
+.btn-cancel-action:hover { background: var(--surface-3); }
+
+@keyframes modalIn { from{opacity:0; transform:scale(.94) translateY(10px);} to{opacity:1; transform:scale(1) translateY(0);} }
 @media (max-width:600px){
   .form-grid{ grid-template-columns:1fr; }
   header.admin{ padding:12px 16px; }
@@ -481,6 +514,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
   </div>
 </div>
 
+<!-- MODAL DE PRODUTO -->
 <div id="modal">
   <div class="modal-box">
     <div class="modal-head">
@@ -549,6 +583,33 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
         <button type="submit" class="btn-primary" id="btnSalvar">Salvar</button>
       </div>
     </form>
+  </div>
+</div>
+
+<!-- NOVO MODAL DE CONFIRMAÇÃO DE FECHAMENTO -->
+<div class="modal-action-overlay" id="modalConfirmCaixa">
+  <div class="action-box confirm-box">
+    <div class="icon-circle">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+    </div>
+    <h2>Atenção!</h2>
+    <p>Tem certeza que deseja fechar o caixa de hoje?<br>O valor total será enviado para o Fluxo de Caixa e o dia <strong>não poderá mais ser editado.</strong></p>
+    <div class="action-btn-group">
+      <button class="btn-cancel-action" onclick="fecharModalConfirm()">Cancelar</button>
+      <button class="btn-confirm" id="btnConfirmarFechamento">Sim, Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- NOVO MODAL DE SUCESSO -->
+<div class="modal-action-overlay" id="modalSucessoCaixa">
+  <div class="action-box success-box">
+    <div class="icon-circle">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+    </div>
+    <h2>Caixa Fechado!</h2>
+    <p>O caixa foi encerrado com sucesso.<br>O valor de <strong id="valorFechado">R$ 0,00</strong> já está disponível no seu Fluxo de Caixa.</p>
+    <button class="btn-primary" onclick="fecharModalSucesso()">Entendido</button>
   </div>
 </div>
 
@@ -959,11 +1020,7 @@ async function carregarCaixaDias() {
 }
 
 async function abrirCaixaDia(dataStr) {
-  if (!dataStr) {
-    console.error('Erro: dataStr está vazia');
-    return;
-  }
-  
+  if (!dataStr) return;
   finDataAtual = dataStr;
   
   const partes = dataStr.split('-');
@@ -1073,42 +1130,68 @@ window.deletarTransacao = async (id) => {
   } catch (err) { toast('Erro: ' + err.message, true); }
 };
 
-window.fecharCaixaAcao = async function() {
+/* ============================ NOVO FLUXO DE FECHAMENTO ============================ */
+window.fecharCaixaAcao = function() {
   if (!finDataAtual) {
     return toast('Erro: A data do caixa não foi identificada. Volte e selecione o dia novamente.', true);
   }
 
-  if (!confirm('Tem certeza que deseja FECHAR o caixa? O valor total será enviado para o Fluxo de Caixa e o dia não poderá mais ser editado.')) return;
-  
   let totalStr = $('#resTotal').textContent;
   totalStr = totalStr.replace('R$', '').replace(/\s/g, '').replace(',', '.');
   const total = parseFloat(totalStr);
 
   if (isNaN(total) || total <= 0) {
-    return alert('Não é possível fechar um caixa com valor zerado ou inválido.');
+    return toast('Não é possível fechar um caixa com valor zerado ou inválido.', true);
   }
+
+  // Abre o modal de confirmação
+  $('#modalConfirmCaixa').classList.add('show');
+};
+
+window.fecharModalConfirm = function() {
+  $('#modalConfirmCaixa').classList.remove('show');
+};
+
+window.fecharModalSucesso = function() {
+  $('#modalSucessoCaixa').classList.remove('show');
+  // Atualiza os dados da tela após o usuário fechar o modal
+  carregarCaixaDias();
+  abrirCaixaDia(finDataAtual);
+};
+
+// O botão de "Sim, fechar" dentro do modal de confirmação chama esta função
+$('#btnConfirmarFechamento').addEventListener('click', async () => {
+  const btn = $('#btnConfirmarFechamento');
+  const textoOriginal = btn.textContent;
+  btn.disabled = true; 
+  btn.textContent = 'Fechando...';
 
   try {
-    const payload = { 
-      data: finDataAtual, 
-      total: total 
-    };
-    
-    console.log('Enviando para o backend:', payload);
+    let totalStr = $('#resTotal').textContent;
+    totalStr = totalStr.replace('R$', '').replace(/\s/g, '').replace(',', '.');
+    const total = parseFloat(totalStr);
 
-    await api('/api/admin/financeiro/fechar', { 
-      method: 'POST', 
-      body: JSON.stringify(payload) 
-    });
+    const payload = { data: finDataAtual, total: total };
+    await api('/api/admin/financeiro/fechar', { method: 'POST', body: JSON.stringify(payload) });
 
-    toast('Caixa Fechado com Sucesso!');
-    await carregarCaixaDias();
-    await abrirCaixaDia(finDataAtual);
+    // Sucesso! Esconde a confirmação e mostra o novo modal de sucesso
+    fecharModalConfirm();
     
+    // Formata o valor para mostrar no modal de sucesso
+    const valorFormatado = `R$ ${total.toFixed(2).replace('.', ',')}`;
+    $('#valorFechado').textContent = valorFormatado;
+    
+    // Mostra o modal de sucesso
+    $('#modalSucessoCaixa').classList.add('show');
+
   } catch (err) {
     toast('Erro ao fechar caixa: ' + err.message, true);
+    fecharModalConfirm();
+  } finally {
+    btn.disabled = false;
+    btn.textContent = textoOriginal;
   }
-};
+});
 
 $('#btnFecharCaixa').addEventListener('click', fecharCaixaAcao);
 $('#finMes').addEventListener('change', carregarCaixaDias);
