@@ -421,7 +421,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
           <div class="fin-grid">
             <div>
               <table class="fin-tabela">
-                <thead><tr><th>Método</th><th>Valor</th><th></th></tr></thead>
+                <thead><tr><th>Hora</th><th>Método</th><th>Valor</th><th></th></tr></thead>
                 <tbody id="finTabelaBody"></tbody>
               </table>
             </div>
@@ -637,6 +637,22 @@ function toast(msg, erro = false){
   t.textContent = msg;
   t.className = erro ? 'erro show' : 'show';
   setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// FUNÇÃO NOVA: Formatar Hora para HH:MM
+function formatarHora(dataString) {
+  if (!dataString) return '--:--';
+  // O SQLite salva no formato "YYYY-MM-DD HH:MM:SS" (UTC ou local dependendo de como foi criado)
+  // Vamos tentar extrair a hora direto da string para evitar problemas de fuso horário
+  const partes = dataString.split(' ');
+  if (partes.length > 1) {
+    const hora = partes[1].split(':');
+    return `${hora[0]}:${hora[1]}`;
+  }
+  
+  // Fallback se vier em outro formato
+  const d = new Date(dataString);
+  return isNaN(d.getTime()) ? '--:--' : `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 }
 
 async function api(path, opts = {}){
@@ -1074,7 +1090,7 @@ function renderizarTransacoes() {
   let totDeb = 0, totDin = 0, totCred = 0, totPix = 0;
 
   if (finTransacoes.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:var(--muted);">Nenhum lançamento neste dia.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--muted);">Nenhum lançamento neste dia.</td></tr>';
   } else {
     finTransacoes.forEach(t => {
       if (t.metodo_pagamento === 'DÉB.') totDeb += t.valor;
@@ -1084,6 +1100,7 @@ function renderizarTransacoes() {
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
+        <td style="color:var(--muted); font-size:12px;">${formatarHora(t.criado_em)}</td>
         <td>${t.metodo_pagamento}</td>
         <td class="valor-col">R$ ${t.valor.toFixed(2).replace('.', ',')}</td>
         <td style="text-align:right;"><button class="btn-del" onclick="deletarTransacao(${t.id})">X</button></td>
