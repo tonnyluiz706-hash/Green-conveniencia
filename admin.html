@@ -68,8 +68,9 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 .toolbar{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-bottom:24px; }
 .toolbar h2{ font-size:22px; font-weight:800; letter-spacing:-.02em; flex:1; min-width:200px; }
 .toolbar h2 small{ display:block; font-size:12px; color:var(--muted); font-weight:500; margin-top:2px; }
-.toolbar input[type="search"], .toolbar select{ padding:10px 14px; background:var(--surface); border:1px solid var(--line); border-radius:10px; color:var(--txt); font-size:13.5px; outline:none; transition:border-color .2s; }
-.toolbar input[type="search"]{ min-width:220px; }
+.toolbar input[type="search"], .toolbar select, .toolbar input[type="text"]{ padding:10px 14px; background:var(--surface); border:1px solid var(--line); border-radius:10px; color:var(--txt); font-size:13.5px; outline:none; transition:border-color .2s; }
+.toolbar input[type="search"]{ min-width:200px; }
+.toolbar input[type="text"]{ min-width:180px; border-color:var(--line-green); }
 .toolbar input:focus, .toolbar select:focus{ border-color:var(--green); }
 .btn-new{ padding:11px 20px; background:var(--green); color:#001a09; font-weight:800; font-size:13.5px; border-radius:10px; display:inline-flex; align-items:center; gap:8px; transition:background .2s; }
 .btn-new:hover{ background:#00c94a; }
@@ -324,7 +325,11 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
     <div class="tab-content active" id="tab-produtos">
       <div class="toolbar">
         <h2>Produtos <small id="contador">—</small></h2>
-        <input type="search" id="busca" placeholder="Buscar produto...">
+        
+        <!-- CAMPO NOVO: BIPAR CÓDIGO DE BARRAS -->
+        <input type="text" id="biparCodigo" placeholder="Bipar código de barras..." autocomplete="off">
+        
+        <input type="search" id="busca" placeholder="Buscar por nome...">
         <select id="filtroCategoria">
           <option value="">Todas as categorias</option>
         </select>
@@ -537,6 +542,17 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
             <label for="pSubcategoria">Subcategoria</label>
             <input type="text" id="pSubcategoria" placeholder="Ex: Cerveja, Energético...">
           </div>
+          
+          <!-- NOVOS CAMPOS: CÓDIGO E ESTOQUE -->
+          <div class="form-group">
+            <label for="pCodigoBarras">Código de Barras</label>
+            <input type="text" id="pCodigoBarras" placeholder="Bipe aqui...">
+          </div>
+          <div class="form-group">
+            <label for="pEstoque">Estoque Atual</label>
+            <input type="number" id="pEstoque" value="0" min="0">
+          </div>
+
           <div class="form-group">
             <label for="pVolume">Volume / Tamanho</label>
             <input type="text" id="pVolume" placeholder="Ex: Lata 350 ml">
@@ -639,20 +655,30 @@ function toast(msg, erro = false){
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-// FUNÇÃO NOVA: Formatar Hora para HH:MM
+// FUNÇÃO CORRIGIDA: Converte UTC para o fuso local (Brasília)
 function formatarHora(dataString) {
   if (!dataString) return '--:--';
-  // O SQLite salva no formato "YYYY-MM-DD HH:MM:SS" (UTC ou local dependendo de como foi criado)
-  // Vamos tentar extrair a hora direto da string para evitar problemas de fuso horário
-  const partes = dataString.split(' ');
-  if (partes.length > 1) {
-    const hora = partes[1].split(':');
-    return `${hora[0]}:${hora[1]}`;
-  }
   
-  // Fallback se vier em outro formato
-  const d = new Date(dataString);
-  return isNaN(d.getTime()) ? '--:--' : `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+  try {
+    // O banco salva em UTC, ex: "2026-11-09 21:51:22"
+    // Adicionamos o 'T' e o 'Z' para forçar o JavaScript a ler como UTC
+    const dataUtc = new Date(dataString.replace(' ', 'T') + 'Z');
+    
+    if (isNaN(dataUtc.getTime())) throw new Error('Data inválida');
+    
+    // toLocaleTimeString converte automaticamente para o fuso do navegador (Brasília)
+    return dataUtc.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  } catch (e) {
+    // Fallback manual: se der erro, subtrai 3 horas (UTC-3)
+    const partes = dataString.split(' ');
+    if (partes.length > 1) {
+      let [h, m] = partes[1].split(':');
+      let hora = parseInt(h) - 3;
+      if (hora < 0) hora += 24;
+      return `${String(hora).padStart(2, '0')}:${m}`;
+    }
+    return '--:--';
+  }
 }
 
 async function api(path, opts = {}){
@@ -793,7 +819,7 @@ function renderizarProdutos(){
   const filtrados = produtos.filter(p => {
     if (cat && p.categoria !== cat) return false;
     if (busca){
-      const txt = (p.nome + ' ' + (p.volume || '') + ' ' + (p.categoria || '')).toLowerCase();
+      const txt = (p.nome + ' ' + (p.volume || '') + ' ' + (p.categoria || '') + ' ' + (p.codigo_barras || '')).toLowerCase();
       if (!txt.includes(busca)) return false;
     }
     return true;
@@ -816,7 +842,7 @@ function renderizarProdutos(){
       <div class="info">
         <div class="cat">${p.categoria}</div>
         <h3>${p.nome}</h3>
-        <div class="meta">${p.volume || '—'}</div>
+        <div class="meta">${p.volume || '—'} | Estoque: <b>${p.estoque || 0}</b></div>
         <div class="preco">${p.preco || '—'}</div>
       </div>
       <div class="acoes">
@@ -830,6 +856,34 @@ function renderizarProdutos(){
 $('#busca').addEventListener('input', renderizarProdutos);
 $('#filtroCategoria').addEventListener('change', renderizarProdutos);
 
+// NOVO EVENTO: Bipar Código de Barras
+$('#biparCodigo').addEventListener('keypress', async (e) => {
+  if (e.key === 'Enter') {
+    const codigo = e.target.value.trim();
+    if (!codigo) return;
+    
+    e.target.disabled = true;
+    try {
+      const data = await api('/api/produto/barras?codigo=' + encodeURIComponent(codigo));
+      // Se achou, abre o produto para edição
+      abrirModal(data.produto);
+      toast('Produto encontrado!');
+    } catch (err) {
+      if (err.message.includes('não encontrado')) {
+        // Se não achou, abre tela de criar já com o código preenchido
+        abrirModal(null, codigo);
+        toast('Produto novo! Preencha os dados.', true);
+      } else {
+        toast(err.message, true);
+      }
+    } finally {
+      e.target.value = ''; // Limpa o campo
+      e.target.disabled = false;
+      e.target.focus(); // Volta o foco pro campo pra bipar o próximo
+    }
+  }
+});
+
 function adicionarLinhaVariacao(nome = '', preco = '') {
   const container = $('#containerVariacoes');
   const row = document.createElement('div');
@@ -842,7 +896,7 @@ function adicionarLinhaVariacao(nome = '', preco = '') {
   container.appendChild(row);
 }
 
-function abrirModal(produto = null){
+function abrirModal(produto = null, codigoBarrasPre = ''){
   editandoId = produto ? produto.id : null;
   $('#modalTitulo').textContent = produto ? 'Editar produto' : 'Novo produto';
   $('#msgForm').classList.remove('show');
@@ -858,6 +912,8 @@ function abrirModal(produto = null){
     $('#pOrdem').value = produto.ordem || 0;
     $('#pImagemUrl').value = produto.imagem_url || '';
     $('#pAtivo').checked = produto.ativo == 1;
+    $('#pCodigoBarras').value = produto.codigo_barras || '';
+    $('#pEstoque').value = produto.estoque || 0;
     
     if (produto.variacoes) {
       try {
@@ -872,6 +928,8 @@ function abrirModal(produto = null){
   } else {
     $('#formProduto').reset(); $('#pOrdem').value = 0; $('#pAtivo').checked = true;
     $('#pImagemUrl').value = ''; $('#previewImg').style.display = 'none';
+    $('#pCodigoBarras').value = codigoBarrasPre; // PREENCHE O CÓDIGO QUE FOI BIPADO
+    $('#pEstoque').value = 0;
   }
   $('#modal').classList.add('show'); document.body.style.overflow = 'hidden';
 }
@@ -921,7 +979,9 @@ $('#formProduto').addEventListener('submit', async (e) => {
     preco: $('#pPreco').value.trim() || null, tag: $('#pTag').value.trim() || null,
     imagem_url: $('#pImagemUrl').value || null, ordem: parseInt($('#pOrdem').value) || 0,
     ativo: $('#pAtivo').checked ? 1 : 0,
-    variacoes: variacoesArray.length > 0 ? JSON.stringify(variacoesArray) : null
+    variacoes: variacoesArray.length > 0 ? JSON.stringify(variacoesArray) : null,
+    codigo_barras: $('#pCodigoBarras').value.trim() || null,
+    estoque: parseInt($('#pEstoque').value) || 0
   };
 
   try {
