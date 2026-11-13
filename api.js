@@ -37,6 +37,9 @@ async function autenticarCliente(request, env){
   return await env.DB.prepare(`SELECT c.id, c.nome, c.email, c.foto_url, c.endereco, c.numero FROM sessoes_cliente s JOIN clientes c ON c.id = s.cliente_id WHERE s.token = ? AND s.expira_em > datetime('now')`).bind(token).first();
 }
 
+/* ============================================================
+ * ROTEADOR
+ * ============================================================ */
 export async function onRequest(context){
   const { request, env } = context;
   const url = new URL(request.url);
@@ -87,11 +90,12 @@ export async function onRequest(context){
     if (rota === 'admin/pedidos' && metodo === 'GET') return listarPedidos(context);
     if (rota === 'admin/pedido/status' && metodo === 'PUT') return atualizarStatusPedido(context);
 
-    // Financeiro
+    // Financeiro (Caixa Diário)
     if (rota === 'admin/financeiro' && metodo === 'GET') return listarFinanceiro(context);
     if (rota === 'admin/financeiro' && metodo === 'POST') return criarTransacao(context);
     if (rota === 'admin/financeiro' && metodo === 'DELETE') return deletarTransacao(context);
     
+    // Financeiro (Fluxo e Fechamento)
     if (rota === 'admin/fluxo' && metodo === 'GET') return listarFluxo(context);
     if (rota === 'admin/fluxo' && metodo === 'POST') return criarFluxo(context);
     if (rota === 'admin/fluxo' && metodo === 'DELETE') return deletarFluxo(context);
@@ -105,6 +109,9 @@ export async function onRequest(context){
   }
 }
 
+/* ============================================================
+ * ADMIN — SETUP / LOGIN / LOGOUT / ME
+ * ============================================================ */
 async function setup({ request, env }){
   const total = await env.DB.prepare('SELECT COUNT(*) AS n FROM usuarios').first();
   if (total.n > 0) return erro('Setup já foi feito. Faça login normalmente.', 403);
@@ -142,6 +149,9 @@ async function me({ request, env }){
   return json({ ok: true, email: user.email });
 }
 
+/* ============================================================
+ * CATEGORIAS
+ * ============================================================ */
 async function listarCategorias({ env }){
   const { results } = await env.DB.prepare('SELECT * FROM categorias ORDER BY ordem ASC, nome ASC').all();
   return json({ ok: true, categorias: results });
@@ -159,13 +169,17 @@ async function criarCategoria({ request, env }){
   const jaExiste = await env.DB.prepare('SELECT id FROM categorias WHERE slug = ? OR nome = ?').bind(slug, p.nome).first();
   if (jaExiste) return erro('Já existe uma categoria com esse nome.', 409);
 
-  await env.DB.prepare('INSERT INTO categorias (nome, slug, ordem) VALUES (?, ?, ?)').bind(p.nome, slug, p.ordem || 0).run();
+  await env.DB.prepare(
+    'INSERT INTO categorias (nome, slug, ordem) VALUES (?, ?, ?)'
+  ).bind(p.nome, slug, p.ordem || 0).run();
+
   return json({ ok: true });
 }
 
 async function deletarCategoria({ request, env }){
   const user = await autenticar(request, env);
   if (!user) return erro('Não autenticado', 401);
+  
   const id = new URL(request.url).searchParams.get('id');
   if (!id) return erro('ID obrigatório');
 
@@ -173,12 +187,17 @@ async function deletarCategoria({ request, env }){
   if (!cat) return erro('Categoria não encontrada', 404);
 
   const temProdutos = await env.DB.prepare('SELECT COUNT(*) AS n FROM produtos WHERE categoria = ?').bind(cat.slug).first();
-  if (temProdutos.n > 0) return erro('Não é possível excluir: existem produtos cadastrados nessa categoria.', 400);
+  if (temProdutos.n > 0) {
+    return erro('Não é possível excluir: existem produtos cadastrados nessa categoria.', 400);
+  }
 
   await env.DB.prepare('DELETE FROM categorias WHERE id = ?').bind(id).run();
   return json({ ok: true });
 }
 
+/* ============================================================
+ * PRODUTOS
+ * ============================================================ */
 async function listarProdutos({ env }){
   const { results } = await env.DB.prepare('SELECT * FROM produtos WHERE ativo = 1 ORDER BY ordem, nome').all();
   return json({ ok: true, produtos: results });
@@ -192,7 +211,7 @@ async function listarTodosProdutos({ request, env }){
 }
 
 // ==========================================
-// A LÓGICA INTELIGENTE DO CÓDIGO DE BARRAS
+// A LÓGICA INTELIGENTE DO CÓDIGO DE BARRAS (SI5 Global)
 // ==========================================
 async function buscarPorCodigoBarras({ request, env }){
   const user = await autenticar(request, env);
@@ -201,52 +220,65 @@ async function buscarPorCodigoBarras({ request, env }){
   const codigo = new URL(request.url).searchParams.get('codigo');
   if (!codigo) return erro('Código de barras não informado');
 
-  // 1. TENTA BUSCAR NO BANCO DE DADOS LOCAL PRIMEIRO
+  // 1. TENTA BUSCAR NO BANCO DE DADOS LOCAL PRIMEIRO (CUSTO ZERO)
   const produtoLocal = await env.DB.prepare('SELECT * FROM produtos WHERE codigo_barras = ?').bind(codigo).first();
   
   if (produtoLocal) {
-    // Se achou no banco, retorna e nem chama a API
+    // Se achou no banco, retorna e nem gasta o limite da API
     return json({ ok: true, produto: produtoLocal, origem: 'local' });
   }
 
-  // 2. SE NÃO ACHOU, TENTA NA API EXTERNA (UPCitemdb - Grátis)
+  // 2. SE NÃO ACHOU, TENTA NA API DO SI5 GLOBAL
   try {
-    // Faz a requisição para a API externa
-    const res = await fetch(`https://api.upcitemdb.com/prod/trial/lookup?upc=${codigo}`);
+    // Puxa o token das variáveis de ambiente da Cloudflare
+    const SEU_TOKEN_SI5 = env.SI5_TOKEN; 
+    
+    if (!SEU_TOKEN_SI5) {
+      console.warn('Token do SI5 não configurado nas variáveis de ambiente.');
+      return erro('Produto não encontrado.', 404);
+    }
+
+    const res = await fetch(`https://global.si5.com.br/api/produtos/${codigo}`, {
+      headers: {
+        'Authorization': `Bearer ${SEU_TOKEN_SI5}`,
+        'Accept': 'application/json'
+      }
+    });
     
     if (!res.ok) throw new Error('API não encontrou o produto');
     
-    const apiData = await res.json();
+    const item = await res.json();
     
     // Se a API retornar dados válidos, a gente formata pro nosso padrão
-    if (apiData.items && apiData.items.length > 0) {
-      const item = apiData.items[0];
-      
-      // Dicionário para tentar adivinhar a categoria baseada nas keywords do título
+    if (item) {
       let categoriaAdivinhada = 'outros';
-      const tituloLower = (item.title || '').toLowerCase();
+      const tituloLower = (item.produto || '').toLowerCase();
+      
+      // Tenta adivinhar a categoria pelo nome
       if (tituloLower.includes('cerveja') || tituloLower.includes('beer')) categoriaAdivinhada = 'cervejas';
       if (tituloLower.includes('refrigerante') || tituloLower.includes('soda')) categoriaAdivinhada = 'refrigerantes';
       if (tituloLower.includes('energetico') || tituloLower.includes('energy')) categoriaAdivinhada = 'energeticos';
       
       const produtoApi = {
-        nome: item.title || 'Produto sem nome',
-        categoria: categoriaAdivinhada, // Sugere uma categoria
-        subcategoria: item.brand || null, // Usa a marca como subcategoria
-        volume: item.weight || null,
+        nome: item.produto || 'Produto sem nome',
+        categoria: categoriaAdivinhada,
+        subcategoria: item.marca || null,
+        volume: item.volume || null,
         codigo_barras: codigo,
-        imagem_url: item.images && item.images.length > 0 ? item.images[0] : null,
+        imagem_url: item.imagem || null,
         preco: null,
         estoque: 0,
         origem: 'api'
       };
 
       // Retorna os dados da API SEM SALVAR no banco ainda
+      // O frontend vai abrir a tela pro usuário confirmar e salvar
       return json({ ok: true, produto: produtoApi, origem: 'api' });
     }
     
     throw new Error('Produto não encontrado na API');
   } catch (e) {
+    console.error('Erro na API SI5:', e);
     // Se chegar aqui, não achou nem no banco e nem na API
     return erro('Produto não encontrado.', 404);
   }
@@ -315,6 +347,9 @@ async function uploadImagem({ request, env }){
   return json({ ok: true, url });
 }
 
+/* ============================================================
+ * CONFIGURAÇÕES DA LOJA
+ * ============================================================ */
 async function getStatusLoja({ env }){
   try {
     const row = await env.DB.prepare("SELECT valor FROM configuracoes WHERE chave = 'status_loja'").first();
@@ -337,6 +372,9 @@ async function setStatusLoja({ request, env }){
   }
 }
 
+/* ============================================================
+ * CLIENTE — CADASTRO / LOGIN / LOGOUT / ME
+ * ============================================================ */
 async function cadastrarCliente({ request, env }){
   const { nome, email, senha } = await request.json();
   if (!nome || !email || !senha) return erro('Nome, email e senha obrigatórios');
@@ -400,6 +438,9 @@ async function atualizarEnderecoCliente({ request, env }){
   return json({ ok: true, cliente: { ...cli, endereco, numero } });
 }
 
+/* ============================================================
+ * CLIENTE — PEDIDOS
+ * ============================================================ */
 async function criarPedido({ request, env }){
   try {
     const cli = await autenticarCliente(request, env);
@@ -455,6 +496,9 @@ async function atualizarStatusPedido({ request, env }){
   return json({ ok: true });
 }
 
+/* ============================================================
+ * FINANCEIRO — CONTROLE DE CAIXA (Diário)
+ * ============================================================ */
 async function listarFinanceiro({ request, env }){
   const user = await autenticar(request, env);
   if (!user) return erro('Não autenticado', 401);
@@ -492,6 +536,9 @@ async function deletarTransacao({ request, env }){
   return json({ ok: true });
 }
 
+/* ============================================================
+ * FINANCEIRO — FLUXO DE CAIXA E FECHAMENTO
+ * ============================================================ */
 async function listarFluxo({ request, env }){
   const user = await autenticar(request, env);
   if (!user) return erro('Não autenticado', 401);
@@ -570,6 +617,9 @@ async function fecharCaixa({ request, env }){
   return json({ ok: true });
 }
 
+/* ============================================================
+ * CLIENTE — GOOGLE OAUTH
+ * ============================================================ */
 async function iniciarGoogle({ env }){
   const params = new URLSearchParams({ client_id: env.GOOGLE_CLIENT_ID, redirect_uri: env.GOOGLE_REDIRECT_URI, response_type: 'code', scope: 'openid email profile', access_type: 'online', prompt: 'select_account' });
   return Response.redirect('https://accounts.google.com/o/oauth2/v2/auth?' + params.toString(), 302);
