@@ -67,6 +67,8 @@ export async function onRequest(context){
     if (rota === 'produtos' && metodo === 'POST') return criarProduto(context);
     if (rota === 'produto' && metodo === 'PUT') return editarProduto(context);
     if (rota === 'produto' && metodo === 'DELETE') return deletarProduto(context);
+    // ROTA DO CÓDIGO DE BARRAS AQUI:
+    if (rota === 'produto/barras' && metodo === 'GET') return buscarPorCodigoBarras(context);
     if (rota === 'upload' && metodo === 'POST') return uploadImagem(context);
     
     // Configurações
@@ -80,7 +82,7 @@ export async function onRequest(context){
     if (rota === 'cliente/me' && metodo === 'GET') return meCliente(context);
     if (rota === 'cliente/endereco' && metodo === 'PUT') return atualizarEnderecoCliente(context);
     
-    // Google OAuth (mantido no backend, mas escondido no front)
+    // Google OAuth
     if (rota === 'cliente/auth-google' && metodo === 'GET') return iniciarGoogle(context);
     if (rota === 'cliente/auth-google/callback' && metodo === 'GET') return callbackGoogle(context);
 
@@ -209,6 +211,80 @@ async function listarTodosProdutos({ request, env }){
   return json({ ok: true, produtos: results });
 }
 
+// ==========================================
+// A LÓGICA INTELIGENTE DO CÓDIGO DE BARRAS (SI5 Global)
+// ==========================================
+async function buscarPorCodigoBarras({ request, env }){
+  const user = await autenticar(request, env);
+  if (!user) return erro('Não autenticado', 401);
+  
+  const codigo = new URL(request.url).searchParams.get('codigo');
+  if (!codigo) return erro('Código de barras não informado');
+
+  // 1. TENTA BUSCAR NO BANCO DE DADOS LOCAL PRIMEIRO (CUSTO ZERO)
+  const produtoLocal = await env.DB.prepare('SELECT * FROM produtos WHERE codigo_barras = ?').bind(codigo).first();
+  
+  if (produtoLocal) {
+    // Se achou no banco, retorna e nem gasta o limite da API
+    return json({ ok: true, produto: produtoLocal, origem: 'local' });
+  }
+
+  // 2. SE NÃO ACHOU, TENTA NA API DO SI5 GLOBAL
+  try {
+    // Puxa o token das variáveis de ambiente da Cloudflare
+    const SEU_TOKEN_SI5 = env.SI5_TOKEN; 
+    
+    if (!SEU_TOKEN_SI5) {
+      console.warn('Token do SI5 não configurado nas variáveis de ambiente.');
+      return erro('Produto não encontrado.', 404);
+    }
+
+    const res = await fetch(`https://global.si5.com.br/api/produtos/${codigo}`, {
+      headers: {
+        'Authorization': `Bearer ${SEU_TOKEN_SI5}`,
+        'Accept': 'application/json'
+      }
+    });
+    
+    if (!res.ok) throw new Error('API não encontrou o produto');
+    
+    const item = await res.json();
+    
+    // Se a API retornar dados válidos, a gente formata pro nosso padrão
+    if (item) {
+      let categoriaAdivinhada = 'outros';
+      const tituloLower = (item.produto || '').toLowerCase();
+      
+      // Tenta adivinhar a categoria pelo nome
+      if (tituloLower.includes('cerveja') || tituloLower.includes('beer')) categoriaAdivinhada = 'cervejas';
+      if (tituloLower.includes('refrigerante') || tituloLower.includes('soda')) categoriaAdivinhada = 'refrigerantes';
+      if (tituloLower.includes('energetico') || tituloLower.includes('energy')) categoriaAdivinhada = 'energeticos';
+      
+      const produtoApi = {
+        nome: item.produto || 'Produto sem nome',
+        categoria: categoriaAdivinhada,
+        subcategoria: item.marca || null,
+        volume: item.volume || null,
+        codigo_barras: codigo,
+        imagem_url: item.imagem || null,
+        preco: null,
+        estoque: 0,
+        origem: 'api'
+      };
+
+      // Retorna os dados da API SEM SALVAR no banco ainda
+      // O frontend vai abrir a tela pro usuário confirmar e salvar
+      return json({ ok: true, produto: produtoApi, origem: 'api' });
+    }
+    
+    throw new Error('Produto não encontrado na API');
+  } catch (e) {
+    console.error('Erro na API SI5:', e);
+    // Se chegar aqui, não achou nem no banco e nem na API
+    return erro('Produto não encontrado.', 404);
+  }
+}
+
 async function criarProduto({ request, env }){
   const user = await autenticar(request, env);
   if (!user) return erro('Não autenticado', 401);
@@ -216,12 +292,13 @@ async function criarProduto({ request, env }){
   if (!p.nome || !p.categoria) return erro('Nome e categoria obrigatórios');
   
   const result = await env.DB.prepare(
-    `INSERT INTO produtos (nome, categoria, subcategoria, volume, preco, tag, imagem_url, ativo, ordem, variacoes) 
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    `INSERT INTO produtos (nome, categoria, subcategoria, volume, preco, tag, imagem_url, ativo, ordem, variacoes, codigo_barras, estoque) 
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).bind(
     p.nome, p.categoria, p.subcategoria || null, p.volume || null, 
     p.preco || null, p.tag || null, p.imagem_url || null, 
-    p.ativo !== undefined ? p.ativo : 1, p.ordem || 0, p.variacoes || null
+    p.ativo !== undefined ? p.ativo : 1, p.ordem || 0, p.variacoes || null,
+    p.codigo_barras || null, p.estoque || 0
   ).run();
   
   return json({ ok: true, id: result.meta.last_row_id });
@@ -235,12 +312,13 @@ async function editarProduto({ request, env }){
   
   await env.DB.prepare(
     `UPDATE produtos 
-     SET nome=?, categoria=?, subcategoria=?, volume=?, preco=?, tag=?, imagem_url=?, ativo=?, ordem=?, variacoes=? 
+     SET nome=?, categoria=?, subcategoria=?, volume=?, preco=?, tag=?, imagem_url=?, ativo=?, ordem=?, variacoes=?, codigo_barras=?, estoque=? 
      WHERE id=?`
   ).bind(
     p.nome, p.categoria, p.subcategoria || null, p.volume || null, 
     p.preco || null, p.tag || null, p.imagem_url || null, 
-    p.ativo !== undefined ? p.ativo : 1, p.ordem || 0, p.variacoes || null, p.id
+    p.ativo !== undefined ? p.ativo : 1, p.ordem || 0, p.variacoes || null,
+    p.codigo_barras || null, p.estoque || 0, p.id
   ).run();
   
   return json({ ok: true });
@@ -521,22 +599,17 @@ async function fecharCaixa({ request, env }){
   if (!user) return erro('Não autenticado', 401);
 
   const body = await request.json();
-  console.log('Corpo recebido no fechamento:', body); // Log de debug para o desenvolvedor
-
   const { data, total } = body;
 
   if (!data || total === undefined) return erro('Dados incompletos', 400);
 
-  // Verifica se já foi fechado
   const jaFechado = await env.DB.prepare('SELECT fechado FROM caixa_status WHERE data = ?').bind(data).first();
   if (jaFechado && jaFechado.fechado === 1) return erro('Este caixa já está fechado!', 400);
 
-  // 1. Marca o status como fechado
   await env.DB.prepare(
     'INSERT OR REPLACE INTO caixa_status (data, fechado, total) VALUES (?, 1, ?)'
   ).bind(data, total).run();
 
-  // 2. Insere a entrada no fluxo de caixa
   const dataFormatada = data.split('-').reverse().join('/');
   await env.DB.prepare(
     'INSERT INTO fluxo_caixa (data, tipo, valor, descricao) VALUES (?, "entrada", ?, ?)'
@@ -546,7 +619,7 @@ async function fecharCaixa({ request, env }){
 }
 
 /* ============================================================
- * CLIENTE — GOOGLE OAUTH (Mantido por compatibilidade)
+ * CLIENTE — GOOGLE OAUTH
  * ============================================================ */
 async function iniciarGoogle({ env }){
   const params = new URLSearchParams({ client_id: env.GOOGLE_CLIENT_ID, redirect_uri: env.GOOGLE_REDIRECT_URI, response_type: 'code', scope: 'openid email profile', access_type: 'online', prompt: 'select_account' });
