@@ -667,18 +667,33 @@ function toast(msg, erro = false){
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-// MÁSCARA DE MOEDA
+// MÁSCARA DE MOEDA MELHORADA
 function aplicarMascaraMoeda(input) {
-  let value = input.value;
-  value = value.replace(/\D/g, '');
-  value = (value / 100).toFixed(2);
-  value = value.replace('.', ',');
-  value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-  input.value = 'R$ ' + value;
+  let value = input.value.replace(/[^0-9.,]/g, ''); // Permite números, ponto e vírgula
+  input.value = value;
 }
 
 document.querySelectorAll('.mascara-moeda').forEach(input => {
   input.addEventListener('input', () => aplicarMascaraMoeda(input));
+  
+  input.addEventListener('focus', () => {
+    // Ao focar, remove o "R$ " e deixa só o número
+    let valor = input.value.replace('R$', '').trim();
+    input.value = valor;
+  });
+  
+  input.addEventListener('blur', () => {
+    // Ao sair, formata bonitinho
+    let valor = input.value.replace('R$', '').replace(/\./g, ',').trim(); // Troca ponto por vírgula
+    if (valor) {
+      let num = parseFloat(valor.replace(',', '.'));
+      if (!isNaN(num)) {
+        input.value = `R$ ${num.toFixed(2).replace('.', ',')}`;
+      } else {
+        input.value = '';
+      }
+    }
+  });
 });
 
 function formatarMoedaExibir(valor) {
@@ -847,7 +862,7 @@ $('#biparCodigo').addEventListener('keypress', async (e) => {
       $('#regPreco').value = ''; 
       if (data.produto.preco) {
         $('#regPreco').value = 'R$ ' + data.produto.preco;
-        aplicarMascaraMoeda($('#regPreco'));
+        // Não precisa aplicar a máscara aqui, só formatar visualmente
       }
 
       $('#modalRegistroTitulo').textContent = 'Confirmar Registro';
@@ -887,7 +902,6 @@ window.editarRegistro = function(id) {
   $('#regPreco').value = ''; 
   if (r.preco) {
     $('#regPreco').value = 'R$ ' + r.preco;
-    aplicarMascaraMoeda($('#regPreco'));
   }
   
   $('#modalRegistroTitulo').textContent = 'Editar Registro';
@@ -900,6 +914,7 @@ $('#formRegistro').addEventListener('submit', async (e) => {
   const btn = $('#btnSalvarReg');
   btn.disabled = true; btn.textContent = 'Salvando...';
   
+  // Pega o valor do campo. O backend limpa o R$ e a vírgula
   const payload = {
     id: editandoRegistroId,
     codigo_barras: $('#regCodigo').value,
@@ -1022,7 +1037,6 @@ function abrirModal(produto = null){
     $('#pPreco').value = ''; 
     if (produto.preco) {
       $('#pPreco').value = 'R$ ' + produto.preco;
-      aplicarMascaraMoeda($('#pPreco'));
     }
     $('#pTag').value = produto.tag || '';
     $('#pOrdem').value = produto.ordem || 0;
@@ -1234,7 +1248,7 @@ async function carregarTransacoesDia() {
     
     $('#btnFecharCaixa').style.display = isFechado ? 'none' : 'block';
     $('#formTransacao').style.display = isFechado ? 'none' : 'flex';
-    $('#divApagarTudo').style.display = isFechado ? 'none' : 'block'; // ESCONDE BOTÃO SE FECHADO
+    $('#divApagarTudo').style.display = isFechado ? 'none' : 'block'; 
     
     let totDeb = 0, totDin = 0, totCred = 0, totPix = 0;
     $('#finTabelaBody').innerHTML = finTransacoes.length === 0 ? '<tr><td colspan="4" style="text-align:center; padding:20px; color:var(--muted);">Nenhum lançamento.</td></tr>' : '';
@@ -1279,7 +1293,6 @@ window.deletarTransacao = async (id) => {
   catch (err) { toast(err.message, true); }
 };
 
-// NOVA FUNÇÃO: APAGAR TUDO
 window.apagarTudoCaixa = async function() {
   if (!confirm('Tem CERTEZA que deseja apagar TODOS os lançamentos deste dia? Isso não pode ser desfeito.')) return;
   
