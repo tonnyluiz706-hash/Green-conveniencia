@@ -102,6 +102,8 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 .tabela-registros { width: 100%; border-collapse: collapse; }
 .tabela-registros th { text-align: left; padding: 12px; color: var(--muted); font-size: 12px; border-bottom: 1px solid var(--line); }
 .tabela-registros td { padding: 12px; border-bottom: 1px dashed var(--line); font-size: 14px; vertical-align: middle; }
+.tabela-registros .btn-edit { background: var(--green-soft); color: var(--green); padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; margin-right: 5px;}
+.tabela-registros .btn-edit:hover { background: var(--green); color: #001a09; }
 .tabela-registros .btn-del { background: var(--red-soft); color: var(--red); padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; }
 .tabela-registros .btn-del:hover { background: var(--red); color: #fff; }
 
@@ -282,7 +284,6 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
     <div class="tab-content" id="tab-financeiro">
       <div class="toolbar"><h2>Financeiro</h2></div>
       
-      <!-- MENU DO FINANCEIRO (Voltou ao Layout Antigo) -->
       <div class="fin-menu" id="fin-menu">
         <div class="fin-menu-card" onclick="abrirSubView('caixa')">
           <span>Controle de Caixa</span>
@@ -320,7 +321,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
           </div>
 
           <form class="fin-add-form" id="formTransacao" style="display:flex; gap:10px; background:var(--surface-2); padding:16px; border-radius:10px; margin-bottom:20px; flex-wrap:wrap;">
-            <input type="number" step="0.01" id="finValor" required placeholder="Valor (R$)" style="padding:10px; border-radius:8px; background:var(--bg); border:1px solid var(--line); color:white; flex:1;">
+            <input type="text" id="finValor" required placeholder="Valor (R$)" class="mascara-moeda" style="padding:10px; border-radius:8px; background:var(--bg); border:1px solid var(--line); color:white; flex:1;">
             <select id="finMetodo" required style="padding:10px; border-radius:8px; background:var(--bg); border:1px solid var(--line); color:white;">
               <option value="DIN.">DIN.</option><option value="DÉB.">DÉB.</option><option value="CRÉD.">CRÉD.</option><option value="PIX">PIX</option>
             </select>
@@ -430,7 +431,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
             <select id="fluxoTipo" required style="padding:10px; border-radius:8px; background:var(--bg); border:1px solid var(--line); color:white;">
               <option value="entrada">Entrada (+)</option><option value="saida">Saída (-)</option>
             </select>
-            <input type="number" step="0.01" id="fluxoValor" required placeholder="Valor (R$)" style="padding:10px; border-radius:8px; background:var(--bg); border:1px solid var(--line); color:white; flex:1;">
+            <input type="text" id="fluxoValor" required placeholder="Valor (R$)" class="mascara-moeda" style="padding:10px; border-radius:8px; background:var(--bg); border:1px solid var(--line); color:white; flex:1;">
             <input type="text" id="fluxoDesc" required placeholder="Descrição" style="padding:10px; border-radius:8px; background:var(--bg); border:1px solid var(--line); color:white; flex:1;">
             <button type="submit" class="btn-primary" style="width:100px;">Lançar</button>
           </form>
@@ -465,7 +466,6 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
         </button>
       </div>
 
-      <!-- ATALHO PARA REGISTRO DE BARRAS -->
       <div class="config-card" style="background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:24px; max-width:600px;">
         <h3>Base de Dados de Produtos</h3>
         <p style="color:var(--muted); margin-bottom:20px;">Gerencie o catálogo de códigos de barras e preços usado no PDV.</p>
@@ -473,7 +473,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
       </div>
     </div>
 
-    <!-- ABA REGISTRO DE BARRAS (Escondida no menu, acessível via Configurações) -->
+    <!-- ABA REGISTRO DE BARRAS -->
     <div class="tab-content" id="tab-registro">
       <div class="toolbar">
         <h2>Catálogo de Códigos de Barras</h2>
@@ -493,7 +493,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
               <th>Marca</th>
               <th>Preço (R$)</th>
               <th>Código de Barras</th>
-              <th>Ação</th>
+              <th>Ações</th>
             </tr>
           </thead>
           <tbody id="tabelaRegistrosBody">
@@ -535,7 +535,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
           </div>
           <div class="form-group">
             <label for="pPreco">Preço Base</label>
-            <input type="text" id="pPreco" placeholder="Ex: R$ 4,25">
+            <input type="text" id="pPreco" placeholder="R$ 0,00" class="mascara-moeda">
           </div>
           <div class="form-group">
             <label for="pTag">Tag / Badge</label>
@@ -578,8 +578,8 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 <div id="modalRegistro" style="position:fixed; inset:0; background:rgba(0,0,0,.85); backdrop-filter:blur(6px); z-index:100; display:none; overflow-y:auto; padding:24px;">
   <div class="modal-box" style="max-width:500px;">
     <div class="modal-head">
-      <h3>Confirmar Registro</h3>
-      <button class="close" onclick="document.getElementById('modalRegistro').style.display='none'">×</button>
+      <h3 id="modalRegistroTitulo">Confirmar Registro</h3>
+      <button class="close" onclick="fecharModalRegistro()">×</button>
     </div>
     <form id="formRegistro">
       <div class="modal-body">
@@ -599,19 +599,19 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
           </div>
           <div class="form-group">
             <label>Preço (R$)</label>
-            <input type="text" id="regPreco" placeholder="Ex: 4,50">
+            <input type="text" id="regPreco" placeholder="R$ 0,00" class="mascara-moeda">
           </div>
         </div>
       </div>
       <div class="modal-foot">
-        <button type="button" class="btn-cancel" onclick="document.getElementById('modalRegistro').style.display='none'">Cancelar</button>
+        <button type="button" class="btn-cancel" onclick="fecharModalRegistro()">Cancelar</button>
         <button type="submit" class="btn-primary" id="btnSalvarReg">Salvar no Catálogo</button>
       </div>
     </form>
   </div>
 </div>
 
-<!-- MODAL DE CONFIRMAÇÃO CAIXA -->
+<!-- MODAIS DE CAIXA -->
 <div id="modalConfirmCaixa" style="position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:300; display:none; align-items:center; justify-content:center;">
   <div style="background:var(--surface); padding:30px; border-radius:16px; text-align:center; max-width:400px;">
     <h2 style="color:#fca311; margin-bottom:10px;">Atenção!</h2>
@@ -623,7 +623,6 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
   </div>
 </div>
 
-<!-- MODAL DE SUCESSO CAIXA -->
 <div id="modalSucessoCaixa" style="position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:300; display:none; align-items:center; justify-content:center;">
   <div style="background:var(--surface); padding:30px; border-radius:16px; text-align:center; max-width:400px; border:1px solid var(--green);">
     <h2 style="color:var(--green); margin-bottom:10px;">Caixa Fechado!</h2>
@@ -642,6 +641,7 @@ let produtos = [];
 let categorias = [];
 let registrosBarras = [];
 let editandoId = null;
+let editandoRegistroId = null;
 
 let finDataAtual = '';
 let finTransacoes = [];
@@ -649,7 +649,6 @@ let diasFechados = [];
 let fluxoDataAtual = '';
 let fluxoTransacoes = [];
 
-// Variáveis do PDV
 let pdvDataAtual = '';
 let pdvCarrinho = [];
 let diasFechadosPdv = [];
@@ -661,6 +660,29 @@ function toast(msg, erro = false){
   t.textContent = msg;
   t.className = erro ? 'erro show' : 'show';
   setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// MÁSCARA DE MOEDA (Para novos inputs)
+function aplicarMascaraMoeda(input) {
+  let value = input.value;
+  value = value.replace(/\D/g, ''); // Remove tudo que não for dígito
+  value = (value / 100).toFixed(2); // Divide por 100 para formatar centavos
+  value = value.replace('.', ',');
+  value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  input.value = 'R$ ' + value;
+}
+
+document.querySelectorAll('.mascara-moeda').forEach(input => {
+  input.addEventListener('input', () => aplicarMascaraMoeda(input));
+});
+
+// Formata um valor para exibição (Ex: 12.50 -> R$ 12,50)
+function formatarMoedaExibir(valor) {
+  if (!valor) return '—';
+  let str = valor.toString().replace('R$', '').trim();
+  let num = parseFloat(str.replace(/\./g, '').replace(',', '.'));
+  if (isNaN(num)) return '—';
+  return `R$ ${num.toFixed(2).replace('.', ',')}`;
 }
 
 function formatarHora(dataString) {
@@ -751,7 +773,6 @@ document.querySelectorAll('.nav-tabs button').forEach(btn => {
   });
 });
 
-// Funções para navegar entre Configurações e Registro de Barras
 function mostrarAbaRegistro() {
   document.querySelectorAll('.nav-tabs button').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -788,11 +809,21 @@ function renderizarTabelaRegistros() {
     <tr>
       <td><b>${r.nome}</b></td>
       <td>${r.marca || '—'}</td>
-      <td style="color:var(--green); font-weight:bold;">${r.preco ? 'R$ ' + r.preco : '—'}</td>
+      <td style="color:var(--green); font-weight:bold;">${formatarMoedaExibir(r.preco)}</td>
       <td style="font-family:monospace; color:var(--muted);">${r.codigo_barras}</td>
-      <td><button class="btn-del" onclick="deletarRegistro(${r.id})">Excluir</button></td>
+      <td>
+        <button class="btn-edit" onclick="editarRegistro(${r.id})">Editar</button>
+        <button class="btn-del" onclick="deletarRegistro(${r.id})">Excluir</button>
+      </td>
     </tr>
   `).join('');
+}
+
+function fecharModalRegistro() {
+  $('#modalRegistro').style.display = 'none';
+  editandoRegistroId = null;
+  $('#regCodigo').readOnly = false;
+  $('#btnSalvarReg').textContent = 'Salvar no Catálogo';
 }
 
 $('#biparCodigo').addEventListener('keypress', async (e) => {
@@ -804,20 +835,33 @@ $('#biparCodigo').addEventListener('keypress', async (e) => {
     try {
       const data = await api('/api/barras/buscar?codigo=' + encodeURIComponent(codigo));
       
+      editandoRegistroId = null; // Limpa edição
       $('#regCodigo').value = codigo;
+      $('#regCodigo').readOnly = false;
       $('#regNome').value = data.produto.nome || '';
       $('#regMarca').value = data.produto.marca || data.produto.subcategoria || '';
-      $('#regPreco').value = data.produto.preco || '';
-      
+      $('#regPreco').value = ''; // Sempre começa vazio
+      if (data.produto.preco) {
+        // Aplica máscara no valor que veio do banco
+        $('#regPreco').value = 'R$ ' + data.produto.preco;
+        aplicarMascaraMoeda($('#regPreco'));
+      }
+
+      $('#modalRegistroTitulo').textContent = 'Confirmar Registro';
+      $('#btnSalvarReg').textContent = 'Salvar no Catálogo';
       $('#modalRegistro').style.display = 'block';
       toast(data.origem === 'local' ? 'Encontrado no seu catálogo!' : 'Encontrado na API!');
       
     } catch (err) {
+      editandoRegistroId = null;
       $('#regCodigo').value = codigo;
+      $('#regCodigo').readOnly = false;
       $('#regNome').value = '';
       $('#regMarca').value = '';
       $('#regPreco').value = '';
       
+      $('#modalRegistroTitulo').textContent = 'Novo Registro';
+      $('#btnSalvarReg').textContent = 'Salvar no Catálogo';
       $('#modalRegistro').style.display = 'block';
       toast('Novo produto. Digite as informações.', true);
     } finally {
@@ -828,28 +872,53 @@ $('#biparCodigo').addEventListener('keypress', async (e) => {
   }
 });
 
+window.editarRegistro = function(id) {
+  const r = registrosBarras.find(x => x.id === id);
+  if (!r) return;
+  
+  editandoRegistroId = id;
+  $('#regCodigo').value = r.codigo_barras;
+  $('#regCodigo').readOnly = true;
+  $('#regNome').value = r.nome;
+  $('#regMarca').value = r.marca || '';
+  $('#regPreco').value = ''; 
+  if (r.preco) {
+    $('#regPreco').value = 'R$ ' + r.preco;
+    aplicarMascaraMoeda($('#regPreco'));
+  }
+  
+  $('#modalRegistroTitulo').textContent = 'Editar Registro';
+  $('#btnSalvarReg').textContent = 'Atualizar Produto';
+  $('#modalRegistro').style.display = 'block';
+};
+
 $('#formRegistro').addEventListener('submit', async (e) => {
   e.preventDefault();
   const btn = $('#btnSalvarReg');
   btn.disabled = true; btn.textContent = 'Salvando...';
   
+  const payload = {
+    id: editandoRegistroId,
+    codigo_barras: $('#regCodigo').value,
+    nome: $('#regNome').value,
+    marca: $('#regMarca').value,
+    preco: $('#regPreco').value // O backend vai limpar o R$
+  };
+
   try {
-    await api('/api/admin/registro-barras', {
-      method: 'POST',
-      body: JSON.stringify({
-        codigo_barras: $('#regCodigo').value,
-        nome: $('#regNome').value,
-        marca: $('#regMarca').value,
-        preco: $('#regPreco').value
-      })
-    });
-    toast('Registrado com sucesso!');
-    $('#modalRegistro').style.display = 'none';
+    if (editandoRegistroId) {
+      await api('/api/admin/registro-barras', { method: 'PUT', body: JSON.stringify(payload) });
+      toast('Registro atualizado!');
+    } else {
+      await api('/api/admin/registro-barras', { method: 'POST', body: JSON.stringify(payload) });
+      toast('Registrado com sucesso!');
+    }
+    fecharModalRegistro();
     carregarRegistrosBarras();
   } catch (err) {
     toast('Erro: ' + err.message, true);
   } finally {
-    btn.disabled = false; btn.textContent = 'Salvar no Catálogo';
+    btn.disabled = false; btn.textContent = editandoRegistroId ? 'Atualizar Produto' : 'Salvar no Catálogo';
   }
 });
 
@@ -911,7 +980,7 @@ function renderizarProdutos(){
         <div class="cat">${p.categoria}</div>
         <h3>${p.nome}</h3>
         <div class="meta">${p.volume || ''} | Estoque: <b>${p.estoque || 0}</b></div>
-        <div class="preco">${p.preco || '—'}</div>
+        <div class="preco">${formatarMoedaExibir(p.preco)}</div>
       </div>
       <div class="acoes">
         <button class="btn-edit" onclick="editarProduto(${p.id})">Editar</button>
@@ -947,7 +1016,11 @@ function abrirModal(produto = null){
     $('#pCategoria').value = produto.categoria || '';
     $('#pSubcategoria').value = produto.subcategoria || '';
     $('#pVolume').value = produto.volume || '';
-    $('#pPreco').value = produto.preco || '';
+    $('#pPreco').value = ''; 
+    if (produto.preco) {
+      $('#pPreco').value = 'R$ ' + produto.preco;
+      aplicarMascaraMoeda($('#pPreco'));
+    }
     $('#pTag').value = produto.tag || '';
     $('#pOrdem').value = produto.ordem || 0;
     $('#pImagemUrl').value = produto.imagem_url || '';
@@ -1064,12 +1137,12 @@ async function carregarPedidos(){
           </div>
           <div style="flex:1; background:var(--surface-2); padding:12px; border-radius:8px;">
             <ul style="list-style:none;">
-              ${p.itens.map(i => `<li style="display:flex; justify-content:space-between; font-size:13px; border-bottom:1px dashed var(--line); padding-bottom:6px; margin-bottom:6px;"><span>${i.quantidade}x ${i.produto_nome}</span> <span>R$ ${(i.quantidade * i.preco_unitario).toFixed(2).replace('.', ',')}</span></li>`).join('')}
+              ${p.itens.map(i => `<li style="display:flex; justify-content:space-between; font-size:13px; border-bottom:1px dashed var(--line); padding-bottom:6px; margin-bottom:6px;"><span>${i.quantidade}x ${i.produto_nome}</span> <span>${formatarMoedaExibir(i.quantidade * i.preco_unitario)}</span></li>`).join('')}
             </ul>
           </div>
         </div>
         <div style="padding:14px 20px; border-top:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;">
-          <span style="font-size:16px; font-weight:800; color:var(--green);">Total: R$ ${p.total.toFixed(2).replace('.', ',')}</span>
+          <span style="font-size:16px; font-weight:800; color:var(--green);">Total: ${formatarMoedaExibir(p.total)}</span>
           <select onchange="mudarStatusPedido(${p.id}, this.value)" style="padding:8px 12px; border-radius:8px; background:var(--surface-2); color:var(--txt); border:1px solid var(--line);">
             <option value="pendente" ${p.status === 'pendente' ? 'selected' : ''}>Pendente</option>
             <option value="entregue" ${p.status === 'entregue' ? 'selected' : ''}>Entregue</option>
@@ -1172,18 +1245,17 @@ async function carregarTransacoesDia() {
       tr.innerHTML = `
         <td style="color:var(--muted); font-size:12px; padding:12px 10px; border-bottom:1px dashed var(--line);">${formatarHora(t.criado_em)}</td>
         <td style="padding:12px 10px; border-bottom:1px dashed var(--line);">${t.metodo_pagamento}</td>
-        <td style="padding:12px 10px; border-bottom:1px dashed var(--line); font-weight:800; color:var(--green);">R$ ${t.valor.toFixed(2).replace('.', ',')}</td>
+        <td style="padding:12px 10px; border-bottom:1px dashed var(--line); font-weight:800; color:var(--green);">${formatarMoedaExibir(t.valor)}</td>
         <td style="text-align:right; padding:12px 10px; border-bottom:1px dashed var(--line);"><button onclick="deletarTransacao(${t.id})" style="color:var(--red);">X</button></td>
       `;
       $('#finTabelaBody').appendChild(tr);
     });
 
-    const format = (v) => `R$ ${v.toFixed(2).replace('.', ',')}`;
-    $('#resDeb').textContent = format(totDeb);
-    $('#resDin').textContent = format(totDin);
-    $('#resCred').textContent = format(totCred);
-    $('#resPix').textContent = format(totPix);
-    $('#resTotal').textContent = format(totDeb + totDin + totCred + totPix);
+    $('#resDeb').textContent = formatarMoedaExibir(totDeb);
+    $('#resDin').textContent = formatarMoedaExibir(totDin);
+    $('#resCred').textContent = formatarMoedaExibir(totCred);
+    $('#resPix').textContent = formatarMoedaExibir(totPix);
+    $('#resTotal').textContent = formatarMoedaExibir(totDeb + totDin + totCred + totPix);
   } catch (err) { toast('Erro: ' + err.message, true); }
 }
 
@@ -1191,7 +1263,7 @@ $('#formTransacao').addEventListener('submit', async (e) => {
   e.preventDefault();
   const btn = e.target.querySelector('button[type="submit"]'); btn.disabled = true;
   try {
-    await api('/api/admin/financeiro', { method: 'POST', body: JSON.stringify({ data: finDataAtual, valor: parseFloat($('#finValor').value), metodo_pagamento: $('#finMetodo').value }) });
+    await api('/api/admin/financeiro', { method: 'POST', body: JSON.stringify({ data: finDataAtual, valor: $('#finValor').value, metodo_pagamento: $('#finMetodo').value }) });
     $('#finValor').value = ''; toast('Lançado!'); await carregarTransacoesDia();
   } catch (err) { toast('Erro: ' + err.message, true); }
   finally { btn.disabled = false; }
@@ -1284,7 +1356,7 @@ $('#pdvBipar').addEventListener('keypress', async (e) => {
       renderizarPdvCarrinho();
       
     } catch (err) {
-      toast(err.message, true); // Vai mostrar "Código não encontrado"
+      toast(err.message, true);
     } finally {
       e.target.value = '';
       e.target.disabled = false;
@@ -1309,14 +1381,14 @@ function renderizarPdvCarrinho() {
       <tr>
         <td><b>${item.nome}</b></td>
         <td>${item.qtd}</td>
-        <td>R$ ${item.preco.toFixed(2).replace('.', ',')}</td>
-        <td style="color:var(--green); font-weight:bold;">R$ ${subtotal.toFixed(2).replace('.', ',')}</td>
+        <td>${formatarMoedaExibir(item.preco)}</td>
+        <td style="color:var(--green); font-weight:bold;">${formatarMoedaExibir(subtotal)}</td>
         <td><button onclick="removerItemPdv(${index})" style="color:var(--red); font-size:18px;">×</button></td>
       </tr>
     `;
   }).join('');
   
-  $('#pdvTotal').textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+  $('#pdvTotal').textContent = formatarMoedaExibir(total);
 }
 
 window.removerItemPdv = function(index) {
@@ -1346,19 +1418,16 @@ async function finalizarVendaPdv() {
   }
 }
 
-// Fechar Caixa pelo PDV (usa o mesmo modal)
 window.fecharCaixaPdvAcao = function() {
-  // Sincroniza a data atual do caixa com o PDV para o modal funcionar
   finDataAtual = pdvDataAtual;
   
-  // Puxa o total atual do dia para mostrar no modal
   api(`/api/admin/financeiro?ano=${$('#pdvAno').value}&mes=${$('#pdvMes').value}`).then(data => {
     const transacoes = (data.transacoes || []).filter(t => t.data === pdvDataAtual);
     const total = transacoes.reduce((acc, t) => acc + t.valor, 0);
     
     if (total <= 0) return toast('Caixa zerado.', true);
     
-    $('#valorFechado').textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+    $('#valorFechado').textContent = formatarMoedaExibir(total);
     $('#modalConfirmCaixa').style.display = 'flex';
   });
 };
@@ -1366,7 +1435,7 @@ window.fecharCaixaPdvAcao = function() {
 $('#btnConfirmarFechamento').addEventListener('click', async () => {
   const btn = $('#btnConfirmarFechamento'); btn.disabled = true; btn.textContent = 'Fechando...';
   try {
-    let totalStr = $('#valorFechado').textContent.replace('R$', '').replace(/\s/g, '').replace(',', '.');
+    let totalStr = $('#valorFechado').textContent.replace('R$', '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
     const total = parseFloat(totalStr);
     
     await api('/api/admin/financeiro/fechar', { method: 'POST', body: JSON.stringify({ data: finDataAtual, total }) });
@@ -1377,16 +1446,16 @@ $('#btnConfirmarFechamento').addEventListener('click', async () => {
 });
 
 window.fecharModalSucesso = function() {
-  carregarPdvDias(); // Atualiza a lista de dias do PDV
-  if (pdvDataAtual) abrirPdvDia(pdvDataAtual); // Se estiver no PDV, recarrega ele
+  carregarPdvDias();
+  if (pdvDataAtual) abrirPdvDia(pdvDataAtual);
   if (finDataAtual && $('#finCaixa').style.display === 'block') {
-    carregarCaixaDias(); abrirCaixaDia(finDataAtual); // Se estiver no Caixa Diário, recarrega ele
+    carregarCaixaDias(); abrirCaixaDia(finDataAtual);
   }
 };
 
 /* ============================ CONTROLE DE CAIXA MANUAL (Padrão) ============================ */
 window.fecharCaixaAcao = function() {
-  let totalStr = $('#resTotal').textContent.replace('R$', '').replace(/\s/g, '').replace(',', '.');
+  let totalStr = $('#resTotal').textContent.replace('R$', '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
   if (parseFloat(totalStr) <= 0) return toast('Caixa zerado.', true);
   
   $('#valorFechado').textContent = $('#resTotal').textContent;
@@ -1443,16 +1512,15 @@ async function carregarFluxoDia() {
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td style="padding:12px 10px; border-bottom:1px dashed var(--line);">${t.descricao}</td>
-        <td style="padding:12px 10px; border-bottom:1px dashed var(--line); font-weight:bold; color:${isEntrada ? 'var(--green)' : 'var(--red)'};">${isEntrada ? '+' : '-'} R$ ${t.valor.toFixed(2).replace('.', ',')}</td>
+        <td style="padding:12px 10px; border-bottom:1px dashed var(--line); font-weight:bold; color:${isEntrada ? 'var(--green)' : 'var(--red)'};">${isEntrada ? '+' : '-'} ${formatarMoedaExibir(t.valor)}</td>
         <td style="text-align:right; padding:12px 10px; border-bottom:1px dashed var(--line);"><button onclick="deletarFluxo(${t.id})" style="color:var(--red);">X</button></td>
       `;
       $('#fluxoTabelaBody').appendChild(tr);
     });
 
-    const format = (v) => `R$ ${v.toFixed(2).replace('.', ',')}`;
-    $('#fluxoResEntrada').textContent = format(totEntrada);
-    $('#fluxoResSaida').textContent = format(totSaida);
-    $('#fluxoResTotal').textContent = format(totEntrada - totSaida);
+    $('#fluxoResEntrada').textContent = formatarMoedaExibir(totEntrada);
+    $('#fluxoResSaida').textContent = formatarMoedaExibir(totSaida);
+    $('#fluxoResTotal').textContent = formatarMoedaExibir(totEntrada - totSaida);
     $('#fluxoResTotal').style.color = (totEntrada - totSaida) >= 0 ? 'var(--green)' : 'var(--red)';
   } catch (err) { toast('Erro: ' + err.message, true); }
 }
@@ -1461,7 +1529,7 @@ $('#formFluxo').addEventListener('submit', async (e) => {
   e.preventDefault();
   const btn = e.target.querySelector('button[type="submit"]'); btn.disabled = true;
   try {
-    await api('/api/admin/fluxo', { method: 'POST', body: JSON.stringify({ data: fluxoDataAtual, tipo: $('#fluxoTipo').value, valor: parseFloat($('#fluxoValor').value), descricao: $('#fluxoDesc').value.trim() }) });
+    await api('/api/admin/fluxo', { method: 'POST', body: JSON.stringify({ data: fluxoDataAtual, tipo: $('#fluxoTipo').value, valor: $('#fluxoValor').value, descricao: $('#fluxoDesc').value.trim() }) });
     $('#fluxoValor').value = ''; $('#fluxoDesc').value = ''; toast('Lançado!'); await carregarFluxoDia();
   } catch (err) { toast('Erro: ' + err.message, true); }
   finally { btn.disabled = false; }
