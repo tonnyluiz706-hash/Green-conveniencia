@@ -23,6 +23,16 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; color
 input,select,textarea{ font-family:inherit; }
 a{ color:inherit; text-decoration:none; }
 
+/* REMOVE O FUNDO BRANCO DO AUTOCOMPLETE DO NAVEGADOR */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-box-shadow: 0 0 0 50px var(--surface-2) inset !important;
+    -webkit-text-fill-color: white !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
 /* LOGIN */
 #loginScreen{ min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
 .login-box{ width:100%; max-width:400px; background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:36px 32px; box-shadow:0 30px 80px -30px rgba(0,177,64,.3); }
@@ -33,7 +43,7 @@ a{ color:inherit; text-decoration:none; }
 .login-box label{ display:block; font-size:11.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
 .login-box input{ width:100%; padding:12px 14px; background:var(--surface-2); border:1px solid var(--line); border-radius:10px; color:var(--txt); font-size:14.5px; outline:none; margin-bottom:16px; transition:border-color .2s, background .2s; }
 .login-box input:focus{ border-color:var(--green); background:#111; }
-.btn-primary{ width:100%; padding:13px; background:var(--green); color:#001a09; font-weight:800; font-size:14.5px; border-radius:10px; transition:background .2s, transform .15s, box-shadow .2s; box-shadow:0 4px 15px rgba(0,177,64,.2); }
+.btn-primary{ width:100%; padding:13px; background:var(--green); color:#001a09; font-weight:800; font-size:14.5px; border-radius:10px; transition:background .2s, transform .15s, box-shadow .2s; box-shadow:0 4px 15px rgba(0,177,64,.2); display: flex; align-items: center; justify-content: center; }
 .btn-primary:hover{ background:#00c94a; transform:translateY(-1px); box-shadow:0 6px 20px rgba(0,177,64,.4); }
 .btn-primary:active{ transform:scale(.98); }
 .btn-primary:disabled{ opacity:.5; cursor:not-allowed; transform:none; box-shadow:none; }
@@ -163,13 +173,14 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 .fin-resumo-linha span:last-child { font-weight: 800; }
 .fin-resumo-total { display: flex; justify-content: space-between; margin-top: 20px; padding-top: 16px; border-top: 2px solid var(--line-green); font-size: 18px; font-weight: 900; color: var(--green); }
 
-/* O SEGREDO DO LAYOUT DO FORMULÁRIO DE LANÇAMENTO */
-.fin-add-form { display: flex; gap: 10px; background: var(--surface-2); padding: 16px; border-radius: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; border: 1px solid var(--line); }
-.fin-add-form input { flex: 1; min-width: 150px; padding: 12px 14px; border-radius: 8px; background: var(--bg); border: 1px solid var(--line); color: white; outline:none; transition:border-color .2s; }
+/* O SEGREDO DO LAYOUT DO FORMULÁRIO DE LANÇAMENTO - TAMANHOS IGUAIS */
+.fin-add-form { display: flex; gap: 10px; background: var(--surface-2); padding: 16px; border-radius: 10px; margin-bottom: 20px; align-items: center; border: 1px solid var(--line); flex-wrap: wrap; }
+.fin-add-form input { flex: 1; min-width: 150px; height: 48px; padding: 0 16px; border-radius: 8px; background: var(--bg); border: 1px solid var(--line); color: white; outline:none; transition:border-color .2s; font-size: 15px; }
 .fin-add-form input:focus { border-color: var(--green); box-shadow:0 0 0 2px var(--green-soft); }
-.fin-add-form select { padding: 12px 14px; border-radius: 8px; background: var(--bg); border: 1px solid var(--line); color: white; outline: none; flex: 0 0 100px; }
+.fin-add-form select { flex: 0 0 100px; height: 48px; padding: 0 12px; border-radius: 8px; background: var(--bg); border: 1px solid var(--line); color: white; outline: none; font-size: 14px; cursor: pointer; }
 .fin-add-form select:focus { border-color: var(--green); }
-.fin-add-form button { flex: 0 0 100px; padding: 12px 0; height: auto; }
+.fin-add-form button { flex: 0 0 100px; height: 48px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 14px; margin: 0; }
+.fin-add-form .btn-primary { box-shadow: none; } /* Remove sombra extra no form */
 
 .valor-entrada { color: var(--green) !important; }
 .valor-saida { color: var(--red) !important; }
@@ -242,9 +253,9 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
     <p>Green Conveniência e Tabacaria</p>
     <form id="loginForm">
       <label for="email">Email</label>
-      <input type="email" id="email" required placeholder="seuemail@exemplo.com" autocomplete="off">
+      <input type="email" id="email" required placeholder="seuemail@exemplo.com">
       <label for="senha">Senha</label>
-      <input type="password" id="senha" required placeholder="••••••••" autocomplete="off">
+      <input type="password" id="senha" required placeholder="••••••••">
       <button type="submit" class="btn-primary" id="btnLogin">Entrar</button>
       <div class="msg-erro" id="loginErro"></div>
     </form>
@@ -276,7 +287,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
     <div class="tab-content active" id="tab-produtos">
       <div class="toolbar">
         <h2>Produtos no Site <small id="contador">—</small></h2>
-        <input type="search" id="busca" placeholder="Buscar produto..." autocomplete="off">
+        <input type="search" id="busca" placeholder="Buscar produto...">
         <select id="filtroCategoria">
           <option value="">Todas as categorias</option>
         </select>
@@ -291,9 +302,9 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
       <div class="config-card" style="background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:24px; max-width:600px; margin-bottom:24px; box-shadow:0 4px 15px rgba(0,0,0,.2);">
         <h3>Nova Categoria</h3>
         <p>Crie uma nova seção para o site.</p>
-        <form id="formCategoria" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;" autocomplete="off">
-          <input type="text" id="catNome" placeholder="Nome da Categoria" required style="padding:10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); color:white; flex:1; outline:none;" autocomplete="off">
-          <input type="number" id="catOrdem" placeholder="Ordem" value="0" style="padding:10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); color:white; width:100px; outline:none;" autocomplete="off">
+        <form id="formCategoria" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;">
+          <input type="text" id="catNome" placeholder="Nome da Categoria" required style="padding:10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); color:white; flex:1; outline:none;">
+          <input type="number" id="catOrdem" placeholder="Ordem" value="0" style="padding:10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); color:white; width:100px; outline:none;">
           <button type="submit" class="btn-primary" id="btnSalvarCategoria" style="width:auto; padding:10px 20px;">Criar</button>
         </form>
       </div>
@@ -349,7 +360,8 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
             <button class="btn-ghost" style="color:var(--red);" onclick="fecharCaixaAcao()" id="btnFecharCaixa">Fechar Caixa</button>
           </div>
 
-          <form class="fin-add-form" id="formTransacao" autocomplete="off">
+          <!-- FORMULÁRIO COM TAMANHOS IGUAIS E AUTOCOMPLETE DESLIGADO -->
+          <form class="fin-add-form" id="formTransacao">
             <input type="text" id="finValor" required placeholder="Valor (R$)" class="mascara-moeda" autocomplete="off">
             <select id="finMetodo" required>
               <option value="DIN.">DIN.</option><option value="DÉB.">DÉB.</option><option value="CRÉD.">CRÉD.</option><option value="PIX">PIX</option>
@@ -460,7 +472,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
             <button class="btn-ghost" onclick="fecharFluxo()">Voltar para os dias</button>
           </div>
 
-          <form class="fin-add-form" id="formFluxo" autocomplete="off">
+          <form class="fin-add-form" id="formFluxo">
             <select id="fluxoTipo" required>
               <option value="entrada">Entrada (+)</option><option value="saida">Saída (-)</option>
             </select>
@@ -546,13 +558,13 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
       <h3 id="modalTitulo">Novo produto</h3>
       <button class="close" id="btnFecharModal">×</button>
     </div>
-    <form id="formProduto" autocomplete="off">
+    <form id="formProduto">
       <div class="modal-body">
         <div class="msg-form" id="msgForm"></div>
         <div class="form-grid">
           <div class="form-group full">
             <label for="pNome">Nome do produto *</label>
-            <input type="text" id="pNome" required placeholder="Ex: Skol Lata" autocomplete="off">
+            <input type="text" id="pNome" required placeholder="Ex: Skol Lata">
           </div>
           <div class="form-group">
             <label for="pCategoria">Categoria *</label>
@@ -560,11 +572,11 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
           </div>
           <div class="form-group">
             <label for="pSubcategoria">Subcategoria</label>
-            <input type="text" id="pSubcategoria" placeholder="Ex: Cerveja, Energético..." autocomplete="off">
+            <input type="text" id="pSubcategoria" placeholder="Ex: Cerveja, Energético...">
           </div>
           <div class="form-group">
             <label for="pVolume">Volume / Tamanho</label>
-            <input type="text" id="pVolume" placeholder="Ex: Lata 350 ml" autocomplete="off">
+            <input type="text" id="pVolume" placeholder="Ex: Lata 350 ml">
           </div>
           <div class="form-group">
             <label for="pPreco">Preço Base</label>
@@ -572,11 +584,11 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
           </div>
           <div class="form-group">
             <label for="pTag">Tag / Badge</label>
-            <input type="text" id="pTag" placeholder="Ex: Destaque" autocomplete="off">
+            <input type="text" id="pTag" placeholder="Ex: Destaque">
           </div>
           <div class="form-group">
             <label for="pOrdem">Ordem</label>
-            <input type="number" id="pOrdem" value="0" autocomplete="off">
+            <input type="number" id="pOrdem" value="0">
           </div>
           
           <div class="form-group full">
@@ -614,21 +626,21 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
       <h3 id="modalRegistroTitulo">Confirmar Registro</h3>
       <button class="close" onclick="fecharModalRegistro()">×</button>
     </div>
-    <form id="formRegistro" autocomplete="off">
+    <form id="formRegistro">
       <div class="modal-body">
         <div id="msgRegistro" class="msg-form"></div>
         <div class="form-grid">
           <div class="form-group full">
             <label>Código de Barras</label>
-            <input type="text" id="regCodigo" readonly style="background:var(--surface-3); color:var(--green); font-weight:bold; border-color:var(--line-green);" autocomplete="off">
+            <input type="text" id="regCodigo" readonly style="background:var(--surface-3); color:var(--green); font-weight:bold; border-color:var(--line-green);">
           </div>
           <div class="form-group full">
             <label>Nome do Produto</label>
-            <input type="text" id="regNome" required autocomplete="off">
+            <input type="text" id="regNome" required>
           </div>
           <div class="form-group">
             <label>Marca</label>
-            <input type="text" id="regMarca" autocomplete="off">
+            <input type="text" id="regMarca">
           </div>
           <div class="form-group">
             <label>Preço (R$)</label>
@@ -1040,8 +1052,8 @@ function adicionarLinhaVariacao(nome = '', preco = '') {
   const row = document.createElement('div');
   row.className = 'variacao-row';
   row.innerHTML = `
-    <input type="text" placeholder="Nome (ex: Monster)" value="${nome}" class="var-nome" autocomplete="off">
-    <input type="text" placeholder="Preço (ex: R$ 20,00)" value="${preco}" class="var-preco" autocomplete="off">
+    <input type="text" placeholder="Nome (ex: Monster)" value="${nome}" class="var-nome">
+    <input type="text" placeholder="Preço (ex: R$ 20,00)" value="${preco}" class="var-preco">
     <button type="button" onclick="this.parentElement.remove()">×</button>
   `;
   container.appendChild(row);
