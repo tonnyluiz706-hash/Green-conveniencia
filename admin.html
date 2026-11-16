@@ -242,9 +242,9 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
     <p>Green Conveniência e Tabacaria</p>
     <form id="loginForm">
       <label for="email">Email</label>
-      <input type="email" id="email" required placeholder="seuemail@exemplo.com">
+      <input type="email" id="email" required placeholder="seuemail@exemplo.com" autocomplete="off">
       <label for="senha">Senha</label>
-      <input type="password" id="senha" required placeholder="••••••••">
+      <input type="password" id="senha" required placeholder="••••••••" autocomplete="off">
       <button type="submit" class="btn-primary" id="btnLogin">Entrar</button>
       <div class="msg-erro" id="loginErro"></div>
     </form>
@@ -276,7 +276,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
     <div class="tab-content active" id="tab-produtos">
       <div class="toolbar">
         <h2>Produtos no Site <small id="contador">—</small></h2>
-        <input type="search" id="busca" placeholder="Buscar produto...">
+        <input type="search" id="busca" placeholder="Buscar produto..." autocomplete="off">
         <select id="filtroCategoria">
           <option value="">Todas as categorias</option>
         </select>
@@ -291,9 +291,9 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
       <div class="config-card" style="background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:24px; max-width:600px; margin-bottom:24px; box-shadow:0 4px 15px rgba(0,0,0,.2);">
         <h3>Nova Categoria</h3>
         <p>Crie uma nova seção para o site.</p>
-        <form id="formCategoria" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;">
-          <input type="text" id="catNome" placeholder="Nome da Categoria" required style="padding:10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); color:white; flex:1; outline:none;">
-          <input type="number" id="catOrdem" placeholder="Ordem" value="0" style="padding:10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); color:white; width:100px; outline:none;">
+        <form id="formCategoria" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;" autocomplete="off">
+          <input type="text" id="catNome" placeholder="Nome da Categoria" required style="padding:10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); color:white; flex:1; outline:none;" autocomplete="off">
+          <input type="number" id="catOrdem" placeholder="Ordem" value="0" style="padding:10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); color:white; width:100px; outline:none;" autocomplete="off">
           <button type="submit" class="btn-primary" id="btnSalvarCategoria" style="width:auto; padding:10px 20px;">Criar</button>
         </form>
       </div>
@@ -349,8 +349,8 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
             <button class="btn-ghost" style="color:var(--red);" onclick="fecharCaixaAcao()" id="btnFecharCaixa">Fechar Caixa</button>
           </div>
 
-          <form class="fin-add-form" id="formTransacao">
-            <input type="text" id="finValor" required placeholder="Valor (R$)" class="mascara-moeda">
+          <form class="fin-add-form" id="formTransacao" autocomplete="off">
+            <input type="text" id="finValor" required placeholder="Valor (R$)" class="mascara-moeda" autocomplete="off">
             <select id="finMetodo" required>
               <option value="DIN.">DIN.</option><option value="DÉB.">DÉB.</option><option value="CRÉD.">CRÉD.</option><option value="PIX">PIX</option>
             </select>
@@ -460,12 +460,12 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
             <button class="btn-ghost" onclick="fecharFluxo()">Voltar para os dias</button>
           </div>
 
-          <form class="fin-add-form" id="formFluxo">
+          <form class="fin-add-form" id="formFluxo" autocomplete="off">
             <select id="fluxoTipo" required>
               <option value="entrada">Entrada (+)</option><option value="saida">Saída (-)</option>
             </select>
-            <input type="text" id="fluxoValor" required placeholder="Valor (R$)" class="mascara-moeda">
-            <input type="text" id="fluxoDesc" required placeholder="Descrição" style="outline:none;">
+            <input type="text" id="fluxoValor" required placeholder="Valor (R$)" class="mascara-moeda" autocomplete="off">
+            <input type="text" id="fluxoDesc" required placeholder="Descrição" style="outline:none;" autocomplete="off">
             <button type="submit" class="btn-primary">Lançar</button>
           </form>
 
@@ -546,13 +546,13 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
       <h3 id="modalTitulo">Novo produto</h3>
       <button class="close" id="btnFecharModal">×</button>
     </div>
-    <form id="formProduto">
+    <form id="formProduto" autocomplete="off">
       <div class="modal-body">
         <div class="msg-form" id="msgForm"></div>
         <div class="form-grid">
           <div class="form-group full">
             <label for="pNome">Nome do produto *</label>
-            <input type="text" id="pNome" required placeholder="Ex: Skol Lata">
+            <input type="text" id="pNome" required placeholder="Ex: Skol Lata" autocomplete="off">
           </div>
           <div class="form-group">
             <label for="pCategoria">Categoria *</label>
@@ -560,23 +560,23 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
           </div>
           <div class="form-group">
             <label for="pSubcategoria">Subcategoria</label>
-            <input type="text" id="pSubcategoria" placeholder="Ex: Cerveja, Energético...">
+            <input type="text" id="pSubcategoria" placeholder="Ex: Cerveja, Energético..." autocomplete="off">
           </div>
           <div class="form-group">
             <label for="pVolume">Volume / Tamanho</label>
-            <input type="text" id="pVolume" placeholder="Ex: Lata 350 ml">
+            <input type="text" id="pVolume" placeholder="Ex: Lata 350 ml" autocomplete="off">
           </div>
           <div class="form-group">
             <label for="pPreco">Preço Base</label>
-            <input type="text" id="pPreco" placeholder="R$ 0,00" class="mascara-moeda">
+            <input type="text" id="pPreco" placeholder="R$ 0,00" class="mascara-moeda" autocomplete="off">
           </div>
           <div class="form-group">
             <label for="pTag">Tag / Badge</label>
-            <input type="text" id="pTag" placeholder="Ex: Destaque">
+            <input type="text" id="pTag" placeholder="Ex: Destaque" autocomplete="off">
           </div>
           <div class="form-group">
             <label for="pOrdem">Ordem</label>
-            <input type="number" id="pOrdem" value="0">
+            <input type="number" id="pOrdem" value="0" autocomplete="off">
           </div>
           
           <div class="form-group full">
@@ -614,25 +614,25 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
       <h3 id="modalRegistroTitulo">Confirmar Registro</h3>
       <button class="close" onclick="fecharModalRegistro()">×</button>
     </div>
-    <form id="formRegistro">
+    <form id="formRegistro" autocomplete="off">
       <div class="modal-body">
         <div id="msgRegistro" class="msg-form"></div>
         <div class="form-grid">
           <div class="form-group full">
             <label>Código de Barras</label>
-            <input type="text" id="regCodigo" readonly style="background:var(--surface-3); color:var(--green); font-weight:bold; border-color:var(--line-green);">
+            <input type="text" id="regCodigo" readonly style="background:var(--surface-3); color:var(--green); font-weight:bold; border-color:var(--line-green);" autocomplete="off">
           </div>
           <div class="form-group full">
             <label>Nome do Produto</label>
-            <input type="text" id="regNome" required>
+            <input type="text" id="regNome" required autocomplete="off">
           </div>
           <div class="form-group">
             <label>Marca</label>
-            <input type="text" id="regMarca">
+            <input type="text" id="regMarca" autocomplete="off">
           </div>
           <div class="form-group">
             <label>Preço (R$)</label>
-            <input type="text" id="regPreco" placeholder="R$ 0,00" class="mascara-moeda">
+            <input type="text" id="regPreco" placeholder="R$ 0,00" class="mascara-moeda" autocomplete="off">
           </div>
         </div>
       </div>
@@ -1040,8 +1040,8 @@ function adicionarLinhaVariacao(nome = '', preco = '') {
   const row = document.createElement('div');
   row.className = 'variacao-row';
   row.innerHTML = `
-    <input type="text" placeholder="Nome (ex: Monster)" value="${nome}" class="var-nome">
-    <input type="text" placeholder="Preço (ex: R$ 20,00)" value="${preco}" class="var-preco">
+    <input type="text" placeholder="Nome (ex: Monster)" value="${nome}" class="var-nome" autocomplete="off">
+    <input type="text" placeholder="Preço (ex: R$ 20,00)" value="${preco}" class="var-preco" autocomplete="off">
     <button type="button" onclick="this.parentElement.remove()">×</button>
   `;
   container.appendChild(row);
