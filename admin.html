@@ -92,7 +92,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 .card-prod .acoes .btn-del{ background:var(--red-soft); color:#ff8895; }
 .card-prod .acoes .btn-del:hover{ background:var(--red); color:#fff; }
 
-/* ESTILOS DA NOVA ABA DE REGISTRO */
+/* ESTILOS DA ABA DE REGISTRO */
 .registro-container { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
 .registro-container p { color: var(--muted); font-size: 14px; margin-bottom: 16px; }
 .registro-input-wrap { display: flex; gap: 12px; margin-bottom: 20px; }
@@ -102,7 +102,6 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 .tabela-registros { width: 100%; border-collapse: collapse; }
 .tabela-registros th { text-align: left; padding: 12px; color: var(--muted); font-size: 12px; border-bottom: 1px solid var(--line); }
 .tabela-registros td { padding: 12px; border-bottom: 1px dashed var(--line); font-size: 14px; vertical-align: middle; }
-.tabela-registros td img { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; background: var(--surface-2); }
 .tabela-registros .btn-del { background: var(--red-soft); color: var(--red); padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; }
 .tabela-registros .btn-del:hover { background: var(--red); color: #fff; }
 
@@ -222,7 +221,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
       </div>
       
       <div class="registro-container">
-        <p>Bipe ou digite o código abaixo. O sistema vai buscar as informações na internet e salvar no seu catálogo interno. <b>Isso não vai pro site.</b></p>
+        <p>Bipe ou digite o código abaixo. O sistema vai buscar o nome do produto e você define o preço. <b>Isso não vai pro site, é sua base interna.</b></p>
         <div class="registro-input-wrap">
           <input type="text" id="biparCodigo" placeholder="Aponte o leitor aqui e bipe o código..." autocomplete="off">
         </div>
@@ -230,16 +229,15 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
         <table class="tabela-registros">
           <thead>
             <tr>
-              <th>Imagem</th>
-              <th>Nome</th>
+              <th>Nome do Produto</th>
               <th>Marca</th>
-              <th>Volume</th>
-              <th>Código</th>
+              <th>Preço (R$)</th>
+              <th>Código de Barras</th>
               <th>Ação</th>
             </tr>
           </thead>
           <tbody id="tabelaRegistrosBody">
-            <tr><td colspan="6" style="text-align:center; color:var(--muted);">Nenhum produto registrado ainda.</td></tr>
+            <tr><td colspan="5" style="text-align:center; color:var(--muted);">Nenhum produto registrado ainda.</td></tr>
           </tbody>
         </table>
       </div>
@@ -475,7 +473,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
             <input type="text" id="regCodigo" readonly style="background:var(--surface-3); color:var(--green); font-weight:bold;">
           </div>
           <div class="form-group full">
-            <label>Nome</label>
+            <label>Nome do Produto</label>
             <input type="text" id="regNome" required>
           </div>
           <div class="form-group">
@@ -483,13 +481,8 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
             <input type="text" id="regMarca">
           </div>
           <div class="form-group">
-            <label>Volume</label>
-            <input type="text" id="regVolume">
-          </div>
-          <div class="form-group full">
-            <label>Imagem (URL)</label>
-            <input type="text" id="regImagem">
-            <img id="regPreviewImg" style="max-height:100px; margin-top:10px; display:none; border-radius:8px;">
+            <label>Preço (R$)</label>
+            <input type="text" id="regPreco" placeholder="Ex: 4,50">
           </div>
         </div>
       </div>
@@ -632,7 +625,7 @@ document.querySelectorAll('.nav-tabs button').forEach(btn => {
     if (btn.dataset.tab === 'financeiro') voltarMenuFin();
     if (btn.dataset.tab === 'registro') {
       carregarRegistrosBarras();
-      setTimeout(() => $('#biparCodigo').focus(), 100); // Foca no campo ao abrir
+      setTimeout(() => $('#biparCodigo').focus(), 100);
     }
   });
 });
@@ -649,16 +642,15 @@ async function carregarRegistrosBarras() {
 function renderizarTabelaRegistros() {
   const tbody = $('#tabelaRegistrosBody');
   if (registrosBarras.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--muted);">Nenhum produto registrado ainda.</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--muted);">Nenhum produto registrado ainda.</td></tr>';
     return;
   }
   tbody.innerHTML = registrosBarras.map(r => `
     <tr>
-      <td>${r.imagem_url ? `<img src="${r.imagem_url}" onerror="this.style.display='none'">` : '<div style="width:40px;height:40px;background:var(--surface-2);border-radius:6px;"></div>'}</td>
       <td><b>${r.nome}</b></td>
       <td>${r.marca || '—'}</td>
-      <td>${r.volume || '—'}</td>
-      <td style="font-family:monospace; color:var(--green);">${r.codigo_barras}</td>
+      <td style="color:var(--green); font-weight:bold;">${r.preco ? 'R$ ' + r.preco : '—'}</td>
+      <td style="font-family:monospace; color:var(--muted);">${r.codigo_barras}</td>
       <td><button class="btn-del" onclick="deletarRegistro(${r.id})">Excluir</button></td>
     </tr>
   `).join('');
@@ -673,28 +665,19 @@ $('#biparCodigo').addEventListener('keypress', async (e) => {
     try {
       const data = await api('/api/barras/buscar?codigo=' + encodeURIComponent(codigo));
       
-      // Abre o modal preenchido
       $('#regCodigo').value = codigo;
       $('#regNome').value = data.produto.nome || '';
       $('#regMarca').value = data.produto.marca || data.produto.subcategoria || '';
-      $('#regVolume').value = data.produto.volume || '';
-      $('#regImagem').value = data.produto.imagem_url || '';
+      $('#regPreco').value = data.produto.preco || '';
       
-      const img = $('#regPreviewImg');
-      if (data.produto.imagem_url) { img.src = data.produto.imagem_url; img.style.display = 'block'; } 
-      else { img.style.display = 'none'; }
-
       $('#modalRegistro').style.display = 'block';
       toast(data.origem === 'local' ? 'Encontrado no seu catálogo!' : 'Encontrado na API!');
       
     } catch (err) {
-      // Se não achou, abre o modal em branco pro user digitar
       $('#regCodigo').value = codigo;
       $('#regNome').value = '';
       $('#regMarca').value = '';
-      $('#regVolume').value = '';
-      $('#regImagem').value = '';
-      $('#regPreviewImg').style.display = 'none';
+      $('#regPreco').value = '';
       
       $('#modalRegistro').style.display = 'block';
       toast('Novo produto. Digite as informações.', true);
@@ -718,8 +701,7 @@ $('#formRegistro').addEventListener('submit', async (e) => {
         codigo_barras: $('#regCodigo').value,
         nome: $('#regNome').value,
         marca: $('#regMarca').value,
-        volume: $('#regVolume').value,
-        imagem_url: $('#regImagem').value
+        preco: $('#regPreco').value
       })
     });
     toast('Registrado com sucesso!');
