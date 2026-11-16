@@ -360,7 +360,6 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
             <button class="btn-ghost" style="color:var(--red);" onclick="fecharCaixaAcao()" id="btnFecharCaixa">Fechar Caixa</button>
           </div>
 
-          <!-- FORMULÁRIO COM TAMANHOS IGUAIS E AUTOCOMPLETE DESLIGADO -->
           <form class="fin-add-form" id="formTransacao">
             <input type="text" id="finValor" required placeholder="Valor (R$)" class="mascara-moeda" autocomplete="off">
             <select id="finMetodo" required>
@@ -734,10 +733,24 @@ document.querySelectorAll('.mascara-moeda').forEach(input => {
   });
 });
 
+// FUNÇÃO CORRIGIDA PARA EXIBIR MOEDA
 function formatarMoedaExibir(valor) {
-  if (!valor) return '—';
-  let str = valor.toString().replace('R$', '').trim();
-  let num = parseFloat(str.replace(/\./g, '').replace(',', '.'));
+  if (valor === undefined || valor === null || valor === '') return '—';
+  
+  let num;
+  if (typeof valor === 'number') {
+    num = valor;
+  } else {
+    let str = valor.toString().replace('R$', '').trim();
+    if (str.includes(',')) {
+      // Se tem vírgula, é formato BR (ex: 3,50 ou 1.234,56)
+      num = parseFloat(str.replace(/\./g, '').replace(',', '.'));
+    } else {
+      // Se não tem vírgula, pode ser "3.50" (ponto decimal) ou "1234" (inteiro)
+      num = parseFloat(str);
+    }
+  }
+  
   if (isNaN(num)) return '—';
   return `R$ ${num.toFixed(2).replace('.', ',')}`;
 }
