@@ -208,7 +208,6 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 
   <div class="nav-tabs">
     <button class="active" data-tab="produtos">Produtos (Site)</button>
-    <button data-tab="registro">Registro (Cód. Barras)</button>
     <button data-tab="categorias">Categorias</button>
     <button data-tab="pedidos">Pedidos</button>
     <button data-tab="financeiro">Financeiro</button>
@@ -228,35 +227,6 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
         <button class="btn-new" id="btnNovo">+ Novo produto</button>
       </div>
       <div class="grid-produtos" id="gridProdutos"></div>
-    </div>
-
-    <!-- NOVA ABA REGISTRO DE BARRAS -->
-    <div class="tab-content" id="tab-registro">
-      <div class="toolbar">
-        <h2>Catálogo de Códigos de Barras</h2>
-      </div>
-      
-      <div class="registro-container">
-        <p>Bipe ou digite o código abaixo. O sistema vai buscar o nome do produto e você define o preço. <b>Isso não vai pro site, é sua base interna.</b></p>
-        <div class="registro-input-wrap">
-          <input type="text" id="biparCodigo" placeholder="Aponte o leitor aqui e bipe o código..." autocomplete="off">
-        </div>
-        
-        <table class="tabela-registros">
-          <thead>
-            <tr>
-              <th>Nome do Produto</th>
-              <th>Marca</th>
-              <th>Preço (R$)</th>
-              <th>Código de Barras</th>
-              <th>Ação</th>
-            </tr>
-          </thead>
-          <tbody id="tabelaRegistrosBody">
-            <tr><td colspan="5" style="text-align:center; color:var(--muted);">Nenhum produto registrado ainda.</td></tr>
-          </tbody>
-        </table>
-      </div>
     </div>
 
     <!-- ABA CATEGORIAS -->
@@ -470,7 +440,37 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
       <div class="config-card" style="background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:24px; max-width:600px;">
         <h3>Base de Dados de Produtos</h3>
         <p style="color:var(--muted); margin-bottom:20px;">Gerencie o catálogo de códigos de barras e preços usado no PDV.</p>
-        <button class="btn-primary" onclick="document.querySelector('[data-tab=registro]').click()" style="width:auto; padding:12px 24px;">Ir para Registro de Barras</button>
+        <button class="btn-primary" onclick="mostrarAbaRegistro()" style="width:auto; padding:12px 24px;">Ir para Registro de Barras</button>
+      </div>
+    </div>
+
+    <!-- ABA REGISTRO DE BARRAS (Escondida no menu, acessível via Configurações) -->
+    <div class="tab-content" id="tab-registro">
+      <div class="toolbar">
+        <h2>Catálogo de Códigos de Barras</h2>
+        <button class="btn-ghost" onclick="voltarParaConfig()" style="margin-left:auto;">Voltar para Configurações</button>
+      </div>
+      
+      <div class="registro-container">
+        <p>Bipe ou digite o código abaixo. O sistema vai buscar o nome do produto e você define o preço. <b>Isso não vai pro site, é sua base interna.</b></p>
+        <div class="registro-input-wrap">
+          <input type="text" id="biparCodigo" placeholder="Aponte o leitor aqui e bipe o código..." autocomplete="off">
+        </div>
+        
+        <table class="tabela-registros">
+          <thead>
+            <tr>
+              <th>Nome do Produto</th>
+              <th>Marca</th>
+              <th>Preço (R$)</th>
+              <th>Código de Barras</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaRegistrosBody">
+            <tr><td colspan="5" style="text-align:center; color:var(--muted);">Nenhum produto registrado ainda.</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
@@ -719,12 +719,27 @@ document.querySelectorAll('.nav-tabs button').forEach(btn => {
     if (btn.dataset.tab === 'config') carregarStatusLoja();
     if (btn.dataset.tab === 'categorias') renderizarCategorias();
     if (btn.dataset.tab === 'financeiro') voltarMenuFin();
-    if (btn.dataset.tab === 'registro') {
-      carregarRegistrosBarras();
-      setTimeout(() => $('#biparCodigo').focus(), 100);
-    }
   });
 });
+
+// Funções para navegar entre Configurações e Registro de Barras
+function mostrarAbaRegistro() {
+  document.querySelectorAll('.nav-tabs button').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  
+  $('#tab-registro').classList.add('active');
+  carregarRegistrosBarras();
+  setTimeout(() => $('#biparCodigo').focus(), 100);
+}
+
+function voltarParaConfig() {
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  $('#tab-config').classList.add('active');
+  
+  // Marca a aba de configurações no menu como ativa novamente
+  document.querySelectorAll('.nav-tabs button').forEach(b => b.classList.remove('active'));
+  document.querySelector('.nav-tabs button[data-tab="config"]').classList.add('active');
+}
 
 /* ============================ REGISTRO DE BARRAS ============================ */
 async function carregarRegistrosBarras() {
