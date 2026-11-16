@@ -70,6 +70,7 @@ export async function onRequest(context){
     if (rota === 'barras/buscar' && metodo === 'GET') return buscarPorCodigoBarras(context);
     if (rota === 'admin/registro-barras' && metodo === 'GET') return listarRegistroBarras(context);
     if (rota === 'admin/registro-barras' && metodo === 'POST') return salvarRegistroBarras(context);
+    if (rota === 'admin/registro-barras' && metodo === 'PUT') return editarRegistroBarras(context); // NOVA ROTA
     if (rota === 'admin/registro-barras' && metodo === 'DELETE') return deletarRegistroBarras(context);
     
     // PDV (Caixa Rápido)
@@ -123,10 +124,14 @@ async function buscarProdutoPdv({ request, env }){
   const codigo = new URL(request.url).searchParams.get('codigo');
   if (!codigo) return erro('Código não informado');
 
-  // Busca APENAS no banco local (registro_barras)
   const produto = await env.DB.prepare('SELECT * FROM registro_barras WHERE codigo_barras = ?').bind(codigo).first();
   
   if (!produto) return erro('Código não encontrado', 404);
+  
+  // Limpa o R$ do preço se houver, para o frontend calcular
+  if (produto.preco) {
+    produto.preco = produto.preco.replace('R$', '').trim();
+  }
   
   return json({ ok: true, produto });
 }
@@ -182,10 +187,29 @@ async function salvarRegistroBarras({ request, env }){
   
   if (!p.codigo_barras || !p.nome) return erro('Código e Nome são obrigatórios');
   
+  // Limpa o R$ do preço antes de salvar
+  let precoLimpo = p.preco ? p.preco.replace('R$', '').trim() : null;
+
   await env.DB.prepare(
     `INSERT OR REPLACE INTO registro_barras (codigo_barras, nome, marca, preco) 
      VALUES (?, ?, ?, ?)`
-  ).bind(p.codigo_barras, p.nome, p.marca || null, p.preco || null).run();
+  ).bind(p.codigo_barras, p.nome, p.marca || null, precoLimpo).run();
+  
+  return json({ ok: true });
+}
+
+async function editarRegistroBarras({ request, env }){
+  const user = await autenticar(request, env);
+  if (!user) return erro('Não autenticado', 401);
+  const p = await request.json();
+  
+  if (!p.id || !p.nome) return erro('ID e Nome são obrigatórios');
+  
+  let precoLimpo = p.preco ? p.preco.replace('R$', '').trim() : null;
+
+  await env.DB.prepare(
+    `UPDATE registro_barras SET nome = ?, marca = ?, preco = ? WHERE id = ?`
+  ).bind(p.nome, p.marca || null, precoLimpo, p.id).run();
   
   return json({ ok: true });
 }
@@ -285,12 +309,15 @@ async function criarProduto({ request, env }){
   if (!user) return erro('Não autenticado', 401);
   const p = await request.json();
   if (!p.nome || !p.categoria) return erro('Nome e categoria obrigatórios');
+  
+  let precoLimpo = p.preco ? p.preco.replace('R$', '').trim() : null;
+
   const result = await env.DB.prepare(
     `INSERT INTO produtos (nome, categoria, subcategoria, volume, preco, tag, imagem_url, ativo, ordem, variacoes, codigo_barras, estoque) 
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).bind(
     p.nome, p.categoria, p.subcategoria || null, p.volume || null, 
-    p.preco || null, p.tag || null, p.imagem_url || null, 
+    precoLimpo, p.tag || null, p.imagem_url || null, 
     p.ativo !== undefined ? p.ativo : 1, p.ordem || 0, p.variacoes || null,
     p.codigo_barras || null, p.estoque || 0
   ).run();
@@ -302,11 +329,14 @@ async function editarProduto({ request, env }){
   if (!user) return erro('Não autenticado', 401);
   const p = await request.json();
   if (!p.id) return erro('ID obrigatório');
+  
+  let precoLimpo = p.preco ? p.preco.replace('R$', '').trim() : null;
+
   await env.DB.prepare(
     `UPDATE produtos SET nome=?, categoria=?, subcategoria=?, volume=?, preco=?, tag=?, imagem_url=?, ativo=?, ordem=?, variacoes=?, codigo_barras=?, estoque=? WHERE id=?`
   ).bind(
     p.nome, p.categoria, p.subcategoria || null, p.volume || null, 
-    p.preco || null, p.tag || null, p.imagem_url || null, 
+    precoLimpo, p.tag || null, p.imagem_url || null, 
     p.ativo !== undefined ? p.ativo : 1, p.ordem || 0, p.variacoes || null,
     p.codigo_barras || null, p.estoque || 0, p.id
   ).run();
@@ -458,7 +488,14 @@ async function criarTransacao({ request, env }){
   const user = await autenticar(request, env);
   if (!user) return erro('Não autenticado', 401);
   const { data, valor, metodo_pagamento } = await request.json();
-  await env.DB.prepare('INSERT INTO financeiro (data, valor, metodo_pagamento) VALUES (?, ?, ?)').bind(data, valor, metodo_pagamento).run();
+  
+  // Trata o valor para garantir que é número
+  let valorLimpo = valor;
+  if (typeof valor === 'string') {
+    valorLimpo = parseFloat(valor.replace('R$', '').replace(/\./g, '').replace(',', '.').trim());
+  }
+
+  await env.DB.prepare('INSERT INTO financeiro (data, valor, metodo_pagamento) VALUES (?, ?, ?)').bind(data, valorLimpo, metodo_pagamento).run();
   return json({ ok: true });
 }
 
@@ -483,7 +520,13 @@ async function criarFluxo({ request, env }){
   const user = await autenticar(request, env);
   if (!user) return erro('Não autenticado', 401);
   const { data, tipo, valor, descricao } = await request.json();
-  await env.DB.prepare('INSERT INTO fluxo_caixa (data, tipo, valor, descricao) VALUES (?, ?, ?, ?)').bind(data, tipo, valor, descricao).run();
+  
+  let valorLimpo = valor;
+  if (typeof valor === 'string') {
+    valorLimpo = parseFloat(valor.replace('R$', '').replace(/\./g, '').replace(',', '.').trim());
+  }
+
+  await env.DB.prepare('INSERT INTO fluxo_caixa (data, tipo, valor, descricao) VALUES (?, ?, ?, ?)').bind(data, tipo, valorLimpo, descricao).run();
   return json({ ok: true });
 }
 
