@@ -111,7 +111,7 @@ export async function onRequest(context){
 }
 
 /* ============================================================
- * REGISTRO DE BARRAS (Novas Funções)
+ * REGISTRO DE BARRAS
  * ============================================================ */
 async function buscarPorCodigoBarras({ request, env }){
   const user = await autenticar(request, env);
@@ -120,11 +120,9 @@ async function buscarPorCodigoBarras({ request, env }){
   const codigo = new URL(request.url).searchParams.get('codigo');
   if (!codigo) return erro('Código de barras não informado');
 
-  // 1. Busca no Registro local
   const registroLocal = await env.DB.prepare('SELECT * FROM registro_barras WHERE codigo_barras = ?').bind(codigo).first();
   if (registroLocal) return json({ ok: true, produto: registroLocal, origem: 'local' });
 
-  // 2. Busca na API do SI5
   try {
     const SEU_TOKEN_SI5 = env.SI5_TOKEN; 
     if (!SEU_TOKEN_SI5) return erro('Produto não encontrado. Token SI5 não configurado.', 404);
@@ -140,9 +138,8 @@ async function buscarPorCodigoBarras({ request, env }){
       const produtoApi = {
         nome: item.produto || 'Produto sem nome',
         marca: item.marca || null,
-        volume: item.volume || null,
         codigo_barras: codigo,
-        imagem_url: item.imagem || null,
+        preco: null, // Preço em branco para o usuário preencher
         origem: 'api'
       };
       return json({ ok: true, produto: produtoApi, origem: 'api' });
@@ -168,9 +165,9 @@ async function salvarRegistroBarras({ request, env }){
   if (!p.codigo_barras || !p.nome) return erro('Código e Nome são obrigatórios');
   
   await env.DB.prepare(
-    `INSERT OR REPLACE INTO registro_barras (codigo_barras, nome, marca, volume, imagem_url) 
-     VALUES (?, ?, ?, ?, ?)`
-  ).bind(p.codigo_barras, p.nome, p.marca || null, p.volume || null, p.imagem_url || null).run();
+    `INSERT OR REPLACE INTO registro_barras (codigo_barras, nome, marca, preco) 
+     VALUES (?, ?, ?, ?)`
+  ).bind(p.codigo_barras, p.nome, p.marca || null, p.preco || null).run();
   
   return json({ ok: true });
 }
@@ -192,7 +189,7 @@ async function setup({ request, env }){
   if (total.n > 0) return erro('Setup já foi feito.', 403);
   const { email, senha } = await request.json();
   if (!email || !senha) return erro('Email e senha obrigatórios');
-  if (senha.length < 6) return erro('Senha precisa ter ao menos 6 caracteres');
+  if (senha.length < 6) return erro('Senha curta');
   const salt = gerarSalt();
   const senha_hash = await hashSenha(senha, salt);
   await env.DB.prepare('INSERT INTO usuarios (email, senha_hash, salt) VALUES (?, ?, ?)').bind(email, senha_hash, salt).run();
