@@ -121,6 +121,31 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 .pdv-pagamento select { padding: 15px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--line); color: white; font-size: 16px; flex: 1; }
 .pdv-pagamento button { padding: 15px 30px; font-size: 16px; }
 
+/* ---------- ABA FINANCEIRO (MENU) ---------- */
+.fin-menu { display: flex; flex-direction: column; gap: 12px; margin-bottom: 30px; max-width: 600px; }
+.fin-menu-card { background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; padding: 20px 24px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all .2s; }
+.fin-menu-card:hover { border-color: var(--green); background: var(--surface-3); transform: translateX(4px); }
+.fin-menu-card span { font-size: 16px; font-weight: 700; color: var(--txt); }
+.fin-menu-card svg { color: var(--muted); transition: color .2s; }
+.fin-menu-card:hover svg { color: var(--green); }
+
+.fin-subview { display: none; }
+.fin-subview.active { display: block; animation: fadeIn .3s; }
+
+.fin-nav { display:flex; gap:16px; margin-bottom:20px; background: var(--surface); padding:16px; border-radius:12px; border:1px solid var(--line); align-items: center; }
+.fin-nav select { padding:10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); color:white; outline:none; font-size:14px; }
+.fin-nav select:focus { border-color: var(--green); }
+.btn-voltar-fin { margin-left: auto; font-size: 13px; color: var(--muted); font-weight: 700; border: 1px solid var(--line); padding: 8px 16px; border-radius: 8px; }
+.btn-voltar-fin:hover { color: var(--txt); border-color: var(--txt); }
+
+.fin-dias { display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:12px; margin-bottom:30px; }
+.fin-dia-card { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:16px; text-align:center; cursor:pointer; transition:all .2s; position: relative; }
+.fin-dia-card:hover { border-color:var(--green); background:var(--green-soft); }
+.fin-dia-card h4 { font-size:16px; font-weight:800; margin-bottom:4px; }
+.fin-dia-card p { font-size:12px; color:var(--green); font-weight:700; }
+.fin-dia-card.fechado { border-color: rgba(230,57,70,.3); opacity: 0.7; }
+.fin-dia-card.fechado::after { content: 'FECHADO'; position: absolute; top: 5px; right: 5px; font-size: 8px; color: var(--red); font-weight: 900; }
+
 /* MODAIS GERAIS */
 #modal{ position:fixed; inset:0; background:rgba(0,0,0,.85); backdrop-filter:blur(6px); z-index:100; display:none; overflow-y:auto; padding:24px; }
 #modal.show{ display:block; }
@@ -257,32 +282,36 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
     <div class="tab-content" id="tab-financeiro">
       <div class="toolbar"><h2>Financeiro</h2></div>
       
+      <!-- MENU DO FINANCEIRO (Voltou ao Layout Antigo) -->
       <div class="fin-menu" id="fin-menu">
-        <div class="fin-menu-card" onclick="abrirSubView('caixa')" style="background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:18px 24px; display:flex; justify-content:space-between; cursor:pointer; margin-bottom:10px;">
-          <span>Controle de Caixa</span> <span>→</span>
+        <div class="fin-menu-card" onclick="abrirSubView('caixa')">
+          <span>Controle de Caixa</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
         </div>
-        <div class="fin-menu-card" onclick="abrirSubView('pdv')" style="background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:18px 24px; display:flex; justify-content:space-between; cursor:pointer; margin-bottom:10px;">
-          <span>Caixa (PDV)</span> <span>→</span>
+        <div class="fin-menu-card" onclick="abrirSubView('pdv')">
+          <span>Caixa (PDV)</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
         </div>
-        <div class="fin-menu-card" onclick="abrirSubView('fluxo')" style="background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:18px 24px; display:flex; justify-content:space-between; cursor:pointer;">
-          <span>Entradas e Saídas</span> <span>→</span>
+        <div class="fin-menu-card" onclick="abrirSubView('fluxo')">
+          <span>Entradas e Saídas</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
         </div>
       </div>
 
       <!-- SUB-VIEW: CONTROLE DE CAIXA -->
-      <div class="fin-subview" id="view-caixa" style="display:none;">
-        <div class="fin-nav" style="display:flex; gap:16px; margin-bottom:20px; background:var(--surface); padding:16px; border-radius:12px; border:1px solid var(--line);">
-          <select id="finMes" style="padding:10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); color:white;">
+      <div class="fin-subview" id="view-caixa">
+        <div class="fin-nav">
+          <select id="finMes">
             <option value="01">Janeiro</option><option value="02">Fevereiro</option><option value="03">Março</option>
             <option value="04">Abril</option><option value="05">Maio</option><option value="06">Junho</option>
             <option value="07">Julho</option><option value="08">Agosto</option><option value="09">Setembro</option>
             <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
           </select>
-          <select id="finAno" style="padding:10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); color:white;"></select>
-          <button class="btn-ghost" onclick="voltarMenuFin()" style="margin-left:auto;">Voltar</button>
+          <select id="finAno"></select>
+          <button class="btn-voltar-fin" onclick="voltarMenuFin()">Voltar</button>
         </div>
 
-        <div class="fin-dias" id="finListaDias" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:12px;"></div>
+        <div class="fin-dias" id="finListaDias"></div>
 
         <div class="fin-caixa" id="finCaixa" style="background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:20px; display:none; margin-top:20px;">
           <div class="fin-caixa-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid var(--line); padding-bottom:16px;">
@@ -318,19 +347,19 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
       </div>
 
       <!-- SUB-VIEW: PDV -->
-      <div class="fin-subview" id="view-pdv" style="display:none;">
-        <div class="fin-nav" style="display:flex; gap:16px; margin-bottom:20px; background:var(--surface); padding:16px; border-radius:12px; border:1px solid var(--line);">
-          <select id="pdvMes" style="padding:10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); color:white;">
+      <div class="fin-subview" id="view-pdv">
+        <div class="fin-nav">
+          <select id="pdvMes">
             <option value="01">Janeiro</option><option value="02">Fevereiro</option><option value="03">Março</option>
             <option value="04">Abril</option><option value="05">Maio</option><option value="06">Junho</option>
             <option value="07">Julho</option><option value="08">Agosto</option><option value="09">Setembro</option>
             <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
           </select>
-          <select id="pdvAno" style="padding:10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); color:white;"></select>
-          <button class="btn-ghost" onclick="voltarMenuFin()" style="margin-left:auto;">Voltar</button>
+          <select id="pdvAno"></select>
+          <button class="btn-voltar-fin" onclick="voltarMenuFin()">Voltar</button>
         </div>
 
-        <div class="fin-dias" id="pdvListaDias" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:12px;"></div>
+        <div class="fin-dias" id="pdvListaDias"></div>
 
         <div class="pdv-container" id="pdvCaixa" style="display:none;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid var(--line); padding-bottom:16px;">
@@ -365,7 +394,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
           </div>
 
           <div class="pdv-pagamento">
-            <select id="pdvMetodo" style="padding:15px; border-radius:10px; background:var(--surface-2); border:1px solid var(--line); color:white; font-size:16px; flex:1;">
+            <select id="pdvMetodo">
               <option value="DIN.">Dinheiro</option>
               <option value="DÉB.">Débito</option>
               <option value="CRÉD.">Crédito</option>
@@ -377,19 +406,19 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
       </div>
 
       <!-- SUB-VIEW: FLUXO -->
-      <div class="fin-subview" id="view-fluxo" style="display:none;">
-        <div class="fin-nav" style="display:flex; gap:16px; margin-bottom:20px; background:var(--surface); padding:16px; border-radius:12px; border:1px solid var(--line);">
-          <select id="fluxoMes" style="padding:10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); color:white;">
+      <div class="fin-subview" id="view-fluxo">
+        <div class="fin-nav">
+          <select id="fluxoMes">
             <option value="01">Janeiro</option><option value="02">Fevereiro</option><option value="03">Março</option>
             <option value="04">Abril</option><option value="05">Maio</option><option value="06">Junho</option>
             <option value="07">Julho</option><option value="08">Agosto</option><option value="09">Setembro</option>
             <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
           </select>
-          <select id="fluxoAno" style="padding:10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); color:white;"></select>
-          <button class="btn-ghost" onclick="voltarMenuFin()" style="margin-left:auto;">Voltar</button>
+          <select id="fluxoAno"></select>
+          <button class="btn-voltar-fin" onclick="voltarMenuFin()">Voltar</button>
         </div>
 
-        <div class="fin-dias" id="fluxoListaDias" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:12px;"></div>
+        <div class="fin-dias" id="fluxoListaDias"></div>
 
         <div class="fin-caixa" id="fluxoCaixa" style="background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:20px; display:none; margin-top:20px;">
           <div class="fin-caixa-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid var(--line); padding-bottom:16px;">
@@ -736,7 +765,6 @@ function voltarParaConfig() {
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
   $('#tab-config').classList.add('active');
   
-  // Marca a aba de configurações no menu como ativa novamente
   document.querySelectorAll('.nav-tabs button').forEach(b => b.classList.remove('active'));
   document.querySelector('.nav-tabs button[data-tab="config"]').classList.add('active');
 }
