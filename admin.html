@@ -33,8 +33,8 @@ a{ color:inherit; text-decoration:none; }
 .login-box label{ display:block; font-size:11.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
 .login-box input{ width:100%; padding:12px 14px; background:var(--surface-2); border:1px solid var(--line); border-radius:10px; color:var(--txt); font-size:14.5px; outline:none; margin-bottom:16px; transition:border-color .2s, background .2s; }
 .login-box input:focus{ border-color:var(--green); background:#111; }
-.btn-primary{ width:100%; padding:13px; background:var(--green); color:#001a09; font-weight:800; font-size:14.5px; border-radius:10px; transition:background .2s, transform .15s; box-shadow:0 4px 15px rgba(0,177,64,.2); }
-.btn-primary:hover{ background:#00c94a; transform:translateY(-1px); }
+.btn-primary{ width:100%; padding:13px; background:var(--green); color:#001a09; font-weight:800; font-size:14.5px; border-radius:10px; transition:background .2s, transform .15s, box-shadow .2s; box-shadow:0 4px 15px rgba(0,177,64,.2); }
+.btn-primary:hover{ background:#00c94a; transform:translateY(-1px); box-shadow:0 6px 20px rgba(0,177,64,.4); }
 .btn-primary:active{ transform:scale(.98); }
 .btn-primary:disabled{ opacity:.5; cursor:not-allowed; transform:none; box-shadow:none; }
 .msg-erro{ margin-top:14px; padding:11px; background:var(--red-soft); border:1px solid rgba(230,57,70,.35); color:#ff8895; font-size:13px; border-radius:8px; display:none; }
@@ -162,9 +162,15 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 .fin-resumo-linha { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
 .fin-resumo-linha span:last-child { font-weight: 800; }
 .fin-resumo-total { display: flex; justify-content: space-between; margin-top: 20px; padding-top: 16px; border-top: 2px solid var(--line-green); font-size: 18px; font-weight: 900; color: var(--green); }
-.fin-add-form { display: flex; gap: 10px; background: var(--surface-2); padding: 16px; border-radius: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: flex-end; border: 1px solid var(--line); }
-.fin-add-form input { width: 100%; padding: 10px; border-radius: 8px; background: var(--bg); border: 1px solid var(--line); color: white; outline:none; transition:border-color .2s; }
-.fin-add-form input:focus { border-color: var(--green); }
+
+/* O SEGREDO DO LAYOUT DO FORMULÁRIO DE LANÇAMENTO */
+.fin-add-form { display: flex; gap: 10px; background: var(--surface-2); padding: 16px; border-radius: 10px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; border: 1px solid var(--line); }
+.fin-add-form input { flex: 1; min-width: 150px; padding: 12px 14px; border-radius: 8px; background: var(--bg); border: 1px solid var(--line); color: white; outline:none; transition:border-color .2s; }
+.fin-add-form input:focus { border-color: var(--green); box-shadow:0 0 0 2px var(--green-soft); }
+.fin-add-form select { padding: 12px 14px; border-radius: 8px; background: var(--bg); border: 1px solid var(--line); color: white; outline: none; flex: 0 0 100px; }
+.fin-add-form select:focus { border-color: var(--green); }
+.fin-add-form button { flex: 0 0 100px; padding: 12px 0; height: auto; }
+
 .valor-entrada { color: var(--green) !important; }
 .valor-saida { color: var(--red) !important; }
 
@@ -220,6 +226,8 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
   .nav-tabs{ padding:12px 16px 0; }
   .nav-tabs button{ padding:10px 14px; font-size:13px; }
   .container{ padding:20px 16px 40px; }
+  .fin-add-form { flex-direction: column; align-items: stretch; }
+  .fin-add-form select, .fin-add-form button { flex: 1; width: 100%; }
 }
 </style>
 </head>
@@ -343,10 +351,10 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 
           <form class="fin-add-form" id="formTransacao">
             <input type="text" id="finValor" required placeholder="Valor (R$)" class="mascara-moeda">
-            <select id="finMetodo" required style="padding:10px; border-radius:8px; background:var(--bg); border:1px solid var(--line); color:white; outline:none;">
+            <select id="finMetodo" required>
               <option value="DIN.">DIN.</option><option value="DÉB.">DÉB.</option><option value="CRÉD.">CRÉD.</option><option value="PIX">PIX</option>
             </select>
-            <button type="submit" class="btn-primary" style="width:100px;">Lançar</button>
+            <button type="submit" class="btn-primary">Lançar</button>
           </form>
 
           <div style="display:grid; grid-template-columns:2fr 1fr; gap:24px;">
@@ -453,12 +461,12 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
           </div>
 
           <form class="fin-add-form" id="formFluxo">
-            <select id="fluxoTipo" required style="padding:10px; border-radius:8px; background:var(--bg); border:1px solid var(--line); color:white; outline:none;">
+            <select id="fluxoTipo" required>
               <option value="entrada">Entrada (+)</option><option value="saida">Saída (-)</option>
             </select>
             <input type="text" id="fluxoValor" required placeholder="Valor (R$)" class="mascara-moeda">
             <input type="text" id="fluxoDesc" required placeholder="Descrição" style="outline:none;">
-            <button type="submit" class="btn-primary" style="width:100px;">Lançar</button>
+            <button type="submit" class="btn-primary">Lançar</button>
           </form>
 
           <div style="display:grid; grid-template-columns:2fr 1fr; gap:24px;">
@@ -1013,7 +1021,7 @@ function renderizarProdutos(){
       <div class="info">
         <div class="cat">${p.categoria}</div>
         <h3>${p.nome}</h3>
-        <div class="meta">${p.volume || ''} | Estoque: <b>${p.estoque || 0}</b></div>
+        <div class="meta">${p.volume || ''}</div>
         <div class="preco">${formatarMoedaExibir(p.preco)}</div>
       </div>
       <div class="acoes">
