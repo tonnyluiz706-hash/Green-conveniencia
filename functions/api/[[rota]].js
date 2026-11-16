@@ -70,7 +70,7 @@ export async function onRequest(context){
     if (rota === 'barras/buscar' && metodo === 'GET') return buscarPorCodigoBarras(context);
     if (rota === 'admin/registro-barras' && metodo === 'GET') return listarRegistroBarras(context);
     if (rota === 'admin/registro-barras' && metodo === 'POST') return salvarRegistroBarras(context);
-    if (rota === 'admin/registro-barras' && metodo === 'PUT') return editarRegistroBarras(context); // NOVA ROTA
+    if (rota === 'admin/registro-barras' && metodo === 'PUT') return editarRegistroBarras(context);
     if (rota === 'admin/registro-barras' && metodo === 'DELETE') return deletarRegistroBarras(context);
     
     // PDV (Caixa Rápido)
@@ -100,6 +100,7 @@ export async function onRequest(context){
     if (rota === 'admin/financeiro' && metodo === 'GET') return listarFinanceiro(context);
     if (rota === 'admin/financeiro' && metodo === 'POST') return criarTransacao(context);
     if (rota === 'admin/financeiro' && metodo === 'DELETE') return deletarTransacao(context);
+    if (rota === 'admin/financeiro/dia' && metodo === 'DELETE') return deletarTransacoesDia(context); // NOVA ROTA
     
     if (rota === 'admin/fluxo' && metodo === 'GET') return listarFluxo(context);
     if (rota === 'admin/fluxo' && metodo === 'POST') return criarFluxo(context);
@@ -128,7 +129,6 @@ async function buscarProdutoPdv({ request, env }){
   
   if (!produto) return erro('Código não encontrado', 404);
   
-  // Limpa o R$ do preço se houver, para o frontend calcular
   if (produto.preco) {
     produto.preco = produto.preco.replace('R$', '').trim();
   }
@@ -187,7 +187,6 @@ async function salvarRegistroBarras({ request, env }){
   
   if (!p.codigo_barras || !p.nome) return erro('Código e Nome são obrigatórios');
   
-  // Limpa o R$ do preço antes de salvar
   let precoLimpo = p.preco ? p.preco.replace('R$', '').trim() : null;
 
   await env.DB.prepare(
@@ -224,7 +223,102 @@ async function deletarRegistroBarras({ request, env }){
 }
 
 /* ============================================================
- * DEMAIS FUNÇÕES
+ * FINANCEIRO
+ * ============================================================ */
+async function listarFinanceiro({ request, env }){
+  const user = await autenticar(request, env);
+  if (!user) return erro('Não autenticado', 401);
+  const url = new URL(request.url);
+  const ano = url.searchParams.get('ano'), mes = url.searchParams.get('mes');
+  const { results } = await env.DB.prepare('SELECT * FROM financeiro WHERE data LIKE ? ORDER BY data DESC, criado_em DESC').bind(`${ano}-${String(mes).padStart(2, '0')}%`).all();
+  return json({ ok: true, transacoes: results });
+}
+
+async function criarTransacao({ request, env }){
+  const user = await autenticar(request, env);
+  if (!user) return erro('Não autenticado', 401);
+  const { data, valor, metodo_pagamento } = await request.json();
+  
+  let valorLimpo = valor;
+  if (typeof valor === 'string') {
+    valorLimpo = parseFloat(valor.replace('R$', '').replace(/\./g, '').replace(',', '.').trim());
+  }
+
+  await env.DB.prepare('INSERT INTO financeiro (data, valor, metodo_pagamento) VALUES (?, ?, ?)').bind(data, valorLimpo, metodo_pagamento).run();
+  return json({ ok: true });
+}
+
+async function deletarTransacao({ request, env }){
+  const user = await autenticar(request, env);
+  if (!user) return erro('Não autenticado', 401);
+  const id = new URL(request.url).searchParams.get('id');
+  await env.DB.prepare('DELETE FROM financeiro WHERE id = ?').bind(id).run();
+  return json({ ok: true });
+}
+
+// NOVA FUNÇÃO: Apaga todos os lançamentos de um dia específico
+async function deletarTransacoesDia({ request, env }){
+  const user = await autenticar(request, env);
+  if (!user) return erro('Não autenticado', 401);
+  
+  const data = new URL(request.url).searchParams.get('data');
+  if (!data) return erro('Data é obrigatória');
+  
+  await env.DB.prepare('DELETE FROM financeiro WHERE data = ?').bind(data).run();
+  return json({ ok: true });
+}
+
+async function listarFluxo({ request, env }){
+  const user = await autenticar(request, env);
+  if (!user) return erro('Não autenticado', 401);
+  const url = new URL(request.url);
+  const ano = url.searchParams.get('ano'), mes = url.searchParams.get('mes');
+  const { results } = await env.DB.prepare('SELECT * FROM fluxo_caixa WHERE data LIKE ? ORDER BY data DESC, criado_em DESC').bind(`${ano}-${String(mes).padStart(2, '0')}%`).all();
+  return json({ ok: true, fluxo: results });
+}
+
+async function criarFluxo({ request, env }){
+  const user = await autenticar(request, env);
+  if (!user) return erro('Não autenticado', 401);
+  const { data, tipo, valor, descricao } = await request.json();
+  
+  let valorLimpo = valor;
+  if (typeof valor === 'string') {
+    valorLimpo = parseFloat(valor.replace('R$', '').replace(/\./g, '').replace(',', '.').trim());
+  }
+
+  await env.DB.prepare('INSERT INTO fluxo_caixa (data, tipo, valor, descricao) VALUES (?, ?, ?, ?)').bind(data, tipo, valorLimpo, descricao).run();
+  return json({ ok: true });
+}
+
+async function deletarFluxo({ request, env }){
+  const user = await autenticar(request, env);
+  if (!user) return erro('Não autenticado', 401);
+  const id = new URL(request.url).searchParams.get('id');
+  await env.DB.prepare('DELETE FROM fluxo_caixa WHERE id = ?').bind(id).run();
+  return json({ ok: true });
+}
+
+async function statusCaixa({ request, env }){
+  const user = await autenticar(request, env);
+  if (!user) return erro('Não autenticado', 401);
+  const url = new URL(request.url);
+  const ano = url.searchParams.get('ano'), mes = url.searchParams.get('mes');
+  const { results } = await env.DB.prepare('SELECT * FROM caixa_status WHERE data LIKE ?').bind(`${ano}-${String(mes).padStart(2, '0')}%`).all();
+  return json({ ok: true, status: results });
+}
+
+async function fecharCaixa({ request, env }){
+  const user = await autenticar(request, env);
+  if (!user) return erro('Não autenticado', 401);
+  const { data, total } = await request.json();
+  await env.DB.prepare('INSERT OR REPLACE INTO caixa_status (data, fechado, total) VALUES (?, 1, ?)').bind(data, total).run();
+  await env.DB.prepare('INSERT INTO fluxo_caixa (data, tipo, valor, descricao) VALUES (?, "entrada", ?, ?)').bind(data, total, `Fechamento - ${data.split('-').reverse().join('/')}`).run();
+  return json({ ok: true });
+}
+
+/* ============================================================
+ * DEMAIS FUNÇÕES (Admin, Categorias, Produtos, Clientes, Pedidos)
  * ============================================================ */
 async function setup({ request, env }){
   const total = await env.DB.prepare('SELECT COUNT(*) AS n FROM usuarios').first();
@@ -472,87 +566,6 @@ async function atualizarStatusPedido({ request, env }){
   if (!user) return erro('Não autenticado', 401);
   const { id, status } = await request.json();
   await env.DB.prepare('UPDATE pedidos SET status = ? WHERE id = ?').bind(status, id).run();
-  return json({ ok: true });
-}
-
-async function listarFinanceiro({ request, env }){
-  const user = await autenticar(request, env);
-  if (!user) return erro('Não autenticado', 401);
-  const url = new URL(request.url);
-  const ano = url.searchParams.get('ano'), mes = url.searchParams.get('mes');
-  const { results } = await env.DB.prepare('SELECT * FROM financeiro WHERE data LIKE ? ORDER BY data DESC, criado_em DESC').bind(`${ano}-${String(mes).padStart(2, '0')}%`).all();
-  return json({ ok: true, transacoes: results });
-}
-
-async function criarTransacao({ request, env }){
-  const user = await autenticar(request, env);
-  if (!user) return erro('Não autenticado', 401);
-  const { data, valor, metodo_pagamento } = await request.json();
-  
-  // Trata o valor para garantir que é número
-  let valorLimpo = valor;
-  if (typeof valor === 'string') {
-    valorLimpo = parseFloat(valor.replace('R$', '').replace(/\./g, '').replace(',', '.').trim());
-  }
-
-  await env.DB.prepare('INSERT INTO financeiro (data, valor, metodo_pagamento) VALUES (?, ?, ?)').bind(data, valorLimpo, metodo_pagamento).run();
-  return json({ ok: true });
-}
-
-async function deletarTransacao({ request, env }){
-  const user = await autenticar(request, env);
-  if (!user) return erro('Não autenticado', 401);
-  const id = new URL(request.url).searchParams.get('id');
-  await env.DB.prepare('DELETE FROM financeiro WHERE id = ?').bind(id).run();
-  return json({ ok: true });
-}
-
-async function listarFluxo({ request, env }){
-  const user = await autenticar(request, env);
-  if (!user) return erro('Não autenticado', 401);
-  const url = new URL(request.url);
-  const ano = url.searchParams.get('ano'), mes = url.searchParams.get('mes');
-  const { results } = await env.DB.prepare('SELECT * FROM fluxo_caixa WHERE data LIKE ? ORDER BY data DESC, criado_em DESC').bind(`${ano}-${String(mes).padStart(2, '0')}%`).all();
-  return json({ ok: true, fluxo: results });
-}
-
-async function criarFluxo({ request, env }){
-  const user = await autenticar(request, env);
-  if (!user) return erro('Não autenticado', 401);
-  const { data, tipo, valor, descricao } = await request.json();
-  
-  let valorLimpo = valor;
-  if (typeof valor === 'string') {
-    valorLimpo = parseFloat(valor.replace('R$', '').replace(/\./g, '').replace(',', '.').trim());
-  }
-
-  await env.DB.prepare('INSERT INTO fluxo_caixa (data, tipo, valor, descricao) VALUES (?, ?, ?, ?)').bind(data, tipo, valorLimpo, descricao).run();
-  return json({ ok: true });
-}
-
-async function deletarFluxo({ request, env }){
-  const user = await autenticar(request, env);
-  if (!user) return erro('Não autenticado', 401);
-  const id = new URL(request.url).searchParams.get('id');
-  await env.DB.prepare('DELETE FROM fluxo_caixa WHERE id = ?').bind(id).run();
-  return json({ ok: true });
-}
-
-async function statusCaixa({ request, env }){
-  const user = await autenticar(request, env);
-  if (!user) return erro('Não autenticado', 401);
-  const url = new URL(request.url);
-  const ano = url.searchParams.get('ano'), mes = url.searchParams.get('mes');
-  const { results } = await env.DB.prepare('SELECT * FROM caixa_status WHERE data LIKE ?').bind(`${ano}-${String(mes).padStart(2, '0')}%`).all();
-  return json({ ok: true, status: results });
-}
-
-async function fecharCaixa({ request, env }){
-  const user = await autenticar(request, env);
-  if (!user) return erro('Não autenticado', 401);
-  const { data, total } = await request.json();
-  await env.DB.prepare('INSERT OR REPLACE INTO caixa_status (data, fechado, total) VALUES (?, 1, ?)').bind(data, total).run();
-  await env.DB.prepare('INSERT INTO fluxo_caixa (data, tipo, valor, descricao) VALUES (?, "entrada", ?, ?)').bind(data, total, `Fechamento - ${data.split('-').reverse().join('/')}`).run();
   return json({ ok: true });
 }
 
