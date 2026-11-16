@@ -23,7 +23,6 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; color
 input,select,textarea{ font-family:inherit; }
 a{ color:inherit; text-decoration:none; }
 
-/* ---------- LOGIN ---------- */
 #loginScreen{ min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
 .login-box{ width:100%; max-width:400px; background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:36px 32px; box-shadow:0 30px 80px -30px rgba(0,177,64,.3); }
 .login-box .brand{ display:flex; align-items:center; gap:12px; margin-bottom:28px; justify-content:center; }
@@ -40,7 +39,6 @@ a{ color:inherit; text-decoration:none; }
 .msg-erro{ margin-top:14px; padding:11px; background:var(--red-soft); border:1px solid rgba(230,57,70,.35); color:#ff8895; font-size:13px; border-radius:8px; display:none; }
 .msg-erro.show{ display:block; }
 
-/* ---------- DASHBOARD ---------- */
 #dashboard{ display:none; min-height:100vh; }
 #dashboard.show{ display:block; }
 header.admin{ position:sticky; top:0; z-index:30; background:rgba(5,5,5,.9); backdrop-filter:blur(14px); border-bottom:1px solid var(--line); padding:14px 24px; display:flex; align-items:center; gap:16px; }
@@ -53,7 +51,6 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 .btn-ghost{ padding:9px 16px; border:1px solid var(--line); border-radius:9px; font-size:13px; font-weight:700; color:var(--muted); transition:border-color .2s, color .2s, background .2s; }
 .btn-ghost:hover{ border-color:var(--green); color:var(--green); background:var(--green-soft); }
 
-/* ---------- NAVEGAÇÃO DAS ABAS ---------- */
 .nav-tabs{ display:flex; gap:8px; padding:16px 24px 0; max-width:1300px; margin:0 auto; border-bottom:1px solid var(--line); overflow-x:auto; }
 .nav-tabs button{ padding:12px 20px; font-size:14px; font-weight:700; color:var(--muted); border-bottom:3px solid transparent; transition:color .2s, border-color .2s; white-space:nowrap; }
 .nav-tabs button:hover{ color:var(--txt); }
@@ -64,7 +61,6 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 .tab-content.active{ display:block; animation:fadeIn .3s; }
 @keyframes fadeIn { from { opacity:0; transform:translateY(5px);} to { opacity:1; transform:translateY(0);} }
 
-/* ---------- ABA PRODUTOS ---------- */
 .toolbar{ display:flex; flex-wrap:wrap; gap:12px; align-items:center; margin-bottom:24px; }
 .toolbar h2{ font-size:22px; font-weight:800; letter-spacing:-.02em; flex:1; min-width:200px; }
 .toolbar h2 small{ display:block; font-size:12px; color:var(--muted); font-weight:500; margin-top:2px; }
@@ -96,104 +92,21 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 .card-prod .acoes .btn-del{ background:var(--red-soft); color:#ff8895; }
 .card-prod .acoes .btn-del:hover{ background:var(--red); color:#fff; }
 
-/* ---------- ABA PEDIDOS ---------- */
-.pedido-card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); margin-bottom:16px; overflow:hidden; }
-.pedido-header{ padding:14px 20px; background:var(--surface-2); border-bottom:1px solid var(--line); display:flex; flex-wrap:wrap; align-items:center; gap:16px; }
-.pedido-header h3{ font-size:15px; font-weight:800; flex:1; }
-.pedido-header .data{ font-size:12px; color:var(--muted); }
-.pedido-body{ padding:20px; display:flex; flex-wrap:wrap; gap:20px; }
-.pedido-info{ flex:1; min-width:250px; }
-.pedido-info p{ font-size:13px; margin-bottom:6px; color:var(--muted); }
-.pedido-info p strong{ color:var(--txt); }
-.pedido-itens{ flex:1; min-width:250px; background:var(--surface-2); padding:12px; border-radius:8px; border:1px solid var(--line); }
-.pedido-itens li{ font-size:13px; margin-bottom:6px; display:flex; justify-content:space-between; list-style:none; border-bottom:1px dashed var(--line); padding-bottom:6px; }
-.pedido-itens li:last-child{ border-bottom:none; margin-bottom:0; padding-bottom:0; }
-.pedido-footer{ padding:14px 20px; border-top:1px solid var(--line); display:flex; align-items:center; gap:16px; justify-content:space-between; }
-.pedido-total{ font-size:16px; font-weight:800; color:var(--green); }
-.status-select{ padding:8px 12px; border-radius:8px; font-weight:700; font-size:12px; border:1px solid var(--line); background:var(--surface); color:var(--txt); cursor:pointer; outline:none; }
-.status-select.pendente{ color:#fca311; border-color:rgba(252,163,17,.3); }
-.status-select.entregue{ color:var(--green); border-color:var(--line-green); }
-.status-select.cancelado{ color:var(--red); border-color:rgba(230,57,70,.3); }
+/* ESTILOS DA NOVA ABA DE REGISTRO */
+.registro-container { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 24px; margin-bottom: 24px; }
+.registro-container p { color: var(--muted); font-size: 14px; margin-bottom: 16px; }
+.registro-input-wrap { display: flex; gap: 12px; margin-bottom: 20px; }
+.registro-input-wrap input { flex: 1; padding: 16px; font-size: 18px; border: 2px solid var(--line-green); border-radius: 10px; background: var(--bg); color: var(--txt); outline: none; font-weight: bold; text-align: center; letter-spacing: 2px; }
+.registro-input-wrap input:focus { border-color: var(--green); }
+.registro-input-wrap input::placeholder { color: #555; font-weight: normal; letter-spacing: normal; }
+.tabela-registros { width: 100%; border-collapse: collapse; }
+.tabela-registros th { text-align: left; padding: 12px; color: var(--muted); font-size: 12px; border-bottom: 1px solid var(--line); }
+.tabela-registros td { padding: 12px; border-bottom: 1px dashed var(--line); font-size: 14px; vertical-align: middle; }
+.tabela-registros td img { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; background: var(--surface-2); }
+.tabela-registros .btn-del { background: var(--red-soft); color: var(--red); padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; }
+.tabela-registros .btn-del:hover { background: var(--red); color: #fff; }
 
-/* ---------- ABAS CONFIGURAÇÕES e CATEGORIAS ---------- */
-.config-card{ background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:24px; max-width:600px; margin-bottom: 24px; }
-.config-card h3{ font-size:18px; font-weight:800; margin-bottom:8px; }
-.config-card p{ font-size:13.5px; color:var(--muted); margin-bottom:24px; }
-.btn-toggle-status{ width:100%; padding:16px; border-radius:12px; font-size:16px; font-weight:800; display:flex; align-items:center; justify-content:center; gap:10px; transition:all .2s; border:2px solid; }
-.btn-toggle-status.aberto{ background:var(--green-soft); color:var(--green); border-color:var(--line-green); }
-.btn-toggle-status.aberto:hover{ background:var(--green); color:#001a09; }
-.btn-toggle-status.fechado{ background:var(--red-soft); color:#ff8895; border-color:rgba(230,57,70,.4); }
-.btn-toggle-status.fechado:hover{ background:var(--red); color:#fff; }
-
-.form-cat { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
-.form-cat input { padding: 10px; border-radius: 8px; background: var(--surface-2); border: 1px solid var(--line); color: white; flex: 1; min-width: 150px; }
-.form-cat input:focus { border-color: var(--green); outline: none; }
-.form-cat button { width: auto; padding: 10px 20px; }
-
-.list-cats { display: flex; flex-direction: column; gap: 10px; }
-.cat-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; }
-.cat-item span { font-weight: 600; }
-.cat-item button { color: var(--red); background: var(--red-soft); padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; }
-.cat-item button:hover { background: var(--red); color: white; }
-
-/* ---------- ABA FINANCEIRO (MENU E SUB-TELAS) ---------- */
-.fin-menu { display: flex; flex-direction: column; gap: 10px; margin-bottom: 30px; max-width: 600px; }
-.fin-menu-card { background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all .2s; }
-.fin-menu-card:hover { border-color: var(--green); background: var(--surface-3); }
-.fin-menu-card span { font-size: 15px; font-weight: 700; color: var(--txt); }
-.fin-menu-card svg { color: var(--muted); width: 20px; height: 20px; transition: color .2s; }
-.fin-menu-card:hover svg { color: var(--green); }
-
-.fin-subview { display: none; }
-.fin-subview.active { display: block; animation: fadeIn .3s; }
-
-.fin-nav { display:flex; gap:16px; margin-bottom:20px; background: var(--surface); padding:16px; border-radius:12px; border:1px solid var(--line); align-items: center; }
-.fin-nav select { padding:10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); color:white; outline:none; font-size:14px; }
-.fin-nav select:focus { border-color: var(--green); }
-.btn-voltar-fin { margin-left: auto; font-size: 13px; color: var(--muted); font-weight: 700; border: 1px solid var(--line); padding: 8px 16px; border-radius: 8px; }
-.btn-voltar-fin:hover { color: var(--txt); border-color: var(--txt); }
-
-.fin-dias { display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:12px; margin-bottom:30px; }
-.fin-dia-card { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:16px; text-align:center; cursor:pointer; transition:all .2s; position: relative; }
-.fin-dia-card:hover { border-color:var(--green); background:var(--green-soft); }
-.fin-dia-card h4 { font-size:16px; font-weight:800; margin-bottom:4px; }
-.fin-dia-card p { font-size:12px; color:var(--green); font-weight:700; }
-.fin-dia-card.fechado { border-color: rgba(230,57,70,.3); opacity: 0.7; }
-.fin-dia-card.fechado::after { content: 'FECHADO'; position: absolute; top: 5px; right: 5px; font-size: 8px; color: var(--red); font-weight: 900; }
-
-.fin-caixa { background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:20px; display:none; margin-top:20px; }
-.fin-caixa.active { display:block; animation:fadeIn .3s; }
-.fin-caixa-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid var(--line); padding-bottom:16px; flex-wrap: wrap; gap: 10px; }
-.fin-caixa-header h3 { font-size:18px; font-weight:800; }
-.btn-fechar-caixa { color:var(--muted); font-size:13px; font-weight:700; }
-.btn-fechar-caixa:hover { color:var(--red); }
-
-.fin-grid { display:grid; grid-template-columns: 2fr 1fr; gap:24px; }
-@media(max-width: 800px) { .fin-grid { grid-template-columns: 1fr; } }
-
-.fin-tabela { width:100%; border-collapse:collapse; margin-bottom:20px; }
-.fin-tabela th { text-align:left; padding:10px; color:var(--muted); font-size:11px; text-transform:uppercase; border-bottom:1px solid var(--line); }
-.fin-tabela td { padding:12px 10px; border-bottom:1px dashed var(--line); font-size:14px; }
-.fin-tabela .valor-col { font-weight:800; color:var(--green); }
-.fin-tabela .btn-del { background:var(--red-soft); color:var(--red); padding:4px 8px; border-radius:6px; font-size:11px; }
-.fin-tabela .btn-del:hover { background:var(--red); color:white; }
-
-.fin-resumo { background:var(--surface-2); border:1px solid var(--line); border-radius:12px; padding:20px; }
-.fin-resumo h4 { font-size:15px; font-weight:800; margin-bottom:16px; text-transform:uppercase; color:var(--green); }
-.fin-resumo-linha { display:flex; justify-content:space-between; margin-bottom:10px; font-size:14px; }
-.fin-resumo-linha span:last-child { font-weight:800; }
-.fin-resumo-total { display:flex; justify-content:space-between; margin-top:20px; padding-top:16px; border-top:2px solid var(--line-green); font-size:18px; font-weight:900; color:var(--green); }
-
-.fin-add-form { display:flex; gap:10px; background:var(--surface-2); padding:16px; border-radius:10px; margin-bottom:20px; flex-wrap:wrap; align-items:flex-end; border:1px solid var(--line); }
-.fin-add-form .form-group { flex:1; min-width:120px; margin:0; }
-.fin-add-form input, .fin-add-form select { width:100%; padding:10px; border-radius:8px; background:var(--bg); border:1px solid var(--line); color:white; }
-.fin-add-form input:focus, .fin-add-form select:focus { border-color:var(--green); outline:none; }
-.fin-add-form button { padding:10px 20px; height: 41px; }
-
-.valor-entrada { color: var(--green) !important; }
-.valor-saida { color: var(--red) !important; }
-
-/* ---------- MODAL ---------- */
+/* MODAIS GERAIS */
 #modal{ position:fixed; inset:0; background:rgba(0,0,0,.85); backdrop-filter:blur(6px); z-index:100; display:none; overflow-y:auto; padding:24px; }
 #modal.show{ display:block; }
 .modal-box{ max-width:680px; margin:40px auto; background:var(--surface); border:1px solid var(--line); border-radius:16px; overflow:hidden; box-shadow:0 30px 80px -30px rgba(0,177,64,.3); }
@@ -237,39 +150,6 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 #toast.show{ transform:translateY(0); opacity:1; }
 #toast.erro{ border-color:rgba(230,57,70,.5); color:#ff8895; }
 
-/* ---------- NOVOS MODAIS DE AÇÃO (CONFIRMAÇÃO E SUCESSO) ---------- */
-.modal-action-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,.85); backdrop-filter: blur(6px);
-  z-index: 300; display: none; align-items: center; justify-content: center; padding: 20px;
-}
-.modal-action-overlay.show { display: flex; }
-.action-box {
-  background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
-  padding: 40px 30px; max-width: 420px; width: 100%; text-align: center;
-  box-shadow: 0 30px 80px -20px rgba(0,0,0,.8); animation: modalIn .3s cubic-bezier(.2,.8,.3,1);
-}
-.action-box.success-box { border-color: var(--line-green); box-shadow: 0 30px 80px -20px rgba(0,177,64,.4); }
-
-.icon-circle { width: 80px; height: 80px; border-radius: 50%; display: grid; place-items: center; margin: 0 auto 20px; }
-.success-box .icon-circle { background: var(--green-soft); border: 2px solid var(--green); color: var(--green); }
-.confirm-box .icon-circle { background: rgba(252,163,17,.1); border: 2px solid #fca311; color: #fca311; }
-
-.icon-circle svg { width: 40px; height: 40px; }
-
-.action-box h2 { font-size: 22px; font-weight: 900; margin-bottom: 10px; }
-.success-box h2 { color: var(--green); }
-.confirm-box h2 { color: #fca311; }
-
-.action-box p { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 26px; }
-.action-box p strong { color: var(--txt); font-size: 16px; }
-.action-btn-group { display: flex; gap: 10px; }
-.action-btn-group button { flex: 1; padding: 13px; border-radius: 10px; font-weight: 800; font-size: 14.5px; transition: all .2s; }
-.btn-confirm { background: var(--green); color: #001a09; }
-.btn-confirm:hover { background: #00c94a; }
-.btn-cancel-action { background: var(--surface-2); color: var(--txt); border: 1px solid var(--line); }
-.btn-cancel-action:hover { background: var(--surface-3); }
-
-@keyframes modalIn { from{opacity:0; transform:scale(.94) translateY(10px);} to{opacity:1; transform:scale(1) translateY(0);} }
 @media (max-width:600px){
   .form-grid{ grid-template-columns:1fr; }
   header.admin{ padding:12px 16px; }
@@ -277,7 +157,6 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
   .nav-tabs{ padding:12px 16px 0; }
   .nav-tabs button{ padding:10px 14px; font-size:13px; }
   .container{ padding:20px 16px 40px; }
-  .pedido-footer{ flex-direction:column; align-items:flex-start; }
 }
 </style>
 </head>
@@ -292,9 +171,9 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
     <p>Green Conveniência e Tabacaria</p>
     <form id="loginForm">
       <label for="email">Email</label>
-      <input type="email" id="email" autocomplete="username" required placeholder="seuemail@exemplo.com">
+      <input type="email" id="email" required placeholder="seuemail@exemplo.com">
       <label for="senha">Senha</label>
-      <input type="password" id="senha" autocomplete="current-password" required placeholder="••••••••">
+      <input type="password" id="senha" required placeholder="••••••••">
       <button type="submit" class="btn-primary" id="btnLogin">Entrar</button>
       <div class="msg-erro" id="loginErro"></div>
     </form>
@@ -313,7 +192,8 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
   </header>
 
   <div class="nav-tabs">
-    <button class="active" data-tab="produtos">Produtos</button>
+    <button class="active" data-tab="produtos">Produtos (Site)</button>
+    <button data-tab="registro">Registro (Cód. Barras)</button>
     <button data-tab="categorias">Categorias</button>
     <button data-tab="pedidos">Pedidos</button>
     <button data-tab="financeiro">Financeiro</button>
@@ -321,41 +201,63 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
   </div>
 
   <div class="container">
-    <!-- ABA PRODUTOS -->
+    
+    <!-- ABA PRODUTOS (VITRINE) -->
     <div class="tab-content active" id="tab-produtos">
       <div class="toolbar">
-        <h2>Produtos <small id="contador">—</small></h2>
-        
-        <!-- CAMPO NOVO: BIPAR CÓDIGO DE BARRAS -->
-        <input type="text" id="biparCodigo" placeholder="Bipar código de barras..." autocomplete="off">
-        
-        <input type="search" id="busca" placeholder="Buscar por nome...">
+        <h2>Produtos no Site <small id="contador">—</small></h2>
+        <input type="search" id="busca" placeholder="Buscar produto...">
         <select id="filtroCategoria">
           <option value="">Todas as categorias</option>
         </select>
-        <button class="btn-new" id="btnNovo">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-          Novo produto
-        </button>
+        <button class="btn-new" id="btnNovo">+ Novo produto</button>
       </div>
       <div class="grid-produtos" id="gridProdutos"></div>
     </div>
 
+    <!-- NOVA ABA REGISTRO DE BARRAS -->
+    <div class="tab-content" id="tab-registro">
+      <div class="toolbar">
+        <h2>Catálogo de Códigos de Barras</h2>
+      </div>
+      
+      <div class="registro-container">
+        <p>Bipe ou digite o código abaixo. O sistema vai buscar as informações na internet e salvar no seu catálogo interno. <b>Isso não vai pro site.</b></p>
+        <div class="registro-input-wrap">
+          <input type="text" id="biparCodigo" placeholder="Aponte o leitor aqui e bipe o código..." autocomplete="off">
+        </div>
+        
+        <table class="tabela-registros">
+          <thead>
+            <tr>
+              <th>Imagem</th>
+              <th>Nome</th>
+              <th>Marca</th>
+              <th>Volume</th>
+              <th>Código</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaRegistrosBody">
+            <tr><td colspan="6" style="text-align:center; color:var(--muted);">Nenhum produto registrado ainda.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- ABA CATEGORIAS -->
     <div class="tab-content" id="tab-categorias">
-      <div class="toolbar">
-        <h2>Gerenciar Categorias</h2>
-      </div>
-      <div class="config-card">
+      <div class="toolbar"><h2>Gerenciar Categorias</h2></div>
+      <div class="config-card" style="background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:24px; max-width:600px; margin-bottom:24px;">
         <h3>Nova Categoria</h3>
-        <p>Crie uma nova seção para o site (ex: Bebidas Geladas, Importados).</p>
-        <form id="formCategoria" class="form-cat">
-          <input type="text" id="catNome" placeholder="Nome da Categoria" required>
-          <input type="number" id="catOrdem" placeholder="Ordem (ex: 10)" value="0">
-          <button type="submit" class="btn-primary" id="btnSalvarCategoria">Criar</button>
+        <p>Crie uma nova seção para o site.</p>
+        <form id="formCategoria" style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;">
+          <input type="text" id="catNome" placeholder="Nome da Categoria" required style="padding:10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); color:white; flex:1;">
+          <input type="number" id="catOrdem" placeholder="Ordem" value="0" style="padding:10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); color:white; width:100px;">
+          <button type="submit" class="btn-primary" id="btnSalvarCategoria" style="width:auto; padding:10px 20px;">Criar</button>
         </form>
       </div>
-      <div class="list-cats" id="listaCategorias"></div>
+      <div class="list-cats" id="listaCategorias" style="display:flex; flex-direction:column; gap:10px;"></div>
     </div>
 
     <!-- ABA PEDIDOS -->
@@ -367,159 +269,129 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
       <div id="listaPedidos"></div>
     </div>
 
-    <!-- ABA FINANCEIRO (MENU) -->
+    <!-- ABA FINANCEIRO -->
     <div class="tab-content" id="tab-financeiro">
-      <div class="toolbar">
-        <h2>Financeiro</h2>
-      </div>
+      <div class="toolbar"><h2>Financeiro</h2></div>
       
-      <!-- MENU ESTILO LISTA -->
-      <div class="fin-menu">
-        <div class="fin-menu-card" onclick="abrirSubView('caixa')">
-          <span>Controle de Caixa</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      <div class="fin-menu" id="fin-menu">
+        <div class="fin-menu-card" onclick="abrirSubView('caixa')" style="background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:18px 24px; display:flex; justify-content:space-between; cursor:pointer; margin-bottom:10px;">
+          <span>Controle de Caixa</span> <span>→</span>
         </div>
-        <div class="fin-menu-card" onclick="abrirSubView('fluxo')">
-          <span>Entradas e Saídas</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        <div class="fin-menu-card" onclick="abrirSubView('fluxo')" style="background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:18px 24px; display:flex; justify-content:space-between; cursor:pointer;">
+          <span>Entradas e Saídas</span> <span>→</span>
         </div>
       </div>
 
-      <!-- SUB-VIEW: CONTROLE DE CAIXA -->
-      <div class="fin-subview" id="view-caixa">
-        <div class="fin-nav">
-          <select id="finMes">
+      <div class="fin-subview" id="view-caixa" style="display:none;">
+        <div class="fin-nav" style="display:flex; gap:16px; margin-bottom:20px; background:var(--surface); padding:16px; border-radius:12px; border:1px solid var(--line);">
+          <select id="finMes" style="padding:10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); color:white;">
             <option value="01">Janeiro</option><option value="02">Fevereiro</option><option value="03">Março</option>
             <option value="04">Abril</option><option value="05">Maio</option><option value="06">Junho</option>
             <option value="07">Julho</option><option value="08">Agosto</option><option value="09">Setembro</option>
             <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
           </select>
-          <select id="finAno"></select>
-          <button class="btn-voltar-fin" onclick="voltarMenuFin()">Voltar</button>
+          <select id="finAno" style="padding:10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); color:white;"></select>
+          <button class="btn-ghost" onclick="voltarMenuFin()" style="margin-left:auto;">Voltar</button>
         </div>
 
-        <div class="fin-dias" id="finListaDias"></div>
+        <div class="fin-dias" id="finListaDias" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:12px;"></div>
 
-        <div class="fin-caixa" id="finCaixa">
-          <div class="fin-caixa-header">
+        <div class="fin-caixa" id="finCaixa" style="background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:20px; display:none; margin-top:20px;">
+          <div class="fin-caixa-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid var(--line); padding-bottom:16px;">
             <h3 id="finTituloCaixa">Caixa do Dia</h3>
-            <button class="btn-fechar-caixa" onclick="fecharCaixaAcao()" id="btnFecharCaixa">Fechar Caixa e Enviar p/ Fluxo</button>
+            <button class="btn-ghost" style="color:var(--red);" onclick="fecharCaixaAcao()" id="btnFecharCaixa">Fechar Caixa</button>
           </div>
 
-          <form class="fin-add-form" id="formTransacao">
-            <div class="form-group">
-              <label>Valor (R$)</label>
-              <input type="number" step="0.01" id="finValor" required placeholder="0.00">
-            </div>
-            <div class="form-group">
-              <label>Método</label>
-              <select id="finMetodo" required>
-                <option value="DIN.">DIN.</option>
-                <option value="DÉB.">DÉB.</option>
-                <option value="CRÉD.">CRÉD.</option>
-                <option value="PIX">PIX</option>
-              </select>
-            </div>
-            <button type="submit" class="btn-primary" style="flex:0 0 100px;">Lançar</button>
+          <form class="fin-add-form" id="formTransacao" style="display:flex; gap:10px; background:var(--surface-2); padding:16px; border-radius:10px; margin-bottom:20px; flex-wrap:wrap;">
+            <input type="number" step="0.01" id="finValor" required placeholder="Valor (R$)" style="padding:10px; border-radius:8px; background:var(--bg); border:1px solid var(--line); color:white; flex:1;">
+            <select id="finMetodo" required style="padding:10px; border-radius:8px; background:var(--bg); border:1px solid var(--line); color:white;">
+              <option value="DIN.">DIN.</option><option value="DÉB.">DÉB.</option><option value="CRÉD.">CRÉD.</option><option value="PIX">PIX</option>
+            </select>
+            <button type="submit" class="btn-primary" style="width:100px;">Lançar</button>
           </form>
 
-          <div class="fin-grid">
+          <div style="display:grid; grid-template-columns:2fr 1fr; gap:24px;">
             <div>
-              <table class="fin-tabela">
-                <thead><tr><th>Hora</th><th>Método</th><th>Valor</th><th></th></tr></thead>
+              <table class="fin-tabela" style="width:100%; border-collapse:collapse;">
+                <thead><tr><th style="text-align:left; padding:10px; color:var(--muted);">Hora</th><th style="text-align:left; padding:10px; color:var(--muted);">Método</th><th style="text-align:left; padding:10px; color:var(--muted);">Valor</th><th></th></tr></thead>
                 <tbody id="finTabelaBody"></tbody>
               </table>
             </div>
-            
-            <div class="fin-resumo">
-              <h4>Resumo do Dia</h4>
-              <div class="fin-resumo-linha"><span>DÉB.</span><span id="resDeb">R$ 0,00</span></div>
-              <div class="fin-resumo-linha"><span>DIN.</span><span id="resDin">R$ 0,00</span></div>
-              <div class="fin-resumo-linha"><span>CRÉD.</span><span id="resCred">R$ 0,00</span></div>
-              <div class="fin-resumo-linha"><span>PIX</span><span id="resPix">R$ 0,00</span></div>
-              <div class="fin-resumo-total"><span>TOTAL</span><span id="resTotal">R$ 0,00</span></div>
+            <div class="fin-resumo" style="background:var(--surface-2); border:1px solid var(--line); border-radius:12px; padding:20px;">
+              <h4 style="color:var(--green); margin-bottom:16px;">Resumo</h4>
+              <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span>DÉB.</span><span id="resDeb">R$ 0,00</span></div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span>DIN.</span><span id="resDin">R$ 0,00</span></div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span>CRÉD.</span><span id="resCred">R$ 0,00</span></div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span>PIX</span><span id="resPix">R$ 0,00</span></div>
+              <div style="display:flex; justify-content:space-between; margin-top:20px; padding-top:16px; border-top:2px solid var(--line-green); font-size:18px; font-weight:900; color:var(--green);"><span>TOTAL</span><span id="resTotal">R$ 0,00</span></div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- SUB-VIEW: FLUXO DE CAIXA (ENTRADAS E SAÍDAS) -->
-      <div class="fin-subview" id="view-fluxo">
-        <div class="fin-nav">
-          <select id="fluxoMes">
+      <div class="fin-subview" id="view-fluxo" style="display:none;">
+        <div class="fin-nav" style="display:flex; gap:16px; margin-bottom:20px; background:var(--surface); padding:16px; border-radius:12px; border:1px solid var(--line);">
+          <select id="fluxoMes" style="padding:10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); color:white;">
             <option value="01">Janeiro</option><option value="02">Fevereiro</option><option value="03">Março</option>
             <option value="04">Abril</option><option value="05">Maio</option><option value="06">Junho</option>
             <option value="07">Julho</option><option value="08">Agosto</option><option value="09">Setembro</option>
             <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
           </select>
-          <select id="fluxoAno"></select>
-          <button class="btn-voltar-fin" onclick="voltarMenuFin()">Voltar</button>
+          <select id="fluxoAno" style="padding:10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); color:white;"></select>
+          <button class="btn-ghost" onclick="voltarMenuFin()" style="margin-left:auto;">Voltar</button>
         </div>
 
-        <div class="fin-dias" id="fluxoListaDias"></div>
+        <div class="fin-dias" id="fluxoListaDias" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:12px;"></div>
 
-        <div class="fin-caixa" id="fluxoCaixa">
-          <div class="fin-caixa-header">
+        <div class="fin-caixa" id="fluxoCaixa" style="background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:20px; display:none; margin-top:20px;">
+          <div class="fin-caixa-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid var(--line); padding-bottom:16px;">
             <h3 id="fluxoTituloCaixa">Fluxo do Dia</h3>
-            <button class="btn-fechar-caixa" onclick="fecharFluxo()">Voltar para os dias</button>
+            <button class="btn-ghost" onclick="fecharFluxo()">Voltar para os dias</button>
           </div>
 
-          <form class="fin-add-form" id="formFluxo">
-            <div class="form-group">
-              <label>Tipo</label>
-              <select id="fluxoTipo" required>
-                <option value="entrada">Entrada (+)</option>
-                <option value="saida">Saída (-)</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Valor (R$)</label>
-              <input type="number" step="0.01" id="fluxoValor" required placeholder="0.00">
-            </div>
-            <div class="form-group">
-              <label>Descrição</label>
-              <input type="text" id="fluxoDesc" required placeholder="Ex: Aluguel, Reposição...">
-            </div>
-            <button type="submit" class="btn-primary" style="flex:0 0 100px;">Lançar</button>
+          <form class="fin-add-form" id="formFluxo" style="display:flex; gap:10px; background:var(--surface-2); padding:16px; border-radius:10px; margin-bottom:20px; flex-wrap:wrap;">
+            <select id="fluxoTipo" required style="padding:10px; border-radius:8px; background:var(--bg); border:1px solid var(--line); color:white;">
+              <option value="entrada">Entrada (+)</option><option value="saida">Saída (-)</option>
+            </select>
+            <input type="number" step="0.01" id="fluxoValor" required placeholder="Valor (R$)" style="padding:10px; border-radius:8px; background:var(--bg); border:1px solid var(--line); color:white; flex:1;">
+            <input type="text" id="fluxoDesc" required placeholder="Descrição" style="padding:10px; border-radius:8px; background:var(--bg); border:1px solid var(--line); color:white; flex:1;">
+            <button type="submit" class="btn-primary" style="width:100px;">Lançar</button>
           </form>
 
-          <div class="fin-grid">
+          <div style="display:grid; grid-template-columns:2fr 1fr; gap:24px;">
             <div>
-              <table class="fin-tabela">
-                <thead><tr><th>Descrição</th><th>Valor</th><th></th></tr></thead>
+              <table class="fin-tabela" style="width:100%; border-collapse:collapse;">
+                <thead><tr><th style="text-align:left; padding:10px; color:var(--muted);">Descrição</th><th style="text-align:left; padding:10px; color:var(--muted);">Valor</th><th></th></tr></thead>
                 <tbody id="fluxoTabelaBody"></tbody>
               </table>
             </div>
-            
-            <div class="fin-resumo">
-              <h4>Resumo do Dia</h4>
-              <div class="fin-resumo-linha"><span>Entradas</span><span id="fluxoResEntrada" class="valor-entrada">R$ 0,00</span></div>
-              <div class="fin-resumo-linha"><span>Saídas</span><span id="fluxoResSaida" class="valor-saida">R$ 0,00</span></div>
-              <div class="fin-resumo-total"><span>SALDO</span><span id="fluxoResTotal">R$ 0,00</span></div>
+            <div class="fin-resumo" style="background:var(--surface-2); border:1px solid var(--line); border-radius:12px; padding:20px;">
+              <h4 style="color:var(--green); margin-bottom:16px;">Resumo</h4>
+              <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span>Entradas</span><span id="fluxoResEntrada" style="color:var(--green);">R$ 0,00</span></div>
+              <div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span>Saídas</span><span id="fluxoResSaida" style="color:var(--red);">R$ 0,00</span></div>
+              <div style="display:flex; justify-content:space-between; margin-top:20px; padding-top:16px; border-top:2px solid var(--line-green); font-size:18px; font-weight:900;"><span>SALDO</span><span id="fluxoResTotal">R$ 0,00</span></div>
             </div>
           </div>
         </div>
       </div>
-
     </div>
 
     <!-- ABA CONFIGURAÇÕES -->
     <div class="tab-content" id="tab-config">
-      <div class="toolbar">
-        <h2>Configurações da Loja</h2>
-      </div>
-      <div class="config-card">
-        <h3>Status de Funcionamento</h3>
-        <p>Controle manualmente se o site está aceitando pedidos no momento.</p>
-        <button class="btn-toggle-status aberto" id="btnStatusLoja">
+      <div class="toolbar"><h2>Configurações</h2></div>
+      <div style="background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:24px; max-width:600px;">
+        <h3>Status da Loja</h3>
+        <p style="color:var(--muted); margin-bottom:20px;">Controle se o site está aceitando pedidos.</p>
+        <button class="btn-toggle-status aberto" id="btnStatusLoja" style="width:100%; padding:16px; border-radius:12px; font-size:16px; font-weight:800; background:var(--green-soft); color:var(--green); border:2px solid var(--line-green);">
           <span id="statusTexto">Aberto</span>
         </button>
       </div>
     </div>
+
   </div>
 </div>
 
-<!-- MODAL DE PRODUTO -->
+<!-- MODAL DE PRODUTO (SITE) -->
 <div id="modal">
   <div class="modal-box">
     <div class="modal-head">
@@ -542,17 +414,6 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
             <label for="pSubcategoria">Subcategoria</label>
             <input type="text" id="pSubcategoria" placeholder="Ex: Cerveja, Energético...">
           </div>
-          
-          <!-- NOVOS CAMPOS: CÓDIGO E ESTOQUE -->
-          <div class="form-group">
-            <label for="pCodigoBarras">Código de Barras</label>
-            <input type="text" id="pCodigoBarras" placeholder="Bipe aqui...">
-          </div>
-          <div class="form-group">
-            <label for="pEstoque">Estoque Atual</label>
-            <input type="number" id="pEstoque" value="0" min="0">
-          </div>
-
           <div class="form-group">
             <label for="pVolume">Volume / Tamanho</label>
             <input type="text" id="pVolume" placeholder="Ex: Lata 350 ml">
@@ -560,23 +421,20 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
           <div class="form-group">
             <label for="pPreco">Preço Base</label>
             <input type="text" id="pPreco" placeholder="Ex: R$ 4,25">
-            <div class="hint">Usado se não houver variações.</div>
           </div>
           <div class="form-group">
             <label for="pTag">Tag / Badge</label>
-            <input type="text" id="pTag" placeholder="Ex: Destaque, Top 1, Barato">
+            <input type="text" id="pTag" placeholder="Ex: Destaque">
           </div>
           <div class="form-group">
             <label for="pOrdem">Ordem</label>
-            <input type="number" id="pOrdem" value="0" placeholder="0">
-            <div class="hint">Menor = aparece primeiro</div>
+            <input type="number" id="pOrdem" value="0">
           </div>
           
           <div class="form-group full">
             <label>Variações (Opcional)</label>
             <div class="variacoes-container" id="containerVariacoes"></div>
             <button type="button" class="btn-add-variacao" onclick="adicionarLinhaVariacao()">+ Adicionar Variação</button>
-            <div class="hint">Ex: Nome: Monster | Preço: R$ 20,00</div>
           </div>
 
           <div class="form-group full">
@@ -584,7 +442,6 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
             <div class="upload-area" id="uploadArea">
               <input type="file" id="pFile" accept="image/*">
               <b>Clique para escolher uma imagem</b>
-              <span>JPG, PNG, WEBP ou GIF</span>
             </div>
             <img id="previewImg" class="preview-img" style="display:none;" alt="Prévia">
             <input type="hidden" id="pImagemUrl">
@@ -602,30 +459,66 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
   </div>
 </div>
 
-<!-- NOVO MODAL DE CONFIRMAÇÃO DE FECHAMENTO -->
-<div class="modal-action-overlay" id="modalConfirmCaixa">
-  <div class="action-box confirm-box">
-    <div class="icon-circle">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+<!-- MODAL DE REGISTRO DE BARRAS (NOVO) -->
+<div id="modalRegistro" style="position:fixed; inset:0; background:rgba(0,0,0,.85); backdrop-filter:blur(6px); z-index:100; display:none; overflow-y:auto; padding:24px;">
+  <div class="modal-box" style="max-width:500px;">
+    <div class="modal-head">
+      <h3>Confirmar Registro</h3>
+      <button class="close" onclick="document.getElementById('modalRegistro').style.display='none'">×</button>
     </div>
-    <h2>Atenção!</h2>
-    <p>Tem certeza que deseja fechar o caixa de hoje?<br>O valor total será enviado para o Fluxo de Caixa e o dia <strong>não poderá mais ser editado.</strong></p>
-    <div class="action-btn-group">
-      <button class="btn-cancel-action" onclick="fecharModalConfirm()">Cancelar</button>
-      <button class="btn-confirm" id="btnConfirmarFechamento">Sim, Fechar</button>
+    <form id="formRegistro">
+      <div class="modal-body">
+        <div id="msgRegistro" class="msg-form"></div>
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>Código de Barras</label>
+            <input type="text" id="regCodigo" readonly style="background:var(--surface-3); color:var(--green); font-weight:bold;">
+          </div>
+          <div class="form-group full">
+            <label>Nome</label>
+            <input type="text" id="regNome" required>
+          </div>
+          <div class="form-group">
+            <label>Marca</label>
+            <input type="text" id="regMarca">
+          </div>
+          <div class="form-group">
+            <label>Volume</label>
+            <input type="text" id="regVolume">
+          </div>
+          <div class="form-group full">
+            <label>Imagem (URL)</label>
+            <input type="text" id="regImagem">
+            <img id="regPreviewImg" style="max-height:100px; margin-top:10px; display:none; border-radius:8px;">
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn-cancel" onclick="document.getElementById('modalRegistro').style.display='none'">Cancelar</button>
+        <button type="submit" class="btn-primary" id="btnSalvarReg">Salvar no Catálogo</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- MODAL DE CONFIRMAÇÃO CAIXA -->
+<div id="modalConfirmCaixa" style="position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:300; display:none; align-items:center; justify-content:center;">
+  <div style="background:var(--surface); padding:30px; border-radius:16px; text-align:center; max-width:400px;">
+    <h2 style="color:#fca311; margin-bottom:10px;">Atenção!</h2>
+    <p style="color:var(--muted); margin-bottom:20px;">Fechar o caixa? O valor irá para o Fluxo.</p>
+    <div style="display:flex; gap:10px;">
+      <button class="btn-ghost" onclick="document.getElementById('modalConfirmCaixa').style.display='none'" style="flex:1;">Cancelar</button>
+      <button class="btn-primary" id="btnConfirmarFechamento" style="flex:1;">Sim, Fechar</button>
     </div>
   </div>
 </div>
 
-<!-- NOVO MODAL DE SUCESSO -->
-<div class="modal-action-overlay" id="modalSucessoCaixa">
-  <div class="action-box success-box">
-    <div class="icon-circle">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-    </div>
-    <h2>Caixa Fechado!</h2>
-    <p>O caixa foi encerrado com sucesso.<br>O valor de <strong id="valorFechado">R$ 0,00</strong> já está disponível no seu Fluxo de Caixa.</p>
-    <button class="btn-primary" onclick="fecharModalSucesso()">Entendido</button>
+<!-- MODAL DE SUCESSO CAIXA -->
+<div id="modalSucessoCaixa" style="position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:300; display:none; align-items:center; justify-content:center;">
+  <div style="background:var(--surface); padding:30px; border-radius:16px; text-align:center; max-width:400px; border:1px solid var(--green);">
+    <h2 style="color:var(--green); margin-bottom:10px;">Caixa Fechado!</h2>
+    <p style="color:var(--muted); margin-bottom:20px;">O valor de <strong id="valorFechado">R$ 0,00</strong> foi para o fluxo.</p>
+    <button class="btn-primary" onclick="document.getElementById('modalSucessoCaixa').style.display='none'; fecharModalSucesso()">Entendido</button>
   </div>
 </div>
 
@@ -637,12 +530,12 @@ let token = localStorage.getItem('green_token') || '';
 let emailLogado = localStorage.getItem('green_email') || '';
 let produtos = [];
 let categorias = [];
+let registrosBarras = [];
 let editandoId = null;
 
 let finDataAtual = '';
 let finTransacoes = [];
 let diasFechados = [];
-
 let fluxoDataAtual = '';
 let fluxoTransacoes = [];
 
@@ -655,13 +548,10 @@ function toast(msg, erro = false){
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-// FUNÇÃO CORRIGIDA: Converte UTC para o fuso local (Brasília)
 function formatarHora(dataString) {
   if (!dataString) return '--:--';
-  
   try {
     const dataUtc = new Date(dataString.replace(' ', 'T') + 'Z');
-    if (isNaN(dataUtc.getTime())) throw new Error('Data inválida');
     return dataUtc.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   } catch (e) {
     const partes = dataString.split(' ');
@@ -706,6 +596,7 @@ async function abrirDashboard(){
   $('#userEmail').textContent = emailLogado;
   await carregarCategorias();
   carregarProdutos();
+  carregarRegistrosBarras();
   carregarStatusLoja();
   
   const hoje = new Date();
@@ -725,7 +616,7 @@ async function abrirDashboard(){
 
 $('#btnSair').addEventListener('click', () => {
   localStorage.removeItem('green_token'); localStorage.removeItem('green_email');
-  token = ''; emailLogado = ''; location.reload();
+  location.reload();
 });
 
 document.querySelectorAll('.nav-tabs button').forEach(btn => {
@@ -739,70 +630,139 @@ document.querySelectorAll('.nav-tabs button').forEach(btn => {
     if (btn.dataset.tab === 'config') carregarStatusLoja();
     if (btn.dataset.tab === 'categorias') renderizarCategorias();
     if (btn.dataset.tab === 'financeiro') voltarMenuFin();
+    if (btn.dataset.tab === 'registro') {
+      carregarRegistrosBarras();
+      setTimeout(() => $('#biparCodigo').focus(), 100); // Foca no campo ao abrir
+    }
   });
 });
 
-/* ============================ CATEGORIAS ============================ */
+/* ============================ REGISTRO DE BARRAS ============================ */
+async function carregarRegistrosBarras() {
+  try {
+    const data = await api('/api/admin/registro-barras');
+    registrosBarras = data.registros || [];
+    renderizarTabelaRegistros();
+  } catch (err) { console.error(err); }
+}
+
+function renderizarTabelaRegistros() {
+  const tbody = $('#tabelaRegistrosBody');
+  if (registrosBarras.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--muted);">Nenhum produto registrado ainda.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = registrosBarras.map(r => `
+    <tr>
+      <td>${r.imagem_url ? `<img src="${r.imagem_url}" onerror="this.style.display='none'">` : '<div style="width:40px;height:40px;background:var(--surface-2);border-radius:6px;"></div>'}</td>
+      <td><b>${r.nome}</b></td>
+      <td>${r.marca || '—'}</td>
+      <td>${r.volume || '—'}</td>
+      <td style="font-family:monospace; color:var(--green);">${r.codigo_barras}</td>
+      <td><button class="btn-del" onclick="deletarRegistro(${r.id})">Excluir</button></td>
+    </tr>
+  `).join('');
+}
+
+$('#biparCodigo').addEventListener('keypress', async (e) => {
+  if (e.key === 'Enter') {
+    const codigo = e.target.value.trim();
+    if (!codigo) return;
+    
+    e.target.disabled = true;
+    try {
+      const data = await api('/api/barras/buscar?codigo=' + encodeURIComponent(codigo));
+      
+      // Abre o modal preenchido
+      $('#regCodigo').value = codigo;
+      $('#regNome').value = data.produto.nome || '';
+      $('#regMarca').value = data.produto.marca || data.produto.subcategoria || '';
+      $('#regVolume').value = data.produto.volume || '';
+      $('#regImagem').value = data.produto.imagem_url || '';
+      
+      const img = $('#regPreviewImg');
+      if (data.produto.imagem_url) { img.src = data.produto.imagem_url; img.style.display = 'block'; } 
+      else { img.style.display = 'none'; }
+
+      $('#modalRegistro').style.display = 'block';
+      toast(data.origem === 'local' ? 'Encontrado no seu catálogo!' : 'Encontrado na API!');
+      
+    } catch (err) {
+      // Se não achou, abre o modal em branco pro user digitar
+      $('#regCodigo').value = codigo;
+      $('#regNome').value = '';
+      $('#regMarca').value = '';
+      $('#regVolume').value = '';
+      $('#regImagem').value = '';
+      $('#regPreviewImg').style.display = 'none';
+      
+      $('#modalRegistro').style.display = 'block';
+      toast('Novo produto. Digite as informações.', true);
+    } finally {
+      e.target.value = '';
+      e.target.disabled = false;
+      e.target.focus();
+    }
+  }
+});
+
+$('#formRegistro').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = $('#btnSalvarReg');
+  btn.disabled = true; btn.textContent = 'Salvando...';
+  
+  try {
+    await api('/api/admin/registro-barras', {
+      method: 'POST',
+      body: JSON.stringify({
+        codigo_barras: $('#regCodigo').value,
+        nome: $('#regNome').value,
+        marca: $('#regMarca').value,
+        volume: $('#regVolume').value,
+        imagem_url: $('#regImagem').value
+      })
+    });
+    toast('Registrado com sucesso!');
+    $('#modalRegistro').style.display = 'none';
+    carregarRegistrosBarras();
+  } catch (err) {
+    toast('Erro: ' + err.message, true);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Salvar no Catálogo';
+  }
+});
+
+window.deletarRegistro = async (id) => {
+  if (!confirm('Apagar este registro?')) return;
+  try {
+    await api('/api/admin/registro-barras?id=' + id, { method: 'DELETE' });
+    toast('Excluído');
+    carregarRegistrosBarras();
+  } catch (err) { toast(err.message, true); }
+};
+
+/* ============================ PRODUTOS (VITRINE) ============================ */
 async function carregarCategorias(){
   try {
     const data = await api('/api/admin/categorias');
     categorias = data.categorias || [];
-    renderizarCategorias();
     popularSelectsCategoria();
-  } catch (err) { toast('Erro ao carregar categorias', true); }
+    renderizarCategorias();
+  } catch (err) {}
 }
 
 function popularSelectsCategoria() {
   const options = categorias.map(c => `<option value="${c.slug}">${c.nome}</option>`).join('');
-  $('#filtroCategoria').innerHTML = `<option value="">Todas as categorias</option>${options}`;
+  $('#filtroCategoria').innerHTML = `<option value="">Todas</option>${options}`;
   $('#pCategoria').innerHTML = `<option value="">Selecione...</option>${options}`;
 }
 
-function renderizarCategorias() {
-  const container = $('#listaCategorias');
-  if (categorias.length === 0) {
-    container.innerHTML = '<p style="color:var(--muted);">Nenhuma categoria cadastrada.</p>';
-    return;
-  }
-  container.innerHTML = categorias.map(c => `
-    <div class="cat-item">
-      <span>${c.nome}</span>
-      <button onclick="deletarCategoria(${c.id})">Excluir</button>
-    </div>
-  `).join('');
-}
-
-$('#formCategoria').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const btn = $('#btnSalvarCategoria'); btn.disabled = true; btn.textContent = 'Criando...';
-  try {
-    await api('/api/categorias', {
-      method: 'POST',
-      body: JSON.stringify({ nome: $('#catNome').value.trim(), ordem: parseInt($('#catOrdem').value) || 0 })
-    });
-    toast('Categoria criada!');
-    $('#catNome').value = ''; $('#catOrdem').value = '0';
-    await carregarCategorias();
-  } catch (err) { toast(err.message, true); }
-  finally { btn.disabled = false; btn.textContent = 'Criar'; }
-});
-
-window.deletarCategoria = async (id) => {
-  if (!confirm('Tem certeza que deseja excluir esta categoria?')) return;
-  try {
-    await api('/api/categoria?id=' + id, { method: 'DELETE' });
-    toast('Categoria excluída');
-    await carregarCategorias();
-  } catch (err) { toast(err.message, true); }
-};
-
-/* ============================ PRODUTOS ============================ */
 async function carregarProdutos(){
   try {
     const data = await api('/api/admin/produtos');
     produtos = data.produtos || [];
     renderizarProdutos();
-  } catch (err) { toast('Erro ao carregar: ' + err.message, true); }
+  } catch (err) { toast('Erro: ' + err.message, true); }
 }
 
 function renderizarProdutos(){
@@ -812,31 +772,24 @@ function renderizarProdutos(){
 
   const filtrados = produtos.filter(p => {
     if (cat && p.categoria !== cat) return false;
-    if (busca){
-      const txt = (p.nome + ' ' + (p.volume || '') + ' ' + (p.categoria || '') + ' ' + (p.codigo_barras || '')).toLowerCase();
-      if (!txt.includes(busca)) return false;
-    }
+    if (busca && !(p.nome + ' ' + (p.codigo_barras||'')).toLowerCase().includes(busca)) return false;
     return true;
   });
 
-  $('#contador').textContent = `${filtrados.length} produto${filtrados.length === 1 ? '' : 's'}`;
-
-  if (filtrados.length === 0){
-    grid.innerHTML = `<div style="text-align:center;padding:40px;color:var(--muted);grid-column:1/-1;"><b>Nenhum produto encontrado.</b></div>`;
-    return;
-  }
+  $('#contador').textContent = `${filtrados.length} produtos`;
+  if (filtrados.length === 0) { grid.innerHTML = '<div style="padding:40px;text-align:center;color:var(--muted);grid-column:1/-1;">Nenhum produto.</div>'; return; }
 
   grid.innerHTML = filtrados.map(p => `
     <div class="card-prod">
       <div class="thumb">
-        ${p.imagem_url ? `<img src="${p.imagem_url}" alt="${p.nome}" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';">` : ''}
+        ${p.imagem_url ? `<img src="${p.imagem_url}" onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';">` : ''}
         <div class="no-img" style="${p.imagem_url ? 'display:none;' : ''}">Sem imagem</div>
         <span class="badge ${p.ativo ? 'ativo' : 'inativo'}">${p.ativo ? 'Ativo' : 'Inativo'}</span>
       </div>
       <div class="info">
         <div class="cat">${p.categoria}</div>
         <h3>${p.nome}</h3>
-        <div class="meta">${p.volume || '—'} | Estoque: <b>${p.estoque || 0}</b></div>
+        <div class="meta">${p.volume || ''} | Estoque: <b>${p.estoque || 0}</b></div>
         <div class="preco">${p.preco || '—'}</div>
       </div>
       <div class="acoes">
@@ -850,42 +803,6 @@ function renderizarProdutos(){
 $('#busca').addEventListener('input', renderizarProdutos);
 $('#filtroCategoria').addEventListener('change', renderizarProdutos);
 
-// EVENTO INTELIGENTE DE CÓDIGO DE BARRAS
-$('#biparCodigo').addEventListener('keypress', async (e) => {
-  if (e.key === 'Enter') {
-    const codigo = e.target.value.trim();
-    if (!codigo) return;
-    
-    e.target.disabled = true;
-    try {
-      const data = await api('/api/produto/barras?codigo=' + encodeURIComponent(codigo));
-      
-      if (data.origem === 'local') {
-        // Se achou no banco, abre a tela de edição normal
-        abrirModal(data.produto);
-        toast('Produto encontrado no banco!');
-      } else if (data.origem === 'api') {
-        // Se achou na API, abre tela de cadastro já preenchida
-        abrirModal(data.produto, codigo, true);
-        toast('Encontrado na Internet! Confira e salve.', false);
-      }
-      
-    } catch (err) {
-      if (err.message.includes('não encontrado') || err.message.includes('404')) {
-        // Se não achou em lugar nenhum, abre tela em branco
-        abrirModal(null, codigo);
-        toast('Produto novo! Preencha os dados.', true);
-      } else {
-        toast(err.message, true);
-      }
-    } finally {
-      e.target.value = '';
-      e.target.disabled = false;
-      e.target.focus();
-    }
-  }
-});
-
 function adicionarLinhaVariacao(nome = '', preco = '') {
   const container = $('#containerVariacoes');
   const row = document.createElement('div');
@@ -898,14 +815,9 @@ function adicionarLinhaVariacao(nome = '', preco = '') {
   container.appendChild(row);
 }
 
-function abrirModal(produto = null, codigoBarrasPre = '', isApiData = false){
-  editandoId = produto && produto.id ? produto.id : null;
-  
-  // Define o título do modal
-  if (editandoId) $('#modalTitulo').textContent = 'Editar produto';
-  else if (isApiData) $('#modalTitulo').textContent = 'Confirmar Produto (Encontrado na API)';
-  else $('#modalTitulo').textContent = 'Novo produto';
-  
+function abrirModal(produto = null){
+  editandoId = produto ? produto.id : null;
+  $('#modalTitulo').textContent = produto ? 'Editar produto' : 'Novo produto';
   $('#msgForm').classList.remove('show');
   $('#containerVariacoes').innerHTML = '';
 
@@ -918,47 +830,26 @@ function abrirModal(produto = null, codigoBarrasPre = '', isApiData = false){
     $('#pTag').value = produto.tag || '';
     $('#pOrdem').value = produto.ordem || 0;
     $('#pImagemUrl').value = produto.imagem_url || '';
-    $('#pAtivo').checked = produto.ativo == 1 || true;
-    $('#pCodigoBarras').value = produto.codigo_barras || codigoBarrasPre;
-    $('#pEstoque').value = produto.estoque || 0;
+    $('#pAtivo').checked = produto.ativo == 1;
     
     if (produto.variacoes) {
-      try {
-        const vars = JSON.parse(produto.variacoes);
-        if (Array.isArray(vars)) {
-          vars.forEach(v => adicionarLinhaVariacao(v.nome, v.preco));
-        }
-      } catch(e) { console.error('Erro ao ler variações', e); }
+      try { JSON.parse(produto.variacoes).forEach(v => adicionarLinhaVariacao(v.nome, v.preco)); } catch(e){}
     }
-
-    if (produto.imagem_url){ 
-      $('#previewImg').src = produto.imagem_url; 
-      $('#previewImg').style.display = 'block'; 
-    } else {
-      $('#previewImg').style.display = 'none';
-    }
+    if (produto.imagem_url){ $('#previewImg').src = produto.imagem_url; $('#previewImg').style.display = 'block'; } else $('#previewImg').style.display = 'none';
   } else {
-    $('#formProduto').reset(); 
-    $('#pOrdem').value = 0; 
-    $('#pAtivo').checked = true;
-    $('#pImagemUrl').value = ''; 
-    $('#previewImg').style.display = 'none';
-    $('#pCodigoBarras').value = codigoBarrasPre;
-    $('#pEstoque').value = 0;
+    $('#formProduto').reset(); $('#pAtivo').checked = true; $('#previewImg').style.display = 'none'; $('#pImagemUrl').value = '';
   }
-  $('#modal').classList.add('show'); document.body.style.overflow = 'hidden';
+  $('#modal').classList.add('show'); 
 }
 
-function fecharModal(){ $('#modal').classList.remove('show'); document.body.style.overflow = ''; editandoId = null; }
+function fecharModal(){ $('#modal').classList.remove('show'); editandoId = null; }
 $('#btnNovo').addEventListener('click', () => abrirModal());
 $('#btnFecharModal').addEventListener('click', fecharModal);
 $('#btnCancelar').addEventListener('click', fecharModal);
-$('#modal').addEventListener('click', (e) => { if (e.target.id === 'modal') fecharModal(); });
 
 window.editarProduto = (id) => { const p = produtos.find(x => x.id === id); if (p) abrirModal(p); };
 window.deletarProduto = async (id) => {
-  const p = produtos.find(x => x.id === id);
-  if (!confirm(`Excluir "${p.nome}"?`)) return;
+  if (!confirm(`Excluir produto?`)) return;
   try { await api('/api/produto?id=' + id, { method: 'DELETE' }); toast('Excluído'); carregarProdutos(); }
   catch (err){ toast('Erro: ' + err.message, true); }
 };
@@ -970,21 +861,17 @@ $('#pFile').addEventListener('change', async (e) => {
   const fd = new FormData(); fd.append('file', file);
   try {
     const res = await fetch('/api/upload', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, body: fd });
-    const data = await res.json(); if (!res.ok) throw new Error(data.erro || 'Falha no upload');
+    const data = await res.json(); if (!res.ok) throw new Error(data.erro);
     $('#pImagemUrl').value = data.url; preview.src = data.url; toast('Imagem enviada!');
-  } catch (err){ toast('Erro no upload: ' + err.message, true); }
+  } catch (err){ toast('Erro no upload', true); }
 });
 
 $('#formProduto').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const btn = $('#btnSalvar'); const msg = $('#msgForm');
-  msg.classList.remove('show'); btn.disabled = true; btn.textContent = 'Salvando...';
-
-  const varRows = document.querySelectorAll('.variacao-row');
+  const btn = $('#btnSalvar'); btn.disabled = true; btn.textContent = 'Salvando...';
   const variacoesArray = [];
-  varRows.forEach(row => {
-    const nome = row.querySelector('.var-nome').value.trim();
-    const preco = row.querySelector('.var-preco').value.trim();
+  document.querySelectorAll('.variacao-row').forEach(row => {
+    const nome = row.querySelector('.var-nome').value.trim(), preco = row.querySelector('.var-preco').value.trim();
     if (nome && preco) variacoesArray.push({ nome, preco });
   });
 
@@ -994,179 +881,161 @@ $('#formProduto').addEventListener('submit', async (e) => {
     preco: $('#pPreco').value.trim() || null, tag: $('#pTag').value.trim() || null,
     imagem_url: $('#pImagemUrl').value || null, ordem: parseInt($('#pOrdem').value) || 0,
     ativo: $('#pAtivo').checked ? 1 : 0,
-    variacoes: variacoesArray.length > 0 ? JSON.stringify(variacoesArray) : null,
-    codigo_barras: $('#pCodigoBarras').value.trim() || null,
-    estoque: parseInt($('#pEstoque').value) || 0
+    variacoes: variacoesArray.length > 0 ? JSON.stringify(variacoesArray) : null
   };
 
   try {
     if (editandoId){ dados.id = editandoId; await api('/api/produto', { method: 'PUT', body: JSON.stringify(dados) }); toast('Atualizado'); }
     else { await api('/api/produtos', { method: 'POST', body: JSON.stringify(dados) }); toast('Criado'); }
     fecharModal(); carregarProdutos();
-  } catch (err){ msg.textContent = err.message; msg.className = 'msg-form erro show'; }
+  } catch (err){ toast(err.message, true); }
   finally { btn.disabled = false; btn.textContent = 'Salvar'; }
 });
+
+/* ============================ CATEGORIAS ============================ */
+function renderizarCategorias() {
+  const container = $('#listaCategorias');
+  container.innerHTML = categorias.map(c => `
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 16px; background:var(--surface-2); border:1px solid var(--line); border-radius:10px;">
+      <span>${c.nome}</span>
+      <button onclick="deletarCategoria(${c.id})" style="color:var(--red); background:var(--red-soft); padding:6px 12px; border-radius:6px;">Excluir</button>
+    </div>
+  `).join('');
+}
+
+$('#formCategoria').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = $('#btnSalvarCategoria'); btn.disabled = true;
+  try {
+    await api('/api/categorias', { method: 'POST', body: JSON.stringify({ nome: $('#catNome').value.trim(), ordem: parseInt($('#catOrdem').value) || 0 }) });
+    toast('Categoria criada!'); $('#catNome').value = ''; await carregarCategorias();
+  } catch (err) { toast(err.message, true); }
+  finally { btn.disabled = false; }
+});
+
+window.deletarCategoria = async (id) => {
+  if (!confirm('Excluir categoria?')) return;
+  try { await api('/api/categoria?id=' + id, { method: 'DELETE' }); toast('Excluída'); await carregarCategorias(); }
+  catch (err) { toast(err.message, true); }
+};
 
 /* ============================ PEDIDOS ============================ */
 async function carregarPedidos(){
   const lista = $('#listaPedidos');
-  lista.innerHTML = '<div style="color:var(--muted);text-align:center;padding:40px;">Carregando pedidos...</div>';
+  lista.innerHTML = 'Carregando...';
   try {
     const data = await api('/api/admin/pedidos');
     const pedidos = data.pedidos || [];
-    $('#contadorPedidos').textContent = `${pedidos.length} pedido${pedidos.length === 1 ? '' : 's'}`;
-    if (pedidos.length === 0) { lista.innerHTML = '<div style="color:var(--muted);text-align:center;padding:40px;">Nenhum pedido recebido nas últimas 72h.</div>'; return; }
+    $('#contadorPedidos').textContent = `${pedidos.length}`;
+    if (pedidos.length === 0) { lista.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);">Nenhum pedido recente.</div>'; return; }
 
-    lista.innerHTML = pedidos.map(p => {
-      const dataFormatada = new Date(p.criado_em).toLocaleString('pt-BR');
-      const itensHtml = p.itens.map(i => {
-        const textoVariacao = i.variacao ? ` (${i.variacao})` : '';
-        return `<li><span>${i.quantidade}x ${i.produto_nome}${textoVariacao}</span> <span>R$ ${(i.quantidade * i.preco_unitario).toFixed(2).replace('.', ',')}</span></li>`;
-      }).join('');
-
-      return `
-        <div class="pedido-card">
-          <div class="pedido-header"><h3>Pedido #${p.id} - ${p.cliente_nome}</h3><span class="data">${dataFormatada}</span></div>
-          <div class="pedido-body">
-            <div class="pedido-info">
-              <p><strong>Cliente:</strong> ${p.cliente_nome}</p>
-              <p><strong>Endereço:</strong> ${p.endereco}</p>
-              <p><strong>Pagamento:</strong> ${p.metodo_pagamento.toUpperCase()}</p>
-              ${p.observacao ? `<p><strong>Obs:</strong> ${p.observacao}</p>` : ''}
-            </div>
-            <div class="pedido-itens"><ul>${itensHtml}</ul></div>
+    lista.innerHTML = pedidos.map(p => `
+      <div style="background:var(--surface); border:1px solid var(--line); border-radius:12px; margin-bottom:16px; overflow:hidden;">
+        <div style="padding:14px 20px; background:var(--surface-2); display:flex; justify-content:space-between; border-bottom:1px solid var(--line);">
+          <h3>Pedido #${p.id} - ${p.cliente_nome}</h3>
+          <span style="color:var(--muted); font-size:12px;">${new Date(p.criado_em).toLocaleString('pt-BR')}</span>
+        </div>
+        <div style="padding:20px; display:flex; gap:20px; flex-wrap:wrap;">
+          <div style="flex:1;">
+            <p style="font-size:13px; margin-bottom:6px; color:var(--muted);"><b>Endereço:</b> ${p.endereco}</p>
+            <p style="font-size:13px; margin-bottom:6px; color:var(--muted);"><b>Pagamento:</b> ${p.metodo_pagamento.toUpperCase()}</p>
+            ${p.observacao ? `<p style="font-size:13px; color:var(--red);"><b>Obs:</b> ${p.observacao}</p>` : ''}
           </div>
-          <div class="pedido-footer">
-            <span class="pedido-total">Total: R$ ${p.total.toFixed(2).replace('.', ',')}</span>
-            <select class="status-select ${p.status}" onchange="mudarStatusPedido(${p.id}, this.value)">
-              <option value="pendente" ${p.status === 'pendente' ? 'selected' : ''}>Pendente</option>
-              <option value="entregue" ${p.status === 'entregue' ? 'selected' : ''}>Entregue</option>
-              <option value="cancelado" ${p.status === 'cancelado' ? 'selected' : ''}>Cancelado</option>
-            </select>
+          <div style="flex:1; background:var(--surface-2); padding:12px; border-radius:8px;">
+            <ul style="list-style:none;">
+              ${p.itens.map(i => `<li style="display:flex; justify-content:space-between; font-size:13px; border-bottom:1px dashed var(--line); padding-bottom:6px; margin-bottom:6px;"><span>${i.quantidade}x ${i.produto_nome}</span> <span>R$ ${(i.quantidade * i.preco_unitario).toFixed(2).replace('.', ',')}</span></li>`).join('')}
+            </ul>
           </div>
-        </div>`;
-    }).join('');
-  } catch (err) { lista.innerHTML = `<div style="color:var(--red);text-align:center;padding:40px;">Erro: ${err.message}</div>`; }
+        </div>
+        <div style="padding:14px 20px; border-top:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:16px; font-weight:800; color:var(--green);">Total: R$ ${p.total.toFixed(2).replace('.', ',')}</span>
+          <select onchange="mudarStatusPedido(${p.id}, this.value)" style="padding:8px 12px; border-radius:8px; background:var(--surface-2); color:var(--txt); border:1px solid var(--line);">
+            <option value="pendente" ${p.status === 'pendente' ? 'selected' : ''}>Pendente</option>
+            <option value="entregue" ${p.status === 'entregue' ? 'selected' : ''}>Entregue</option>
+            <option value="cancelado" ${p.status === 'cancelado' ? 'selected' : ''}>Cancelado</option>
+          </select>
+        </div>
+      </div>
+    `).join('');
+  } catch (err) { lista.innerHTML = `Erro: ${err.message}`; }
 }
 
 $('#btnAtualizarPedidos').addEventListener('click', carregarPedidos);
 window.mudarStatusPedido = async (id, status) => {
-  try {
-    await api('/api/admin/pedido/status', { method: 'PUT', body: JSON.stringify({ id, status }) });
-    toast('Status atualizado!');
-    const sel = document.querySelector(`select[onchange*="mudarStatusPedido(${id},"]`);
-    if(sel) sel.className = `status-select ${status}`;
-  } catch (err) { toast('Erro: ' + err.message, true); }
+  try { await api('/api/admin/pedido/status', { method: 'PUT', body: JSON.stringify({ id, status }) }); toast('Status atualizado!'); } 
+  catch (err) { toast(err.message, true); }
 };
 
-/* ============================ FINANCEIRO (MENU) ============================ */
+/* ============================ FINANCEIRO ============================ */
 window.abrirSubView = function(view) {
-  document.querySelector('.fin-menu').style.display = 'none';
-  document.querySelectorAll('.fin-subview').forEach(el => el.classList.remove('active'));
+  $('#fin-menu').style.display = 'none';
+  document.querySelectorAll('.fin-subview').forEach(el => el.style.display = 'none');
   
   if (view === 'caixa') {
-    $('#view-caixa').classList.add('active');
+    $('#view-caixa').style.display = 'block';
     carregarCaixaDias();
   } else if (view === 'fluxo') {
-    $('#view-fluxo').classList.add('active');
+    $('#view-fluxo').style.display = 'block';
     carregarFluxoDias();
   }
 };
 
 window.voltarMenuFin = function() {
-  document.querySelector('.fin-menu').style.display = 'flex';
-  document.querySelectorAll('.fin-subview').forEach(el => el.classList.remove('active'));
+  $('#fin-menu').style.display = 'flex';
+  document.querySelectorAll('.fin-subview').forEach(el => el.style.display = 'none');
   fecharCaixa();
   fecharFluxo();
 };
 
-/* ============================ CONTROLE DE CAIXA ============================ */
 async function carregarCaixaDias() {
-  const mes = $('#finMes').value;
-  const ano = $('#finAno').value;
-  
+  const mes = $('#finMes').value, ano = $('#finAno').value;
   try {
     const dataStatus = await api(`/api/admin/financeiro/status?ano=${ano}&mes=${mes}`);
     diasFechados = dataStatus.status || [];
-    
     const diasNoMes = new Date(ano, parseInt(mes), 0).getDate();
-    const listaDias = $('#finListaDias');
-    listaDias.innerHTML = '';
+    const listaDias = $('#finListaDias'); listaDias.innerHTML = '';
     
     for (let i = 1; i <= diasNoMes; i++) {
       const diaStr = String(i).padStart(2, '0');
       const dataStr = `${ano}-${mes}-${diaStr}`;
-      
       const isFechado = diasFechados.find(d => d.data === dataStr && d.fechado === 1);
       
       const card = document.createElement('div');
-      card.className = `fin-dia-card ${isFechado ? 'fechado' : ''}`;
+      card.style.cssText = `background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:16px; text-align:center; cursor:pointer; ${isFechado ? 'border-color:rgba(230,57,70,.3); opacity:0.7;' : ''}`;
       card.onclick = () => abrirCaixaDia(dataStr);
-      card.innerHTML = `<h4>${diaStr}/${mes}</h4><p>${isFechado ? 'Fechado' : 'Ver caixa'}</p>`;
+      card.innerHTML = `<h4>${diaStr}/${mes}</h4><p style="font-size:12px; color:${isFechado ? 'var(--red)' : 'var(--green)'};">${isFechado ? 'Fechado' : 'Aberto'}</p>`;
       listaDias.appendChild(card);
     }
-  } catch (err) {
-    toast('Erro ao carregar dias: ' + err.message, true);
-  }
+  } catch (err) { toast('Erro: ' + err.message, true); }
 }
 
 async function abrirCaixaDia(dataStr) {
-  if (!dataStr) return;
   finDataAtual = dataStr;
-  
   const partes = dataStr.split('-');
-  $('#finTituloCaixa').textContent = `Caixa do Dia: ${partes[2]}/${partes[1]}/${partes[0]}`;
-  
+  $('#finTituloCaixa').textContent = `Caixa: ${partes[2]}/${partes[1]}/${partes[0]}`;
   $('#finListaDias').style.display = 'none';
-  $('#finCaixa').classList.add('active');
-  
+  $('#finCaixa').style.display = 'block';
   await carregarTransacoesDia();
 }
 
 window.fecharCaixa = function() {
   $('#finListaDias').style.display = 'grid';
-  $('#finCaixa').classList.remove('active');
-  $('#formTransacao').reset();
+  $('#finCaixa').style.display = 'none';
   finDataAtual = '';
 };
 
 async function carregarTransacoesDia() {
   try {
-    const mes = $('#finMes').value;
-    const ano = $('#finAno').value;
-    
-    const data = await api(`/api/admin/financeiro?ano=${ano}&mes=${mes}`);
-    const todas = data.transacoes || [];
-    
-    finTransacoes = todas.filter(t => t.data === finDataAtual);
-    
+    const data = await api(`/api/admin/financeiro?ano=${$('#finAno').value}&mes=${$('#finMes').value}`);
+    finTransacoes = (data.transacoes || []).filter(t => t.data === finDataAtual);
     const isFechado = diasFechados.find(d => d.data === finDataAtual && d.fechado === 1);
-    const btnFechar = $('#btnFecharCaixa');
-    const formTransacao = $('#formTransacao');
     
-    if (isFechado) {
-      btnFechar.style.display = 'none';
-      formTransacao.style.display = 'none';
-    } else {
-      btnFechar.style.display = 'block';
-      formTransacao.style.display = 'flex';
-    }
+    $('#btnFecharCaixa').style.display = isFechado ? 'none' : 'block';
+    $('#formTransacao').style.display = isFechado ? 'none' : 'flex';
     
-    renderizarTransacoes();
-  } catch (err) {
-    toast('Erro ao carregar financeiro: ' + err.message, true);
-  }
-}
+    let totDeb = 0, totDin = 0, totCred = 0, totPix = 0;
+    $('#finTabelaBody').innerHTML = finTransacoes.length === 0 ? '<tr><td colspan="4" style="text-align:center; padding:20px; color:var(--muted);">Nenhum lançamento.</td></tr>' : '';
 
-function renderizarTransacoes() {
-  const tbody = $('#finTabelaBody');
-  tbody.innerHTML = '';
-  
-  let totDeb = 0, totDin = 0, totCred = 0, totPix = 0;
-
-  if (finTransacoes.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--muted);">Nenhum lançamento neste dia.</td></tr>';
-  } else {
     finTransacoes.forEach(t => {
       if (t.metodo_pagamento === 'DÉB.') totDeb += t.valor;
       if (t.metodo_pagamento === 'DIN.') totDin += t.valor;
@@ -1175,137 +1044,76 @@ function renderizarTransacoes() {
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td style="color:var(--muted); font-size:12px;">${formatarHora(t.criado_em)}</td>
-        <td>${t.metodo_pagamento}</td>
-        <td class="valor-col">R$ ${t.valor.toFixed(2).replace('.', ',')}</td>
-        <td style="text-align:right;"><button class="btn-del" onclick="deletarTransacao(${t.id})">X</button></td>
+        <td style="color:var(--muted); font-size:12px; padding:12px 10px; border-bottom:1px dashed var(--line);">${formatarHora(t.criado_em)}</td>
+        <td style="padding:12px 10px; border-bottom:1px dashed var(--line);">${t.metodo_pagamento}</td>
+        <td style="padding:12px 10px; border-bottom:1px dashed var(--line); font-weight:800; color:var(--green);">R$ ${t.valor.toFixed(2).replace('.', ',')}</td>
+        <td style="text-align:right; padding:12px 10px; border-bottom:1px dashed var(--line);"><button onclick="deletarTransacao(${t.id})" style="color:var(--red);">X</button></td>
       `;
-      tbody.appendChild(tr);
+      $('#finTabelaBody').appendChild(tr);
     });
-  }
 
-  const format = (v) => `R$ ${v.toFixed(2).replace('.', ',')}`;
-  const totalGeral = totDeb + totDin + totCred + totPix;
-
-  $('#resDeb').textContent = format(totDeb);
-  $('#resDin').textContent = format(totDin);
-  $('#resCred').textContent = format(totCred);
-  $('#resPix').textContent = format(totPix);
-  $('#resTotal').textContent = format(totalGeral);
+    const format = (v) => `R$ ${v.toFixed(2).replace('.', ',')}`;
+    $('#resDeb').textContent = format(totDeb);
+    $('#resDin').textContent = format(totDin);
+    $('#resCred').textContent = format(totCred);
+    $('#resPix').textContent = format(totPix);
+    $('#resTotal').textContent = format(totDeb + totDin + totCred + totPix);
+  } catch (err) { toast('Erro: ' + err.message, true); }
 }
 
 $('#formTransacao').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const btn = e.target.querySelector('button[type="submit"]');
-  btn.disabled = true; btn.textContent = '...';
-
+  const btn = e.target.querySelector('button[type="submit"]'); btn.disabled = true;
   try {
-    const dados = {
-      data: finDataAtual,
-      valor: parseFloat($('#finValor').value),
-      metodo_pagamento: $('#finMetodo').value
-    };
-    await api('/api/admin/financeiro', { method: 'POST', body: JSON.stringify(dados) });
-    $('#finValor').value = '';
-    toast('Lançado com sucesso!');
-    await carregarTransacoesDia();
+    await api('/api/admin/financeiro', { method: 'POST', body: JSON.stringify({ data: finDataAtual, valor: parseFloat($('#finValor').value), metodo_pagamento: $('#finMetodo').value }) });
+    $('#finValor').value = ''; toast('Lançado!'); await carregarTransacoesDia();
   } catch (err) { toast('Erro: ' + err.message, true); }
-  finally { btn.disabled = false; btn.textContent = 'Lançar'; }
+  finally { btn.disabled = false; }
 });
 
 window.deletarTransacao = async (id) => {
-  if (!confirm('Apagar este lançamento?')) return;
-  try {
-    await api('/api/admin/financeiro?id=' + id, { method: 'DELETE' });
-    toast('Apagado!');
-    await carregarTransacoesDia();
-  } catch (err) { toast('Erro: ' + err.message, true); }
+  if (!confirm('Apagar?')) return;
+  try { await api('/api/admin/financeiro?id=' + id, { method: 'DELETE' }); toast('Apagado!'); await carregarTransacoesDia(); } 
+  catch (err) { toast(err.message, true); }
 };
 
-/* ============================ NOVO FLUXO DE FECHAMENTO ============================ */
 window.fecharCaixaAcao = function() {
-  if (!finDataAtual) {
-    return toast('Erro: A data do caixa não foi identificada. Volte e selecione o dia novamente.', true);
-  }
-
-  let totalStr = $('#resTotal').textContent;
-  totalStr = totalStr.replace('R$', '').replace(/\s/g, '').replace(',', '.');
-  const total = parseFloat(totalStr);
-
-  if (isNaN(total) || total <= 0) {
-    return toast('Não é possível fechar um caixa com valor zerado ou inválido.', true);
-  }
-
-  // Abre o modal de confirmação
-  $('#modalConfirmCaixa').classList.add('show');
+  let totalStr = $('#resTotal').textContent.replace('R$', '').replace(/\s/g, '').replace(',', '.');
+  if (parseFloat(totalStr) <= 0) return toast('Caixa zerado.', true);
+  $('#modalConfirmCaixa').style.display = 'flex';
 };
 
-window.fecharModalConfirm = function() {
-  $('#modalConfirmCaixa').classList.remove('show');
-};
-
-window.fecharModalSucesso = function() {
-  $('#modalSucessoCaixa').classList.remove('show');
-  // Atualiza os dados da tela após o usuário fechar o modal
-  carregarCaixaDias();
-  abrirCaixaDia(finDataAtual);
-};
-
-// O botão de "Sim, fechar" dentro do modal de confirmação chama esta função
 $('#btnConfirmarFechamento').addEventListener('click', async () => {
-  const btn = $('#btnConfirmarFechamento');
-  const textoOriginal = btn.textContent;
-  btn.disabled = true; 
-  btn.textContent = 'Fechando...';
-
+  const btn = $('#btnConfirmarFechamento'); btn.disabled = true; btn.textContent = 'Fechando...';
   try {
-    let totalStr = $('#resTotal').textContent;
-    totalStr = totalStr.replace('R$', '').replace(/\s/g, '').replace(',', '.');
+    let totalStr = $('#resTotal').textContent.replace('R$', '').replace(/\s/g, '').replace(',', '.');
     const total = parseFloat(totalStr);
-
-    const payload = { data: finDataAtual, total: total };
-    await api('/api/admin/financeiro/fechar', { method: 'POST', body: JSON.stringify(payload) });
-
-    // Sucesso! Esconde a confirmação e mostra o novo modal de sucesso
-    fecharModalConfirm();
-    
-    // Formata o valor para mostrar no modal de sucesso
-    const valorFormatado = `R$ ${total.toFixed(2).replace('.', ',')}`;
-    $('#valorFechado').textContent = valorFormatado;
-    
-    // Mostra o modal de sucesso
-    $('#modalSucessoCaixa').classList.add('show');
-
-  } catch (err) {
-    toast('Erro ao fechar caixa: ' + err.message, true);
-    fecharModalConfirm();
-  } finally {
-    btn.disabled = false;
-    btn.textContent = textoOriginal;
-  }
+    await api('/api/admin/financeiro/fechar', { method: 'POST', body: JSON.stringify({ data: finDataAtual, total }) });
+    $('#modalConfirmCaixa').style.display = 'none';
+    $('#valorFechado').textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+    $('#modalSucessoCaixa').style.display = 'flex';
+  } catch (err) { toast(err.message, true); $('#modalConfirmCaixa').style.display = 'none'; }
+  finally { btn.disabled = false; btn.textContent = 'Sim, Fechar'; }
 });
 
-$('#btnFecharCaixa').addEventListener('click', fecharCaixaAcao);
+window.fecharModalSucesso = function() {
+  carregarCaixaDias(); abrirCaixaDia(finDataAtual);
+};
+
 $('#finMes').addEventListener('change', carregarCaixaDias);
 $('#finAno').addEventListener('change', carregarCaixaDias);
 
-/* ============================ FLUXO DE CAIXA (ENTRADAS/SAÍDAS) ============================ */
+/* ============================ FLUXO ============================ */
 async function carregarFluxoDias() {
-  const mes = $('#fluxoMes').value;
-  const ano = $('#fluxoAno').value;
-  
+  const mes = $('#fluxoMes').value, ano = $('#fluxoAno').value;
   const diasNoMes = new Date(ano, parseInt(mes), 0).getDate();
-  const listaDias = $('#fluxoListaDias');
-  listaDias.innerHTML = '';
-  
+  const listaDias = $('#fluxoListaDias'); listaDias.innerHTML = '';
   for (let i = 1; i <= diasNoMes; i++) {
-    const diaStr = String(i).padStart(2, '0');
-    const dataStr = `${ano}-${mes}-${diaStr}`;
-    
+    const diaStr = String(i).padStart(2, '0'), dataStr = `${ano}-${mes}-${diaStr}`;
     const card = document.createElement('div');
-    card.className = 'fin-dia-card';
+    card.style.cssText = 'background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:16px; text-align:center; cursor:pointer;';
     card.onclick = () => abrirFluxoDia(dataStr);
-    card.innerHTML = `<h4>${diaStr}/${mes}</h4><p>Ver movimentações</p>`;
+    card.innerHTML = `<h4>${diaStr}/${mes}</h4><p style="font-size:12px; color:var(--green);">Ver fluxo</p>`;
     listaDias.appendChild(card);
   }
 }
@@ -1313,97 +1121,61 @@ async function carregarFluxoDias() {
 async function abrirFluxoDia(dataStr) {
   fluxoDataAtual = dataStr;
   const partes = dataStr.split('-');
-  $('#fluxoTituloCaixa').textContent = `Fluxo do Dia: ${partes[2]}/${partes[1]}/${partes[0]}`;
-  
+  $('#fluxoTituloCaixa').textContent = `Fluxo: ${partes[2]}/${partes[1]}/${partes[0]}`;
   $('#fluxoListaDias').style.display = 'none';
-  $('#fluxoCaixa').classList.add('active');
-  
+  $('#fluxoCaixa').style.display = 'block';
   await carregarFluxoDia();
 }
 
 window.fecharFluxo = function() {
   $('#fluxoListaDias').style.display = 'grid';
-  $('#fluxoCaixa').classList.remove('active');
-  $('#formFluxo').reset();
+  $('#fluxoCaixa').style.display = 'none';
   fluxoDataAtual = '';
 };
 
 async function carregarFluxoDia() {
   try {
-    const mes = $('#fluxoMes').value;
-    const ano = $('#fluxoAno').value;
+    const data = await api(`/api/admin/fluxo?ano=${$('#fluxoAno').value}&mes=${$('#fluxoMes').value}`);
+    fluxoTransacoes = (data.fluxo || []).filter(t => t.data === fluxoDataAtual);
     
-    const data = await api(`/api/admin/fluxo?ano=${ano}&mes=${mes}`);
-    const todas = data.fluxo || [];
-    fluxoTransacoes = todas.filter(t => t.data === fluxoDataAtual);
-    
-    renderizarFluxo();
-  } catch (err) {
-    toast('Erro ao carregar fluxo: ' + err.message, true);
-  }
-}
+    let totEntrada = 0, totSaida = 0;
+    $('#fluxoTabelaBody').innerHTML = fluxoTransacoes.length === 0 ? '<tr><td colspan="3" style="text-align:center; padding:20px; color:var(--muted);">Nenhuma movimentação.</td></tr>' : '';
 
-function renderizarFluxo() {
-  const tbody = $('#fluxoTabelaBody');
-  tbody.innerHTML = '';
-  
-  let totEntrada = 0, totSaida = 0;
-
-  if (fluxoTransacoes.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:var(--muted);">Nenhuma movimentação neste dia.</td></tr>';
-  } else {
     fluxoTransacoes.forEach(t => {
       const isEntrada = t.tipo === 'entrada';
-      if (isEntrada) totEntrada += t.valor;
-      else totSaida += t.valor;
-
+      if (isEntrada) totEntrada += t.valor; else totSaida += t.valor;
+      
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td>${t.descricao}</td>
-        <td class="${isEntrada ? 'valor-entrada' : 'valor-saida'}">${isEntrada ? '+' : '-'} R$ ${t.valor.toFixed(2).replace('.', ',')}</td>
-        <td style="text-align:right;"><button class="btn-del" onclick="deletarFluxo(${t.id})">X</button></td>
+        <td style="padding:12px 10px; border-bottom:1px dashed var(--line);">${t.descricao}</td>
+        <td style="padding:12px 10px; border-bottom:1px dashed var(--line); font-weight:bold; color:${isEntrada ? 'var(--green)' : 'var(--red)'};">${isEntrada ? '+' : '-'} R$ ${t.valor.toFixed(2).replace('.', ',')}</td>
+        <td style="text-align:right; padding:12px 10px; border-bottom:1px dashed var(--line);"><button onclick="deletarFluxo(${t.id})" style="color:var(--red);">X</button></td>
       `;
-      tbody.appendChild(tr);
+      $('#fluxoTabelaBody').appendChild(tr);
     });
-  }
 
-  const format = (v) => `R$ ${v.toFixed(2).replace('.', ',')}`;
-  const saldo = totEntrada - totSaida;
-
-  $('#fluxoResEntrada').textContent = format(totEntrada);
-  $('#fluxoResSaida').textContent = format(totSaida);
-  $('#fluxoResTotal').textContent = format(saldo);
-  $('#fluxoResTotal').className = saldo >= 0 ? 'valor-entrada' : 'valor-saida';
+    const format = (v) => `R$ ${v.toFixed(2).replace('.', ',')}`;
+    $('#fluxoResEntrada').textContent = format(totEntrada);
+    $('#fluxoResSaida').textContent = format(totSaida);
+    $('#fluxoResTotal').textContent = format(totEntrada - totSaida);
+    $('#fluxoResTotal').style.color = (totEntrada - totSaida) >= 0 ? 'var(--green)' : 'var(--red)';
+  } catch (err) { toast('Erro: ' + err.message, true); }
 }
 
 $('#formFluxo').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const btn = e.target.querySelector('button[type="submit"]');
-  btn.disabled = true; btn.textContent = '...';
-
+  const btn = e.target.querySelector('button[type="submit"]'); btn.disabled = true;
   try {
-    const dados = {
-      data: fluxoDataAtual,
-      tipo: $('#fluxoTipo').value,
-      valor: parseFloat($('#fluxoValor').value),
-      descricao: $('#fluxoDesc').value.trim()
-    };
-    await api('/api/admin/fluxo', { method: 'POST', body: JSON.stringify(dados) });
-    $('#fluxoValor').value = '';
-    $('#fluxoDesc').value = '';
-    toast('Lançado com sucesso!');
-    await carregarFluxoDia();
+    await api('/api/admin/fluxo', { method: 'POST', body: JSON.stringify({ data: fluxoDataAtual, tipo: $('#fluxoTipo').value, valor: parseFloat($('#fluxoValor').value), descricao: $('#fluxoDesc').value.trim() }) });
+    $('#fluxoValor').value = ''; $('#fluxoDesc').value = ''; toast('Lançado!'); await carregarFluxoDia();
   } catch (err) { toast('Erro: ' + err.message, true); }
-  finally { btn.disabled = false; btn.textContent = 'Lançar'; }
+  finally { btn.disabled = false; }
 });
 
 window.deletarFluxo = async (id) => {
-  if (!confirm('Apagar esta movimentação?')) return;
-  try {
-    await api('/api/admin/fluxo?id=' + id, { method: 'DELETE' });
-    toast('Apagado!');
-    await carregarFluxoDia();
-  } catch (err) { toast('Erro: ' + err.message, true); }
+  if (!confirm('Apagar?')) return;
+  try { await api('/api/admin/fluxo?id=' + id, { method: 'DELETE' }); toast('Apagado!'); await carregarFluxoDia(); } 
+  catch (err) { toast(err.message, true); }
 };
 
 $('#fluxoMes').addEventListener('change', carregarFluxoDias);
@@ -1414,20 +1186,18 @@ async function carregarStatusLoja(){
   try {
     const data = await api('/api/config/status');
     const btn = $('#btnStatusLoja'); const txt = $('#statusTexto');
-    if (data.status === 'aberto') { btn.className = 'btn-toggle-status aberto'; txt.textContent = 'Loja Aberta (Clique para fechar)'; }
-    else { btn.className = 'btn-toggle-status fechado'; txt.textContent = 'Loja Fechada (Clique para abrir)'; }
-  } catch (err) { toast('Erro ao buscar status: ' + err.message, true); }
+    if (data.status === 'aberto') { btn.style.background = 'var(--green-soft)'; btn.style.color = 'var(--green)'; btn.style.borderColor = 'var(--line-green)'; txt.textContent = 'Loja Aberta (Clique para fechar)'; }
+    else { btn.style.background = 'var(--red-soft)'; btn.style.color = '#ff8895'; btn.style.borderColor = 'rgba(230,57,70,.4)'; txt.textContent = 'Loja Fechada (Clique para abrir)'; }
+  } catch (err) {}
 }
 
 $('#btnStatusLoja').addEventListener('click', async () => {
-  const btn = $('#btnStatusLoja');
-  const novoStatus = btn.classList.contains('fechado') ? 'aberto' : 'fechado';
-  btn.disabled = true;
+  const btn = $('#btnStatusLoja'); btn.disabled = true;
+  const novoStatus = $('#statusTexto').textContent.includes('Aberta') ? 'fechado' : 'aberto';
   try {
     await api('/api/config/status', { method: 'PUT', body: JSON.stringify({ status: novoStatus }) });
-    toast(novoStatus === 'aberto' ? 'Loja aberta!' : 'Loja fechada!');
-    carregarStatusLoja();
-  } catch (err) { toast('Erro ao mudar status: ' + err.message, true); }
+    toast(`Loja ${novoStatus}!`); carregarStatusLoja();
+  } catch (err) { toast(err.message, true); }
   finally { btn.disabled = false; }
 });
 
