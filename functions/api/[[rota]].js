@@ -66,11 +66,14 @@ export async function onRequest(context){
     if (rota === 'produto' && metodo === 'DELETE') return deletarProduto(context);
     if (rota === 'upload' && metodo === 'POST') return uploadImagem(context);
 
-    // REGISTRO DE BARRAS (Novo Catálogo)
+    // REGISTRO DE BARRAS (Catálogo)
     if (rota === 'barras/buscar' && metodo === 'GET') return buscarPorCodigoBarras(context);
     if (rota === 'admin/registro-barras' && metodo === 'GET') return listarRegistroBarras(context);
     if (rota === 'admin/registro-barras' && metodo === 'POST') return salvarRegistroBarras(context);
     if (rota === 'admin/registro-barras' && metodo === 'DELETE') return deletarRegistroBarras(context);
+    
+    // PDV (Caixa Rápido)
+    if (rota === 'pdv/buscar' && metodo === 'GET') return buscarProdutoPdv(context);
     
     // Configurações
     if (rota === 'config/status' && metodo === 'GET') return getStatusLoja(context);
@@ -111,8 +114,23 @@ export async function onRequest(context){
 }
 
 /* ============================================================
- * REGISTRO DE BARRAS
+ * PDV E REGISTRO DE BARRAS
  * ============================================================ */
+async function buscarProdutoPdv({ request, env }){
+  const user = await autenticar(request, env);
+  if (!user) return erro('Não autenticado', 401);
+  
+  const codigo = new URL(request.url).searchParams.get('codigo');
+  if (!codigo) return erro('Código não informado');
+
+  // Busca APENAS no banco local (registro_barras)
+  const produto = await env.DB.prepare('SELECT * FROM registro_barras WHERE codigo_barras = ?').bind(codigo).first();
+  
+  if (!produto) return erro('Código não encontrado', 404);
+  
+  return json({ ok: true, produto });
+}
+
 async function buscarPorCodigoBarras({ request, env }){
   const user = await autenticar(request, env);
   if (!user) return erro('Não autenticado', 401);
@@ -139,7 +157,7 @@ async function buscarPorCodigoBarras({ request, env }){
         nome: item.produto || 'Produto sem nome',
         marca: item.marca || null,
         codigo_barras: codigo,
-        preco: null, // Preço em branco para o usuário preencher
+        preco: null,
         origem: 'api'
       };
       return json({ ok: true, produto: produtoApi, origem: 'api' });
@@ -182,7 +200,7 @@ async function deletarRegistroBarras({ request, env }){
 }
 
 /* ============================================================
- * DEMAIS FUNÇÕES (Admin, Categorias, Produtos, Pedidos, Financeiro)
+ * DEMAIS FUNÇÕES
  * ============================================================ */
 async function setup({ request, env }){
   const total = await env.DB.prepare('SELECT COUNT(*) AS n FROM usuarios').first();
