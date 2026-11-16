@@ -344,6 +344,11 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
               <div style="display:flex; justify-content:space-between; margin-top:20px; padding-top:16px; border-top:2px solid var(--line-green); font-size:18px; font-weight:900; color:var(--green);"><span>TOTAL</span><span id="resTotal">R$ 0,00</span></div>
             </div>
           </div>
+
+          <!-- NOVO BOTÃO APAGAR TUDO -->
+          <div style="margin-top:30px; padding-top:20px; border-top:1px dashed var(--line); text-align:center;" id="divApagarTudo">
+             <button class="btn-ghost" style="color:var(--red); border-color:rgba(230,57,70,.3); padding:10px 20px;" onclick="apagarTudoCaixa()">Apagar Todos os Lançamentos do Dia</button>
+          </div>
         </div>
       </div>
 
@@ -662,11 +667,11 @@ function toast(msg, erro = false){
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-// MÁSCARA DE MOEDA (Para novos inputs)
+// MÁSCARA DE MOEDA
 function aplicarMascaraMoeda(input) {
   let value = input.value;
-  value = value.replace(/\D/g, ''); // Remove tudo que não for dígito
-  value = (value / 100).toFixed(2); // Divide por 100 para formatar centavos
+  value = value.replace(/\D/g, '');
+  value = (value / 100).toFixed(2);
   value = value.replace('.', ',');
   value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   input.value = 'R$ ' + value;
@@ -676,7 +681,6 @@ document.querySelectorAll('.mascara-moeda').forEach(input => {
   input.addEventListener('input', () => aplicarMascaraMoeda(input));
 });
 
-// Formata um valor para exibição (Ex: 12.50 -> R$ 12,50)
 function formatarMoedaExibir(valor) {
   if (!valor) return '—';
   let str = valor.toString().replace('R$', '').trim();
@@ -835,14 +839,13 @@ $('#biparCodigo').addEventListener('keypress', async (e) => {
     try {
       const data = await api('/api/barras/buscar?codigo=' + encodeURIComponent(codigo));
       
-      editandoRegistroId = null; // Limpa edição
+      editandoRegistroId = null; 
       $('#regCodigo').value = codigo;
       $('#regCodigo').readOnly = false;
       $('#regNome').value = data.produto.nome || '';
       $('#regMarca').value = data.produto.marca || data.produto.subcategoria || '';
-      $('#regPreco').value = ''; // Sempre começa vazio
+      $('#regPreco').value = ''; 
       if (data.produto.preco) {
-        // Aplica máscara no valor que veio do banco
         $('#regPreco').value = 'R$ ' + data.produto.preco;
         aplicarMascaraMoeda($('#regPreco'));
       }
@@ -902,7 +905,7 @@ $('#formRegistro').addEventListener('submit', async (e) => {
     codigo_barras: $('#regCodigo').value,
     nome: $('#regNome').value,
     marca: $('#regMarca').value,
-    preco: $('#regPreco').value // O backend vai limpar o R$
+    preco: $('#regPreco').value 
   };
 
   try {
@@ -1231,6 +1234,7 @@ async function carregarTransacoesDia() {
     
     $('#btnFecharCaixa').style.display = isFechado ? 'none' : 'block';
     $('#formTransacao').style.display = isFechado ? 'none' : 'flex';
+    $('#divApagarTudo').style.display = isFechado ? 'none' : 'block'; // ESCONDE BOTÃO SE FECHADO
     
     let totDeb = 0, totDin = 0, totCred = 0, totPix = 0;
     $('#finTabelaBody').innerHTML = finTransacoes.length === 0 ? '<tr><td colspan="4" style="text-align:center; padding:20px; color:var(--muted);">Nenhum lançamento.</td></tr>' : '';
@@ -1275,6 +1279,19 @@ window.deletarTransacao = async (id) => {
   catch (err) { toast(err.message, true); }
 };
 
+// NOVA FUNÇÃO: APAGAR TUDO
+window.apagarTudoCaixa = async function() {
+  if (!confirm('Tem CERTEZA que deseja apagar TODOS os lançamentos deste dia? Isso não pode ser desfeito.')) return;
+  
+  try {
+    await api('/api/admin/financeiro/dia?data=' + finDataAtual, { method: 'DELETE' });
+    toast('Todos os lançamentos do dia foram apagados!');
+    await carregarTransacoesDia();
+  } catch (err) {
+    toast('Erro ao apagar: ' + err.message, true);
+  }
+};
+
 /* ============================ PDV (CAIXA DE VENDAS) ============================ */
 async function carregarPdvDias() {
   const mes = $('#pdvMes').value, ano = $('#pdvAno').value;
@@ -1300,7 +1317,7 @@ async function carregarPdvDias() {
 
 async function abrirPdvDia(dataStr) {
   pdvDataAtual = dataStr;
-  pdvCarrinho = []; // Limpa o carrinho ao abrir
+  pdvCarrinho = [];
   renderizarPdvCarrinho();
   
   const partes = dataStr.split('-');
