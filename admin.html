@@ -105,6 +105,22 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
 .tabela-registros .btn-del { background: var(--red-soft); color: var(--red); padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: bold; }
 .tabela-registros .btn-del:hover { background: var(--red); color: #fff; }
 
+/* ESTILOS DO PDV */
+.pdv-container { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; margin-top: 20px; }
+.pdv-input-wrap { display: flex; gap: 12px; margin-bottom: 20px; }
+.pdv-input-wrap input { flex: 1; padding: 16px; font-size: 20px; border: 2px solid var(--line-green); border-radius: 10px; background: var(--bg); color: var(--txt); outline: none; font-weight: bold; letter-spacing: 1px; }
+.pdv-input-wrap input:focus { border-color: var(--green); }
+.pdv-carrinho { margin-bottom: 20px; max-height: 300px; overflow-y: auto; }
+.pdv-carrinho table { width: 100%; border-collapse: collapse; }
+.pdv-carrinho th { text-align: left; padding: 10px; color: var(--muted); font-size: 12px; border-bottom: 1px solid var(--line); }
+.pdv-carrinho td { padding: 10px; border-bottom: 1px dashed var(--line); font-size: 14px; }
+.pdv-total-box { background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.pdv-total-box span { font-size: 18px; font-weight: 800; }
+.pdv-total-box .valor { font-size: 28px; color: var(--green); }
+.pdv-pagamento { display: flex; gap: 10px; flex-wrap: wrap; }
+.pdv-pagamento select { padding: 15px; border-radius: 10px; background: var(--surface-2); border: 1px solid var(--line); color: white; font-size: 16px; flex: 1; }
+.pdv-pagamento button { padding: 15px 30px; font-size: 16px; }
+
 /* MODAIS GERAIS */
 #modal{ position:fixed; inset:0; background:rgba(0,0,0,.85); backdrop-filter:blur(6px); z-index:100; display:none; overflow-y:auto; padding:24px; }
 #modal.show{ display:block; }
@@ -275,11 +291,15 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
         <div class="fin-menu-card" onclick="abrirSubView('caixa')" style="background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:18px 24px; display:flex; justify-content:space-between; cursor:pointer; margin-bottom:10px;">
           <span>Controle de Caixa</span> <span>→</span>
         </div>
+        <div class="fin-menu-card" onclick="abrirSubView('pdv')" style="background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:18px 24px; display:flex; justify-content:space-between; cursor:pointer; margin-bottom:10px;">
+          <span>Caixa (PDV)</span> <span>→</span>
+        </div>
         <div class="fin-menu-card" onclick="abrirSubView('fluxo')" style="background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:18px 24px; display:flex; justify-content:space-between; cursor:pointer;">
           <span>Entradas e Saídas</span> <span>→</span>
         </div>
       </div>
 
+      <!-- SUB-VIEW: CONTROLE DE CAIXA -->
       <div class="fin-subview" id="view-caixa" style="display:none;">
         <div class="fin-nav" style="display:flex; gap:16px; margin-bottom:20px; background:var(--surface); padding:16px; border-radius:12px; border:1px solid var(--line);">
           <select id="finMes" style="padding:10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); color:white;">
@@ -327,6 +347,66 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
         </div>
       </div>
 
+      <!-- SUB-VIEW: PDV -->
+      <div class="fin-subview" id="view-pdv" style="display:none;">
+        <div class="fin-nav" style="display:flex; gap:16px; margin-bottom:20px; background:var(--surface); padding:16px; border-radius:12px; border:1px solid var(--line);">
+          <select id="pdvMes" style="padding:10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); color:white;">
+            <option value="01">Janeiro</option><option value="02">Fevereiro</option><option value="03">Março</option>
+            <option value="04">Abril</option><option value="05">Maio</option><option value="06">Junho</option>
+            <option value="07">Julho</option><option value="08">Agosto</option><option value="09">Setembro</option>
+            <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
+          </select>
+          <select id="pdvAno" style="padding:10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); color:white;"></select>
+          <button class="btn-ghost" onclick="voltarMenuFin()" style="margin-left:auto;">Voltar</button>
+        </div>
+
+        <div class="fin-dias" id="pdvListaDias" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:12px;"></div>
+
+        <div class="pdv-container" id="pdvCaixa" style="display:none;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px solid var(--line); padding-bottom:16px;">
+            <h3 id="pdvTituloCaixa">Caixa PDV</h3>
+            <button class="btn-ghost" style="color:var(--red);" onclick="fecharCaixaPdvAcao()" id="btnFecharCaixaPdv">Fechar Caixa</button>
+          </div>
+
+          <div class="pdv-input-wrap">
+            <input type="text" id="pdvBipar" placeholder="Bipe o código do produto..." autocomplete="off">
+          </div>
+
+          <div class="pdv-carrinho">
+            <table>
+              <thead>
+                <tr>
+                  <th>Produto</th>
+                  <th>Qtd</th>
+                  <th>Preço Un.</th>
+                  <th>Total</th>
+                  <th>Ação</th>
+                </tr>
+              </thead>
+              <tbody id="pdvTabelaBody">
+                <tr><td colspan="5" style="text-align:center; color:var(--muted); padding:20px;">Nenhum item adicionado.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="pdv-total-box">
+            <span>Total a Pagar:</span>
+            <span class="valor" id="pdvTotal">R$ 0,00</span>
+          </div>
+
+          <div class="pdv-pagamento">
+            <select id="pdvMetodo" style="padding:15px; border-radius:10px; background:var(--surface-2); border:1px solid var(--line); color:white; font-size:16px; flex:1;">
+              <option value="DIN.">Dinheiro</option>
+              <option value="DÉB.">Débito</option>
+              <option value="CRÉD.">Crédito</option>
+              <option value="PIX">PIX</option>
+            </select>
+            <button class="btn-primary" onclick="finalizarVendaPdv()" style="width:auto;">Confirmar Pagamento</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-VIEW: FLUXO -->
       <div class="fin-subview" id="view-fluxo" style="display:none;">
         <div class="fin-nav" style="display:flex; gap:16px; margin-bottom:20px; background:var(--surface); padding:16px; border-radius:12px; border:1px solid var(--line);">
           <select id="fluxoMes" style="padding:10px; border-radius:8px; background:var(--surface-2); border:1px solid var(--line); color:white;">
@@ -377,12 +457,20 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
     <!-- ABA CONFIGURAÇÕES -->
     <div class="tab-content" id="tab-config">
       <div class="toolbar"><h2>Configurações</h2></div>
-      <div style="background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:24px; max-width:600px;">
+      
+      <div class="config-card" style="background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:24px; max-width:600px; margin-bottom:24px;">
         <h3>Status da Loja</h3>
         <p style="color:var(--muted); margin-bottom:20px;">Controle se o site está aceitando pedidos.</p>
         <button class="btn-toggle-status aberto" id="btnStatusLoja" style="width:100%; padding:16px; border-radius:12px; font-size:16px; font-weight:800; background:var(--green-soft); color:var(--green); border:2px solid var(--line-green);">
           <span id="statusTexto">Aberto</span>
         </button>
+      </div>
+
+      <!-- ATALHO PARA REGISTRO DE BARRAS -->
+      <div class="config-card" style="background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:24px; max-width:600px;">
+        <h3>Base de Dados de Produtos</h3>
+        <p style="color:var(--muted); margin-bottom:20px;">Gerencie o catálogo de códigos de barras e preços usado no PDV.</p>
+        <button class="btn-primary" onclick="document.querySelector('[data-tab=registro]').click()" style="width:auto; padding:12px 24px;">Ir para Registro de Barras</button>
       </div>
     </div>
 
@@ -457,7 +545,7 @@ header.admin .user{ font-size:12.5px; color:var(--muted); margin-right:8px; }
   </div>
 </div>
 
-<!-- MODAL DE REGISTRO DE BARRAS (NOVO) -->
+<!-- MODAL DE REGISTRO DE BARRAS -->
 <div id="modalRegistro" style="position:fixed; inset:0; background:rgba(0,0,0,.85); backdrop-filter:blur(6px); z-index:100; display:none; overflow-y:auto; padding:24px;">
   <div class="modal-box" style="max-width:500px;">
     <div class="modal-head">
@@ -532,6 +620,11 @@ let diasFechados = [];
 let fluxoDataAtual = '';
 let fluxoTransacoes = [];
 
+// Variáveis do PDV
+let pdvDataAtual = '';
+let pdvCarrinho = [];
+let diasFechadosPdv = [];
+
 const $ = sel => document.querySelector(sel);
 
 function toast(msg, erro = false){
@@ -597,13 +690,16 @@ async function abrirDashboard(){
   const anoAtual = hoje.getFullYear();
 
   $('#finMes').value = mesAtual;
+  $('#pdvMes').value = mesAtual;
   $('#fluxoMes').value = mesAtual;
   
   const selectAno = $('#finAno');
+  const selectAnoPdv = $('#pdvAno');
   const selectAnoFluxo = $('#fluxoAno');
   for (let i = anoAtual - 2; i <= anoAtual + 2; i++) {
     const opt1 = document.createElement('option'); opt1.value = i; opt1.textContent = i; if (i === anoAtual) opt1.selected = true; selectAno.appendChild(opt1);
-    const opt2 = document.createElement('option'); opt2.value = i; opt2.textContent = i; if (i === anoAtual) opt2.selected = true; selectAnoFluxo.appendChild(opt2);
+    const opt2 = document.createElement('option'); opt2.value = i; opt2.textContent = i; if (i === anoAtual) opt2.selected = true; selectAnoPdv.appendChild(opt2);
+    const opt3 = document.createElement('option'); opt3.value = i; opt3.textContent = i; if (i === anoAtual) opt3.selected = true; selectAnoFluxo.appendChild(opt3);
   }
 }
 
@@ -956,6 +1052,9 @@ window.abrirSubView = function(view) {
   if (view === 'caixa') {
     $('#view-caixa').style.display = 'block';
     carregarCaixaDias();
+  } else if (view === 'pdv') {
+    $('#view-pdv').style.display = 'block';
+    carregarPdvDias();
   } else if (view === 'fluxo') {
     $('#view-fluxo').style.display = 'block';
     carregarFluxoDias();
@@ -966,9 +1065,11 @@ window.voltarMenuFin = function() {
   $('#fin-menu').style.display = 'flex';
   document.querySelectorAll('.fin-subview').forEach(el => el.style.display = 'none');
   fecharCaixa();
+  fecharPdv();
   fecharFluxo();
 };
 
+/* ============================ CAIXA DIÁRIO ============================ */
 async function carregarCaixaDias() {
   const mes = $('#finMes').value, ano = $('#finAno').value;
   try {
@@ -1059,33 +1160,202 @@ window.deletarTransacao = async (id) => {
   catch (err) { toast(err.message, true); }
 };
 
-window.fecharCaixaAcao = function() {
-  let totalStr = $('#resTotal').textContent.replace('R$', '').replace(/\s/g, '').replace(',', '.');
-  if (parseFloat(totalStr) <= 0) return toast('Caixa zerado.', true);
-  $('#modalConfirmCaixa').style.display = 'flex';
+/* ============================ PDV (CAIXA DE VENDAS) ============================ */
+async function carregarPdvDias() {
+  const mes = $('#pdvMes').value, ano = $('#pdvAno').value;
+  try {
+    const dataStatus = await api(`/api/admin/financeiro/status?ano=${ano}&mes=${mes}`);
+    diasFechadosPdv = dataStatus.status || [];
+    const diasNoMes = new Date(ano, parseInt(mes), 0).getDate();
+    const listaDias = $('#pdvListaDias'); listaDias.innerHTML = '';
+    
+    for (let i = 1; i <= diasNoMes; i++) {
+      const diaStr = String(i).padStart(2, '0');
+      const dataStr = `${ano}-${mes}-${diaStr}`;
+      const isFechado = diasFechadosPdv.find(d => d.data === dataStr && d.fechado === 1);
+      
+      const card = document.createElement('div');
+      card.style.cssText = `background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:16px; text-align:center; cursor:pointer; ${isFechado ? 'border-color:rgba(230,57,70,.3); opacity:0.7;' : ''}`;
+      card.onclick = () => abrirPdvDia(dataStr);
+      card.innerHTML = `<h4>${diaStr}/${mes}</h4><p style="font-size:12px; color:${isFechado ? 'var(--red)' : 'var(--green)'};">${isFechado ? 'Fechado' : 'Aberto'}</p>`;
+      listaDias.appendChild(card);
+    }
+  } catch (err) { toast('Erro: ' + err.message, true); }
+}
+
+async function abrirPdvDia(dataStr) {
+  pdvDataAtual = dataStr;
+  pdvCarrinho = []; // Limpa o carrinho ao abrir
+  renderizarPdvCarrinho();
+  
+  const partes = dataStr.split('-');
+  $('#pdvTituloCaixa').textContent = `Caixa PDV: ${partes[2]}/${partes[1]}/${partes[0]}`;
+  $('#pdvListaDias').style.display = 'none';
+  $('#pdvCaixa').style.display = 'block';
+  
+  const isFechado = diasFechadosPdv.find(d => d.data === pdvDataAtual && d.fechado === 1);
+  if (isFechado) {
+    $('#pdvBipar').disabled = true;
+    $('#pdvBipar').placeholder = "Caixa Fechado";
+    $('.pdv-pagamento button').disabled = true;
+    $('#btnFecharCaixaPdv').style.display = 'none';
+  } else {
+    $('#pdvBipar').disabled = false;
+    $('#pdvBipar').placeholder = "Bipe o código do produto...";
+    $('.pdv-pagamento button').disabled = false;
+    $('#btnFecharCaixaPdv').style.display = 'block';
+    setTimeout(() => $('#pdvBipar').focus(), 100);
+  }
+}
+
+window.fecharPdv = function() {
+  $('#pdvListaDias').style.display = 'grid';
+  $('#pdvCaixa').style.display = 'none';
+  pdvDataAtual = '';
+  pdvCarrinho = [];
+  renderizarPdvCarrinho();
+};
+
+$('#pdvBipar').addEventListener('keypress', async (e) => {
+  if (e.key === 'Enter') {
+    const codigo = e.target.value.trim();
+    if (!codigo) return;
+    
+    e.target.disabled = true;
+    try {
+      const data = await api('/api/pdv/buscar?codigo=' + encodeURIComponent(codigo));
+      const produto = data.produto;
+      
+      const itemExistente = pdvCarrinho.find(i => i.codigo_barras === produto.codigo_barras);
+      if (itemExistente) {
+        itemExistente.qtd += 1;
+      } else {
+        pdvCarrinho.push({ 
+          codigo_barras: produto.codigo_barras, 
+          nome: produto.nome, 
+          preco: parseFloat(produto.preco.replace(',', '.')) || 0, 
+          qtd: 1 
+        });
+      }
+      
+      renderizarPdvCarrinho();
+      
+    } catch (err) {
+      toast(err.message, true); // Vai mostrar "Código não encontrado"
+    } finally {
+      e.target.value = '';
+      e.target.disabled = false;
+      e.target.focus();
+    }
+  }
+});
+
+function renderizarPdvCarrinho() {
+  const tbody = $('#pdvTabelaBody');
+  if (pdvCarrinho.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:var(--muted); padding:20px;">Nenhum item adicionado.</td></tr>';
+    $('#pdvTotal').textContent = 'R$ 0,00';
+    return;
+  }
+
+  let total = 0;
+  tbody.innerHTML = pdvCarrinho.map((item, index) => {
+    const subtotal = item.preco * item.qtd;
+    total += subtotal;
+    return `
+      <tr>
+        <td><b>${item.nome}</b></td>
+        <td>${item.qtd}</td>
+        <td>R$ ${item.preco.toFixed(2).replace('.', ',')}</td>
+        <td style="color:var(--green); font-weight:bold;">R$ ${subtotal.toFixed(2).replace('.', ',')}</td>
+        <td><button onclick="removerItemPdv(${index})" style="color:var(--red); font-size:18px;">×</button></td>
+      </tr>
+    `;
+  }).join('');
+  
+  $('#pdvTotal').textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+}
+
+window.removerItemPdv = function(index) {
+  pdvCarrinho.splice(index, 1);
+  renderizarPdvCarrinho();
+};
+
+async function finalizarVendaPdv() {
+  if (pdvCarrinho.length === 0) return toast('Adicione itens antes de finalizar.', true);
+  const isFechado = diasFechadosPdv.find(d => d.data === pdvDataAtual && d.fechado === 1);
+  if (isFechado) return toast('O caixa já está fechado.', true);
+
+  const total = pdvCarrinho.reduce((acc, item) => acc + (item.preco * item.qtd), 0);
+  const metodo = $('#pdvMetodo').value;
+
+  try {
+    await api('/api/admin/financeiro', { 
+      method: 'POST', 
+      body: JSON.stringify({ data: pdvDataAtual, valor: total, metodo_pagamento: metodo }) 
+    });
+    
+    pdvCarrinho = [];
+    renderizarPdvCarrinho();
+    toast('Venda finalizada e enviada para o caixa!');
+  } catch (err) {
+    toast('Erro ao finalizar venda: ' + err.message, true);
+  }
+}
+
+// Fechar Caixa pelo PDV (usa o mesmo modal)
+window.fecharCaixaPdvAcao = function() {
+  // Sincroniza a data atual do caixa com o PDV para o modal funcionar
+  finDataAtual = pdvDataAtual;
+  
+  // Puxa o total atual do dia para mostrar no modal
+  api(`/api/admin/financeiro?ano=${$('#pdvAno').value}&mes=${$('#pdvMes').value}`).then(data => {
+    const transacoes = (data.transacoes || []).filter(t => t.data === pdvDataAtual);
+    const total = transacoes.reduce((acc, t) => acc + t.valor, 0);
+    
+    if (total <= 0) return toast('Caixa zerado.', true);
+    
+    $('#valorFechado').textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+    $('#modalConfirmCaixa').style.display = 'flex';
+  });
 };
 
 $('#btnConfirmarFechamento').addEventListener('click', async () => {
   const btn = $('#btnConfirmarFechamento'); btn.disabled = true; btn.textContent = 'Fechando...';
   try {
-    let totalStr = $('#resTotal').textContent.replace('R$', '').replace(/\s/g, '').replace(',', '.');
+    let totalStr = $('#valorFechado').textContent.replace('R$', '').replace(/\s/g, '').replace(',', '.');
     const total = parseFloat(totalStr);
+    
     await api('/api/admin/financeiro/fechar', { method: 'POST', body: JSON.stringify({ data: finDataAtual, total }) });
     $('#modalConfirmCaixa').style.display = 'none';
-    $('#valorFechado').textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
     $('#modalSucessoCaixa').style.display = 'flex';
   } catch (err) { toast(err.message, true); $('#modalConfirmCaixa').style.display = 'none'; }
   finally { btn.disabled = false; btn.textContent = 'Sim, Fechar'; }
 });
 
 window.fecharModalSucesso = function() {
-  carregarCaixaDias(); abrirCaixaDia(finDataAtual);
+  carregarPdvDias(); // Atualiza a lista de dias do PDV
+  if (pdvDataAtual) abrirPdvDia(pdvDataAtual); // Se estiver no PDV, recarrega ele
+  if (finDataAtual && $('#finCaixa').style.display === 'block') {
+    carregarCaixaDias(); abrirCaixaDia(finDataAtual); // Se estiver no Caixa Diário, recarrega ele
+  }
+};
+
+/* ============================ CONTROLE DE CAIXA MANUAL (Padrão) ============================ */
+window.fecharCaixaAcao = function() {
+  let totalStr = $('#resTotal').textContent.replace('R$', '').replace(/\s/g, '').replace(',', '.');
+  if (parseFloat(totalStr) <= 0) return toast('Caixa zerado.', true);
+  
+  $('#valorFechado').textContent = $('#resTotal').textContent;
+  $('#modalConfirmCaixa').style.display = 'flex';
 };
 
 $('#finMes').addEventListener('change', carregarCaixaDias);
 $('#finAno').addEventListener('change', carregarCaixaDias);
+$('#pdvMes').addEventListener('change', carregarPdvDias);
+$('#pdvAno').addEventListener('change', carregarPdvDias);
 
-/* ============================ FLUXO ============================ */
+/* ============================ FLUXO DE CAIXA ============================ */
 async function carregarFluxoDias() {
   const mes = $('#fluxoMes').value, ano = $('#fluxoAno').value;
   const diasNoMes = new Date(ano, parseInt(mes), 0).getDate();
